@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_bottom"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.bruhascended.fitapp.DashboardFragment"
+        android:label="fragment_dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+    <fragment
+        android:id="@+id/challengesFragment"
+        android:name="com.bruhascended.fitapp.ChallengesFragment"
+        android:label="fragment_challenges"
+        tools:layout="@layout/fragment_challenges" />
+    <fragment
+        android:id="@+id/journalFragment"
+        android:name="com.bruhascended.fitapp.JournalFragment"
+        android:label="fragment_journal"
+        tools:layout="@layout/fragment_journal" />
+</navigation>
