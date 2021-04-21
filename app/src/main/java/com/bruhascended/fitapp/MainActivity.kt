@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -19,7 +20,9 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         //initialise navController
-        navController = findNavController(R.id.fragment)
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.fragment) as NavHostFragment
+        navController = navHostFragment.navController
 
         //set our defined toolbar as actionbar and set title of appbar to default(which is dashboard) when onCreate invoked
         setSupportActionBar(binding.toolbar)
@@ -31,19 +34,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupBottomNav() {
         binding.bottomNav.setOnNavigationItemSelectedListener {
-            binding.appBar.setExpanded(true)
             when (it.itemId) {
                 R.id.dashboard -> {
+                    binding.appBar.setExpanded(true, true)
                     navController.navigate(R.id.dashboardFragment)
                     binding.collapsingToolbar.title = "DashBoard"
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.challenges -> {
+                    binding.appBar.setExpanded(false, true)
                     navController.navigate(R.id.challengesFragment)
                     binding.collapsingToolbar.title = "Challenges"
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.journal -> {
+                    binding.appBar.setExpanded(false, true)
                     navController.navigate(R.id.journalFragment)
                     binding.collapsingToolbar.title = "Journal"
                     return@setOnNavigationItemSelectedListener true
