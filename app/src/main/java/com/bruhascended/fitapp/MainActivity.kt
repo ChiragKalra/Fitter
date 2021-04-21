@@ -5,7 +5,6 @@ import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
 
@@ -38,19 +37,19 @@ class MainActivity : AppCompatActivity() {
                 R.id.dashboard -> {
                     binding.appBar.setExpanded(true, true)
                     navController.navigate(R.id.dashboardFragment)
-                    binding.collapsingToolbar.title = "DashBoard"
+                    binding.collapsingToolbar.title = getString(R.string.dashboard)
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.challenges -> {
                     binding.appBar.setExpanded(false, true)
                     navController.navigate(R.id.challengesFragment)
-                    binding.collapsingToolbar.title = "Challenges"
+                    binding.collapsingToolbar.title = getString(R.string.challenges)
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.journal -> {
                     binding.appBar.setExpanded(false, true)
                     navController.navigate(R.id.journalFragment)
-                    binding.collapsingToolbar.title = "Journal"
+                    binding.collapsingToolbar.title = getString(R.string.journal)
                     return@setOnNavigationItemSelectedListener true
                 }
             }
