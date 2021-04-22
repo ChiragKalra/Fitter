@@ -56,10 +56,6 @@ class MainActivity : AppCompatActivity() {
                     for (actionButton in actionButtons) {
                         actionButton.animateFadeUpIn(toPx(12))
                     }
-                    backgroundView.setOnClickListener {
-                        addActionButton.callOnClick()
-                        backgroundView.setOnClickListener {  }
-                    }
                 } else {
                     addActionButton.animateRotation(0f)
                     addActionButton.animateTintColor(getColor(R.color.teal_700))
@@ -69,6 +65,9 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 fabsHidden = !fabsHidden
+            }
+            backgroundView.setOnClickListener {
+                addActionButton.callOnClick()
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.bruhascended.fitapp.util
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.res.ColorStateList
 import android.view.View
@@ -8,14 +9,14 @@ import androidx.core.widget.ImageViewCompat
 
 
 enum class AnimationDuration(
-        public val ms: Long
+        val ms: Long
 ) {
     LONG(700),
     MEDIUM(500),
     SHORT(350)
 }
 
-public fun ImageView.animateTintColor(
+fun ImageView.animateTintColor(
         dest: Int, duration: AnimationDuration = AnimationDuration.SHORT
 ) {
     val color = ImageViewCompat.getImageTintList(this)!!.defaultColor
@@ -28,38 +29,60 @@ public fun ImageView.animateTintColor(
     }
 }
 
-public fun View.animateRotation(
+fun View.animateRotation(
         degrees: Float, duration: AnimationDuration = AnimationDuration.SHORT
 ) {
     animate()
         .setDuration(duration.ms)
         .rotation(degrees)
+        .setListener(null)
         .start()
 }
 
-public fun View.animateFadeUpIn(
-        translation: Float, duration: AnimationDuration = AnimationDuration.SHORT
+fun View.animateFadeIn(
+        alp: Float, duration: AnimationDuration = AnimationDuration.SHORT
+) {
+    alpha = 0f
+    visibility = View.VISIBLE
+    animate()
+        .setDuration(duration.ms)
+        .alpha(alp)
+        .setListener(null)
+        .start()
+}
+
+fun View.animateFadeOut(
+    duration: AnimationDuration = AnimationDuration.SHORT
+) {
+    animate()
+        .setDuration(duration.ms)
+        .alpha(0f)
+        .setListener(object: Animator.AnimatorListener {
+            override fun onAnimationEnd(animation: Animator) {
+                visibility = View.GONE
+            }
+            override fun onAnimationStart(animation: Animator) {}
+            override fun onAnimationCancel(animation: Animator) {}
+            override fun onAnimationRepeat(animation: Animator) {}
+        })
+        .start()
+}
+
+fun View.animateFadeUpIn(
+    translation: Float, duration: AnimationDuration = AnimationDuration.SHORT
 ) {
     alpha = 0f
     translationY = translation
+    visibility = View.VISIBLE
     animate()
         .setDuration(duration.ms)
         .alpha(1f)
         .translationY(0f)
+        .setListener(null)
         .start()
 }
 
-public fun View.animateFadeIn(
-        alp: Float, duration: AnimationDuration = AnimationDuration.SHORT
-) {
-    alpha = 0f
-    animate()
-        .setDuration(duration.ms)
-        .alpha(alp)
-        .start()
-}
-
-public fun View.animateFadeDownOut(
+fun View.animateFadeDownOut(
         translation: Float, duration: AnimationDuration = AnimationDuration.SHORT
 ) {
     translationY = 0f
@@ -67,14 +90,13 @@ public fun View.animateFadeDownOut(
         .setDuration(duration.ms)
         .alpha(0f)
         .translationY(-translation)
-        .start()
-}
-
-public fun View.animateFadeOut(
-        duration: AnimationDuration = AnimationDuration.SHORT
-) {
-    animate()
-        .setDuration(duration.ms)
-        .alpha(0f)
+        .setListener(object: Animator.AnimatorListener {
+            override fun onAnimationEnd(animation: Animator) {
+                visibility = View.GONE
+            }
+            override fun onAnimationStart(animation: Animator) {}
+            override fun onAnimationCancel(animation: Animator) {}
+            override fun onAnimationRepeat(animation: Animator) {}
+        })
         .start()
 }
