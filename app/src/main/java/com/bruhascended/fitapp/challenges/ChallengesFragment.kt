@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp
+package com.bruhascended.fitapp.challenges
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

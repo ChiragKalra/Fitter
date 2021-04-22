@@ -7,4 +7,8 @@
     <string name="dashboard">Dashboard</string>
     <string name="challenges">Challenges</string>
     <string name="journal">Journal</string>
+    <string name="add_new">Add New</string>
+    <string name="add_new_food_entry">Add New Food Entry</string>
+    <string name="add_new_workout">Add New Workout</string>
+    <string name="log_weight">Log Weight</string>
 </resources>
