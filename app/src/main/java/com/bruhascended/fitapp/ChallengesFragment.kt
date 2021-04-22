@@ -16,7 +16,6 @@ class ChallengesFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentChallengesBinding.inflate(inflater)
-        binding.nestedScrollView.isNestedScrollingEnabled = false
         return binding.root
     }
 }

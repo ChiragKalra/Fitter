@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/dashboard"
+        android:id="@+id/dashboardFragment"
         android:icon="@drawable/ic_dashboard"
         android:title="Dashboard" />
     <item
-        android:id="@+id/challenges"
+        android:id="@+id/challengesFragment"
         android:icon="@drawable/ic_challenges"
         android:title="Challenges" />
     <item
-        android:id="@+id/journal"
+        android:id="@+id/journalFragment"
         android:icon="@drawable/ic_journal"
         android:title="Journal" />
 

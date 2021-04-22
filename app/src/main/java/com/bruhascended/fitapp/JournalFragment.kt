@@ -30,7 +30,6 @@ class JournalFragment : Fragment() {
                     savedInstanceState?.getInt(TAB_STATE) ?: 0
                 )
             )
-            nestedScrollView.isNestedScrollingEnabled = false
             nestedScrollView.scrollY = savedInstanceState?.getInt(SCROLL_STATE) ?: 0
         }
         return binding.root
