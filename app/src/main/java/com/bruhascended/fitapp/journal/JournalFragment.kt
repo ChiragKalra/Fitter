@@ -5,7 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bruhascended.fitapp.R
+import com.bruhascended.fitapp.databinding.ActivityMainBinding
 import com.bruhascended.fitapp.databinding.FragmentJournalBinding
+import com.bruhascended.fitapp.main.MainActivity
+import com.google.android.material.appbar.AppBarLayout
 
 
 class JournalFragment : Fragment() {
@@ -16,7 +20,6 @@ class JournalFragment : Fragment() {
     }
 
     private lateinit var binding: FragmentJournalBinding
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,13 +35,12 @@ class JournalFragment : Fragment() {
             )
             nestedScrollView.scrollY = savedInstanceState?.getInt(SCROLL_STATE) ?: 0
         }
+
+        //expand the appbar
+        val view = activity?.findViewById<AppBarLayout>(R.id.app_bar)
+        view?.setExpanded(false,true)
+
         return binding.root
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
