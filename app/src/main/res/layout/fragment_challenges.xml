@@ -5,10 +5,11 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
         android:layout_height="match_parent">
 
         <TextView
-            android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/testing" />
