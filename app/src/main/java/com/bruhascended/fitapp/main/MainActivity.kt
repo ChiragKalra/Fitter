@@ -10,7 +10,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
-import com.bruhascended.fitapp.databinding.LayoutFabsBinding
 import com.bruhascended.fitapp.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -42,32 +41,33 @@ class MainActivity : AppCompatActivity() {
         setupFABs()
     }
 
-    private var fabsHidden = true
     private fun setupFABs() {
         binding.fabsLayout.apply {
             val actionButtons = arrayOf (
                     captureFoodButton, addFoodButton, addWorkoutButton, addWeightButton
             )
-            addActionButton.setOnClickListener {
-                if (fabsHidden) {
-                    addActionButton.animateRotation(135f)
-                    addActionButton.animateTintColor(getColor(R.color.red))
-                    backgroundView.animateFadeIn(0.9f)
-                    for (actionButton in actionButtons) {
-                        actionButton.animateFadeUpIn(toPx(12))
-                    }
-                } else {
-                    addActionButton.animateRotation(0f)
-                    addActionButton.animateTintColor(getColor(R.color.teal_700))
-                    backgroundView.animateFadeOut()
-                    for (actionButton in actionButtons) {
-                        actionButton.animateFadeDownOut(toPx(12))
-                    }
+            binding.addActionButton.setOnClickListener {
+                binding.addActionButton.animateRotation(135f)
+                binding.addActionButton.animateFadeOut()
+                cancelActionButton.animateRotation(135f)
+                cancelActionButton.animateFadeIn(1f)
+                backgroundView.animateFadeIn(0.9f)
+                for (actionButton in actionButtons) {
+                    actionButton.animateFadeUpIn(toPx(12))
                 }
-                fabsHidden = !fabsHidden
+            }
+            cancelActionButton.setOnClickListener {
+                binding.addActionButton.animateRotation(0f)
+                binding.addActionButton.animateFadeIn(1f)
+                cancelActionButton.animateRotation(0f)
+                cancelActionButton.animateFadeOut()
+                backgroundView.animateFadeOut()
+                for (actionButton in actionButtons) {
+                    actionButton.animateFadeDownOut(toPx(12))
+                }
             }
             backgroundView.setOnClickListener {
-                addActionButton.callOnClick()
+                cancelActionButton.callOnClick()
             }
         }
     }

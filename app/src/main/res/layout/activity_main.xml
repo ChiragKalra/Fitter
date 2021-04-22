@@ -11,6 +11,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/coordinator_layout"
         tools:context=".main.MainActivity">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -44,6 +45,24 @@
             app:defaultNavHost="true"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:navGraph="@navigation/nav_graph_bottom" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@drawable/bg_fab"
+            android:contentDescription="@string/add_new"
+            android:elevation="5dp"
+            app:fabCustomSize="56dp"
+            android:src="@drawable/ic_add"
+            app:borderWidth="0dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="80dp"
+            android:layout_marginEnd="16dp"
+            app:layout_behavior="com.bruhascended.fitapp.util.HideFabOnScrollBehavior"
+            app:rippleColor="@color/teal_200"
+            app:tint="@color/teal_700" />
+
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"
