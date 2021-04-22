@@ -8,16 +8,16 @@
     <fragment
         android:id="@+id/dashboardFragment"
         android:name="com.bruhascended.fitapp.dashboard.DashboardFragment"
-        android:label="fragment_dashboard"
+        android:label="@string/dashboard"
         tools:layout="@layout/fragment_dashboard" />
     <fragment
         android:id="@+id/challengesFragment"
         android:name="com.bruhascended.fitapp.challenges.ChallengesFragment"
-        android:label="fragment_challenges"
+        android:label="@string/challenges"
         tools:layout="@layout/fragment_challenges" />
     <fragment
         android:id="@+id/journalFragment"
         android:name="com.bruhascended.fitapp.journal.JournalFragment"
-        android:label="fragment_journal"
+        android:label="@string/journal"
         tools:layout="@layout/fragment_journal" />
 </navigation>

@@ -22,7 +22,6 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
-
                 android:layout_height="match_parent"
                 app:expandedTitleMarginStart="16dp"
                 app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
@@ -54,6 +53,7 @@
             app:labelVisibilityMode="selected"
             app:menu="@menu/bottom_menu_items"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
     <include
         layout="@layout/layout_fabs"
         android:id="@+id/fabs_layout"/>
