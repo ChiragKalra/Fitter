@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp
+package com.bruhascended.fitapp.journal
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -30,7 +30,6 @@ class JournalFragment : Fragment() {
                     savedInstanceState?.getInt(TAB_STATE) ?: 0
                 )
             )
-            nestedScrollView.isNestedScrollingEnabled = false
             nestedScrollView.scrollY = savedInstanceState?.getInt(SCROLL_STATE) ?: 0
         }
         return binding.root

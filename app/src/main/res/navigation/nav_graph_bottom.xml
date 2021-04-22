@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/dashboardFragment"
-        android:name="com.bruhascended.fitapp.DashboardFragment"
+        android:name="com.bruhascended.fitapp.dashboard.DashboardFragment"
         android:label="fragment_dashboard"
         tools:layout="@layout/fragment_dashboard" />
     <fragment
         android:id="@+id/challengesFragment"
-        android:name="com.bruhascended.fitapp.ChallengesFragment"
+        android:name="com.bruhascended.fitapp.challenges.ChallengesFragment"
         android:label="fragment_challenges"
         tools:layout="@layout/fragment_challenges" />
     <fragment
         android:id="@+id/journalFragment"
-        android:name="com.bruhascended.fitapp.JournalFragment"
+        android:name="com.bruhascended.fitapp.journal.JournalFragment"
         android:label="fragment_journal"
         tools:layout="@layout/fragment_journal" />
 </navigation>

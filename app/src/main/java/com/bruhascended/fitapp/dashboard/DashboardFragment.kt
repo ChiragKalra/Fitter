@@ -1,10 +1,11 @@
-package com.bruhascended.fitapp
+package com.bruhascended.fitapp.dashboard
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bruhascended.fitapp.R
 
 
 class DashboardFragment : Fragment() {
