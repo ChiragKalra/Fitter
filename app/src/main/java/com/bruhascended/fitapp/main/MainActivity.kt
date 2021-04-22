@@ -15,7 +15,6 @@ import com.bruhascended.fitapp.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var fabsBinding: LayoutFabsBinding
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +22,6 @@ class MainActivity : AppCompatActivity() {
 
         // inflate the layout and initialise dataBinding
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        fabsBinding = binding.fabsLayout
 
         // initialise navController
         val navHostFragment = supportFragmentManager
@@ -46,19 +44,25 @@ class MainActivity : AppCompatActivity() {
 
     private var fabsHidden = true
     private fun setupFABs() {
-        fabsBinding.apply {
+        binding.fabsLayout.apply {
             val actionButtons = arrayOf (
                     captureFoodButton, addFoodButton, addWorkoutButton, addWeightButton
             )
             addActionButton.setOnClickListener {
                 if (fabsHidden) {
                     addActionButton.animateRotation(135f)
+                    addActionButton.animateTintColor(getColor(R.color.red))
                     backgroundView.animateFadeIn(0.9f)
                     for (actionButton in actionButtons) {
                         actionButton.animateFadeUpIn(toPx(12))
                     }
+                    backgroundView.setOnClickListener {
+                        addActionButton.callOnClick()
+                        backgroundView.setOnClickListener {  }
+                    }
                 } else {
                     addActionButton.animateRotation(0f)
+                    addActionButton.animateTintColor(getColor(R.color.teal_700))
                     backgroundView.animateFadeOut()
                     for (actionButton in actionButtons) {
                         actionButton.animateFadeDownOut(toPx(12))
