@@ -47,20 +47,16 @@ class MainActivity : AppCompatActivity() {
                     captureFoodButton, addFoodButton, addWorkoutButton, addWeightButton
             )
             binding.addActionButton.setOnClickListener {
-                binding.addActionButton.animateRotation(135f)
-                binding.addActionButton.animateFadeOut()
-                cancelActionButton.animateRotation(135f)
-                cancelActionButton.animateFadeIn(1f)
+                binding.addActionButton.animateRotation(135f).animateFadeOut()
+                cancelActionButton.animateRotation(135f).animateFadeIn(1f)
                 backgroundView.animateFadeIn(0.9f)
                 for (actionButton in actionButtons) {
                     actionButton.animateFadeUpIn(toPx(12))
                 }
             }
             cancelActionButton.setOnClickListener {
-                binding.addActionButton.animateRotation(0f)
-                binding.addActionButton.animateFadeIn(1f)
-                cancelActionButton.animateRotation(0f)
-                cancelActionButton.animateFadeOut()
+                binding.addActionButton.animateRotation(0f).animateFadeIn(1f)
+                cancelActionButton.animateRotation(0f).animateFadeOut()
                 backgroundView.animateFadeOut()
                 for (actionButton in actionButtons) {
                     actionButton.animateFadeDownOut(toPx(12))

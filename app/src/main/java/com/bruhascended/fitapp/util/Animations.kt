@@ -8,7 +8,7 @@ import android.widget.ImageView
 import androidx.core.widget.ImageViewCompat
 
 
-enum class AnimationDuration(
+enum class AnimationDuration (
         val ms: Long
 ) {
     LONG(700),
@@ -16,9 +16,9 @@ enum class AnimationDuration(
     SHORT(350)
 }
 
-fun ImageView.animateTintColor(
+fun ImageView.animateTintColor (
         dest: Int, duration: AnimationDuration = AnimationDuration.SHORT
-) {
+): View {
     val color = ImageViewCompat.getImageTintList(this)!!.defaultColor
     ValueAnimator.ofArgb(color, dest).apply {
         addUpdateListener {
@@ -27,21 +27,23 @@ fun ImageView.animateTintColor(
         setDuration(duration.ms)
         start()
     }
+    return this
 }
 
-fun View.animateRotation(
+fun View.animateRotation (
         degrees: Float, duration: AnimationDuration = AnimationDuration.SHORT
-) {
+): View {
     animate()
         .setDuration(duration.ms)
         .rotation(degrees)
         .setListener(null)
         .start()
+    return this
 }
 
-fun View.animateFadeIn(
+fun View.animateFadeIn (
         alp: Float, duration: AnimationDuration = AnimationDuration.SHORT
-) {
+): View {
     alpha = 0f
     visibility = View.VISIBLE
     animate()
@@ -49,11 +51,12 @@ fun View.animateFadeIn(
         .alpha(alp)
         .setListener(null)
         .start()
+    return this
 }
 
-fun View.animateFadeOut(
+fun View.animateFadeOut (
     duration: AnimationDuration = AnimationDuration.SHORT
-) {
+): View {
     animate()
         .setDuration(duration.ms)
         .alpha(0f)
@@ -66,11 +69,12 @@ fun View.animateFadeOut(
             override fun onAnimationRepeat(animation: Animator) {}
         })
         .start()
+    return this
 }
 
-fun View.animateFadeUpIn(
+fun View.animateFadeUpIn (
     translation: Float, duration: AnimationDuration = AnimationDuration.SHORT
-) {
+): View {
     alpha = 0f
     translationY = translation
     visibility = View.VISIBLE
@@ -80,11 +84,12 @@ fun View.animateFadeUpIn(
         .translationY(0f)
         .setListener(null)
         .start()
+    return this
 }
 
-fun View.animateFadeDownOut(
+fun View.animateFadeDownOut (
         translation: Float, duration: AnimationDuration = AnimationDuration.SHORT
-) {
+): View {
     translationY = 0f
     animate()
         .setDuration(duration.ms)
@@ -99,4 +104,5 @@ fun View.animateFadeDownOut(
             override fun onAnimationRepeat(animation: Animator) {}
         })
         .start()
+    return this
 }
