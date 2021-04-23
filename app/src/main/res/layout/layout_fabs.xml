@@ -83,8 +83,8 @@
         app:layout_constraintBottom_toTopOf="@id/add_workout_button"
         app:layout_constraintEnd_toEndOf="@id/cancel_action_button"
         app:layout_constraintStart_toStartOf="@id/cancel_action_button"
-        app:rippleColor="@color/teal_200"
-        app:tint="@color/teal_700"
+        app:rippleColor="@color/blue"
+        app:tint="@color/blue"
         android:alpha="0"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -102,8 +102,8 @@
         app:layout_constraintBottom_toTopOf="@id/add_food_button"
         app:layout_constraintEnd_toEndOf="@id/cancel_action_button"
         app:layout_constraintStart_toStartOf="@id/cancel_action_button"
-        app:rippleColor="@color/teal_200"
-        app:tint="@color/teal_700"
+        app:rippleColor="@color/blue"
+        app:tint="@color/blue"
         android:alpha="0"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -121,8 +121,8 @@
         app:layout_constraintBottom_toTopOf="@id/capture_food_button"
         app:layout_constraintEnd_toEndOf="@id/cancel_action_button"
         app:layout_constraintStart_toStartOf="@id/cancel_action_button"
-        app:rippleColor="@color/teal_200"
-        app:tint="@color/teal_700"
+        app:rippleColor="@color/blue"
+        app:tint="@color/blue"
         android:alpha="0"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -140,8 +140,8 @@
         app:layout_constraintBottom_toTopOf="@id/cancel_action_button"
         app:layout_constraintEnd_toEndOf="@id/cancel_action_button"
         app:layout_constraintStart_toStartOf="@id/cancel_action_button"
-        app:rippleColor="@color/teal_200"
-        app:tint="@color/teal_700"
+        app:rippleColor="@color/blue"
+        app:tint="@color/blue"
         android:alpha="0"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -161,7 +161,7 @@
         app:layout_behavior="com.bruhascended.fitapp.util.HideFabOnScrollBehavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:rippleColor="@color/teal_200"
+        app:rippleColor="@color/red"
         app:tint="@color/red" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
