@@ -38,7 +38,7 @@ class JournalFragment : Fragment() {
 
         //expand the appbar
         val view = activity?.findViewById<AppBarLayout>(R.id.app_bar)
-        view?.setExpanded(false,true)
+        view?.setExpanded(true,true)
 
         return binding.root
     }

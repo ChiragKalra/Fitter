@@ -26,7 +26,8 @@
                 android:layout_height="match_parent"
                 app:expandedTitleMarginBottom="32dp"
                 app:expandedTitleMarginStart="16dp"
-                app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+                android:minHeight="@dimen/app_bar_height"
+                app:layout_scrollFlags="scroll|snap|enterAlways|enterAlwaysCollapsed">
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
