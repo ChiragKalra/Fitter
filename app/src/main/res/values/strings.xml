@@ -15,4 +15,6 @@
     <string name="add_new_food_entry">Add New Food Entry</string>
     <string name="add_new_workout">Add New Workout</string>
     <string name="log_weight">Log Weight</string>
+    <string name="capture_a_food_item">Capture a Food Item</string>
+    <string name="close_floating_action_buttons">Close Floating Action Buttons</string>
 </resources>

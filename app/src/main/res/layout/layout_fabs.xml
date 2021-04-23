@@ -16,6 +16,58 @@
         android:background="#FFF"
         android:alpha="0"/>
 
+    <TextView
+        android:alpha="0"
+        android:id="@+id/text_weight"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/log_weight"
+        app:layout_constraintEnd_toStartOf="@id/add_weight_button"
+        app:layout_constraintTop_toTopOf="@id/add_weight_button"
+        app:layout_constraintBottom_toBottomOf="@id/add_weight_button"
+        android:layout_marginEnd="12dp" />
+
+    <TextView
+        android:alpha="0"
+        android:id="@+id/text_workout"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/add_new_workout"
+        app:layout_constraintEnd_toStartOf="@id/add_workout_button"
+        app:layout_constraintTop_toTopOf="@id/add_workout_button"
+        app:layout_constraintBottom_toBottomOf="@id/add_workout_button"
+        android:layout_marginEnd="12dp" />
+
+    <TextView
+        android:alpha="0"
+        android:id="@+id/text_food"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/add_new_food_entry"
+        app:layout_constraintEnd_toStartOf="@id/add_food_button"
+        app:layout_constraintTop_toTopOf="@id/add_food_button"
+        app:layout_constraintBottom_toBottomOf="@id/add_food_button"
+        android:layout_marginEnd="12dp" />
+
+    <TextView
+        android:alpha="0"
+        android:id="@+id/text_capture"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/capture_a_food_item"
+        app:layout_constraintEnd_toStartOf="@id/capture_food_button"
+        app:layout_constraintTop_toTopOf="@id/capture_food_button"
+        app:layout_constraintBottom_toBottomOf="@id/capture_food_button"
+        android:layout_marginEnd="12dp" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:visibility="gone"
         android:layout_width="wrap_content"
@@ -62,7 +114,7 @@
         android:contentDescription="@string/add_new_food_entry"
         android:elevation="5dp"
         app:fabCustomSize="40dp"
-        android:src="@drawable/ic_fastfood"
+        android:src="@drawable/ic_restaurant_menu"
         app:borderWidth="0dp"
         android:id="@+id/add_food_button"
         android:layout_marginBottom="16dp"
@@ -78,7 +130,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@drawable/bg_fab"
-        android:contentDescription="@string/add_new_food_entry"
+        android:contentDescription="@string/capture_a_food_item"
         android:elevation="5dp"
         app:fabCustomSize="40dp"
         android:src="@drawable/ic_camera"
@@ -99,7 +151,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@drawable/bg_fab"
-        android:contentDescription="@string/add_new"
+        android:contentDescription="@string/close_floating_action_buttons"
         android:elevation="5dp"
         app:fabCustomSize="56dp"
         android:src="@drawable/ic_add"

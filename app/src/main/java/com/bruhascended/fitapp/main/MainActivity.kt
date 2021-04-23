@@ -46,12 +46,18 @@ class MainActivity : AppCompatActivity() {
             val actionButtons = arrayOf (
                     captureFoodButton, addFoodButton, addWorkoutButton, addWeightButton
             )
+            val actionDescriptions = arrayOf(
+                    textCapture, textFood, textWorkout, textWeight
+            )
             binding.addActionButton.setOnClickListener {
                 binding.addActionButton.animateRotation(135f).animateFadeOut()
                 cancelActionButton.animateRotation(135f).animateFadeIn(1f)
-                backgroundView.animateFadeIn(0.9f)
+                backgroundView.animateFadeIn(0.95f)
                 for (actionButton in actionButtons) {
                     actionButton.animateFadeUpIn(toPx(12))
+                }
+                for (textView in actionDescriptions) {
+                    textView.animateFadeUpIn(toPx(12))
                 }
             }
             cancelActionButton.setOnClickListener {
@@ -60,6 +66,9 @@ class MainActivity : AppCompatActivity() {
                 backgroundView.animateFadeOut()
                 for (actionButton in actionButtons) {
                     actionButton.animateFadeDownOut(toPx(12))
+                }
+                for (textView in actionDescriptions) {
+                    textView.animateFadeDownOut(toPx(12))
                 }
             }
             backgroundView.setOnClickListener {
