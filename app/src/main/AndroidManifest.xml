@@ -4,13 +4,48 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FitApp"
-        android:fullBackupContent="@xml/backup_descriptor">
-        <activity android:name=".main.MainActivity">
+        android:theme="@style/Theme.FitApp">
+
+        <activity
+            android:name=".logweight.LogWeightActivity"
+            android:label="@string/log_weight">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bruhascended.fitapp.main.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".addworkout.AddWorkoutActivity"
+            android:label="@string/add_new_workout">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bruhascended.fitapp.main.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".addfood.AddFoodActivity"
+            android:label="@string/add_new_food_entry">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bruhascended.fitapp.main.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".capturefood.CaptureFoodActivity"
+            android:label="@string/capture_a_food_item">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bruhascended.fitapp.main.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".main.MainActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

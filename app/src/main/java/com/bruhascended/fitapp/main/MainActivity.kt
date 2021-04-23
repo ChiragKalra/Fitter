@@ -10,11 +10,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
-import com.bruhascended.fitapp.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private lateinit var fabPresenter: FabPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,43 +38,8 @@ class MainActivity : AppCompatActivity() {
         binding.collapsingToolbar.setupWithNavController(binding.toolbar, navController, appBarConfiguration)
 
         // setup FloatingActionButtons
-        setupFABs()
-    }
-
-    private fun setupFABs() {
-        binding.fabsLayout.apply {
-            val actionButtons = arrayOf (
-                    captureFoodButton, addFoodButton, addWorkoutButton, addWeightButton
-            )
-            val actionDescriptions = arrayOf(
-                    textCapture, textFood, textWorkout, textWeight
-            )
-            binding.addActionButton.setOnClickListener {
-                binding.addActionButton.animateRotation(135f).animateFadeOut()
-                cancelActionButton.animateRotation(135f).animateFadeIn(1f)
-                backgroundView.animateFadeIn(0.95f)
-                for (actionButton in actionButtons) {
-                    actionButton.animateFadeUpIn(toPx(12))
-                }
-                for (textView in actionDescriptions) {
-                    textView.animateFadeUpIn(toPx(12))
-                }
-            }
-            cancelActionButton.setOnClickListener {
-                binding.addActionButton.animateRotation(0f).animateFadeIn(1f)
-                cancelActionButton.animateRotation(0f).animateFadeOut()
-                backgroundView.animateFadeOut()
-                for (actionButton in actionButtons) {
-                    actionButton.animateFadeDownOut(toPx(12))
-                }
-                for (textView in actionDescriptions) {
-                    textView.animateFadeDownOut(toPx(12))
-                }
-            }
-            backgroundView.setOnClickListener {
-                cancelActionButton.callOnClick()
-            }
-        }
+        fabPresenter = FabPresenter(this, binding)
+        fabPresenter.setupFABs()
     }
 
     //over flow menu ->  to add onclick later
