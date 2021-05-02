@@ -11,3 +11,5 @@ gradle/wrapper/gradle-wrapper.jar
 local.properties
 gradlew.bat
 gradlew
+app/release
+app/libs/

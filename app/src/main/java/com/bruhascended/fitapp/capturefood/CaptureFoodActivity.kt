@@ -14,7 +14,7 @@ class CaptureFoodActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_capture_food)
-        setupToolbar(binding.toolbar, home = true)
+        setupToolbar(binding.toolbar, mTitle = "", home = true)
 
     }
 }

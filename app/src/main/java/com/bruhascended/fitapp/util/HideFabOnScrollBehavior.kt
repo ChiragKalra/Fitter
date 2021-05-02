@@ -38,8 +38,8 @@ class HideFabOnScrollBehavior<V : View> (context: Context, attrs: AttributeSet):
         CoordinatorLayout.Behavior<V>(context, attrs)
 {
     companion object {
-        protected const val ENTER_ANIMATION_DURATION = 225
-        protected const val EXIT_ANIMATION_DURATION = 175
+        private const val ENTER_ANIMATION_DURATION = 225
+        private const val EXIT_ANIMATION_DURATION = 175
 
         private const val STATE_SCROLLED_DOWN = 1
         private const val STATE_SCROLLED_UP = 2
@@ -100,7 +100,7 @@ class HideFabOnScrollBehavior<V : View> (context: Context, attrs: AttributeSet):
      * Perform an animation that will slide the child from it's current position to be totally on the
      * screen.
      */
-    fun slideUp(child: V) {
+    private fun slideUp(child: V) {
         if (currentState == STATE_SCROLLED_UP) {
             return
         }
@@ -117,7 +117,7 @@ class HideFabOnScrollBehavior<V : View> (context: Context, attrs: AttributeSet):
      * Perform an animation that will slide the child from it's current position to be totally off the
      * screen.
      */
-    fun slideDown (child: V) {
+    private fun slideDown (child: V) {
         if (currentState == STATE_SCROLLED_DOWN) {
             return
         }
