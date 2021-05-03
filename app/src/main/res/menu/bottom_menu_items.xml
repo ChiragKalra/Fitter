@@ -3,15 +3,13 @@
     <item
         android:id="@+id/dashboardFragment"
         android:icon="@drawable/ic_dashboard"
-        android:title="Dashboard" />
+        android:title="@string/dashboard" />
     <item
         android:id="@+id/challengesFragment"
         android:icon="@drawable/ic_challenges"
-        android:title="Challenges" />
+        android:title="@string/challenges" />
     <item
         android:id="@+id/journalFragment"
         android:icon="@drawable/ic_journal"
-        android:title="Journal" />
-
-
+        android:title="@string/journal" />
 </menu>

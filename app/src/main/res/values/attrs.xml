@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="selectedItemBackground" format="reference"/>
+    <attr name="headingTextColor" format="reference"/>
+
+    <attr name="newFabStyle" format="reference"/>
+    <attr name="closeFabStyle" format="reference"/>
+    <attr name="miniFabStyle" format="reference"/>
+</resources>

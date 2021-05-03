@@ -3,6 +3,7 @@ package com.bruhascended.fitapp.main
 import android.app.Activity
 import android.content.Intent
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.bruhascended.fitapp.addfood.AddFoodActivity
 import com.bruhascended.fitapp.addworkout.AddWorkoutActivity
 import com.bruhascended.fitapp.capturefood.CaptureFoodActivity
@@ -40,8 +41,29 @@ class FabPresenter (
     }
 
     fun setupFABs() {
+        hideMiniFabs()
         setupIntents()
         setupEntryAndExit()
+    }
+
+    private fun hideMiniFabs() {
+        actionButtons.forEach {
+            it.isVisible = false
+            it.alpha = 0f
+        }
+        actionDescriptions.forEach {
+            it.isVisible = false
+            it.alpha = 0f
+        }
+        binding.fabsLayout.backgroundView.also {
+            it.isVisible = false
+            it.alpha = 0f
+        }
+        binding.fabsLayout.cancelActionButton.also {
+            it.isVisible = false
+            it.alpha = 0f
+        }
+        binding.fabsLayout.root.isVisible = true
     }
 
     private fun setupIntents () {
@@ -60,7 +82,7 @@ class FabPresenter (
             binding.addActionButton.setOnClickListener {
                 binding.addActionButton.animateRotation(135f).animateFadeOut()
                 cancelActionButton.animateRotation(135f).animateFadeIn(1f)
-                backgroundView.animateFadeIn(0.95f)
+                backgroundView.animateFadeIn(0.975f)
                 for (actionButton in actionButtons) {
                     actionButton.animateFadeUpIn(mActivity.toPx(12))
                 }

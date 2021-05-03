@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -16,8 +17,7 @@
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/app_bar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/app_bar_height"
-                android:background="@color/white">
+                android:layout_height="@dimen/app_bar_height">
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
                     android:id="@+id/collapsing_toolbar"
@@ -53,28 +53,25 @@
                 android:layout_gravity="bottom|end"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="80dp"
-                android:backgroundTint="@drawable/bg_fab"
-                android:contentDescription="@string/add_new"
                 android:elevation="5dp"
+                android:contentDescription="@string/add_new"
                 android:src="@drawable/ic_add"
-                app:borderWidth="0dp"
-                app:fabCustomSize="56dp"
-                app:layout_behavior="com.bruhascended.fitapp.util.HideFabOnScrollBehavior"
-                app:rippleColor="@color/blue"
-                app:tint="@color/blue" />
+                android:theme="?newFabStyle"
+                app:layout_behavior="com.bruhascended.fitapp.util.HideFabOnScrollBehavior" />
 
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottom_nav"
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 app:labelVisibilityMode="selected"
                 app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-                app:menu="@menu/bottom_menu_items" />
+                app:menu="@menu/bottom_menu_items"/>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <include
+            android:visibility="gone"
             android:id="@+id/fabs_layout"
             layout="@layout/layout_fabs" />
     </FrameLayout>

@@ -5,21 +5,17 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:background="#0000"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#0000">
 
     <View
-        android:visibility="gone"
         android:id="@+id/background_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFF"
-        android:alpha="0"/>
+        android:background="?backgroundColor"/>
 
     <TextView
-        android:alpha="0"
         android:id="@+id/text_weight"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
@@ -30,9 +26,7 @@
         android:layout_marginEnd="12dp" />
 
     <TextView
-        android:alpha="0"
         android:id="@+id/text_workout"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
@@ -43,9 +37,7 @@
         android:layout_marginEnd="12dp" />
 
     <TextView
-        android:alpha="0"
         android:id="@+id/text_food"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
@@ -56,113 +48,82 @@
         android:layout_marginEnd="12dp" />
 
     <TextView
-        android:alpha="0"
         android:id="@+id/text_capture"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:text="@string/capture_a_food_item"
+        android:theme="?miniFabStyle"
         app:layout_constraintEnd_toStartOf="@id/capture_food_button"
         app:layout_constraintTop_toTopOf="@id/capture_food_button"
         app:layout_constraintBottom_toBottomOf="@id/capture_food_button"
         android:layout_marginEnd="12dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@drawable/bg_fab"
         android:contentDescription="@string/log_weight"
         android:elevation="5dp"
-        app:fabCustomSize="40dp"
         android:id="@+id/add_weight_button"
         android:src="@drawable/ic_monitor_weight"
-        app:borderWidth="0dp"
         android:layout_marginBottom="16dp"
+        android:theme="?miniFabStyle"
         app:layout_constraintBottom_toTopOf="@id/add_workout_button"
         app:layout_constraintEnd_toEndOf="@id/cancel_action_button"
-        app:layout_constraintStart_toStartOf="@id/cancel_action_button"
-        app:rippleColor="@color/blue"
-        app:tint="@color/blue"
-        android:alpha="0"/>
+        app:layout_constraintStart_toStartOf="@id/cancel_action_button"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@drawable/bg_fab"
         android:contentDescription="@string/add_new_workout"
         android:elevation="5dp"
         android:id="@+id/add_workout_button"
-        app:fabCustomSize="40dp"
         android:src="@drawable/ic_workout"
-        app:borderWidth="0dp"
         android:layout_marginBottom="16dp"
+        android:theme="?miniFabStyle"
         app:layout_constraintBottom_toTopOf="@id/add_food_button"
         app:layout_constraintEnd_toEndOf="@id/cancel_action_button"
-        app:layout_constraintStart_toStartOf="@id/cancel_action_button"
-        app:rippleColor="@color/blue"
-        app:tint="@color/blue"
-        android:alpha="0"/>
+        app:layout_constraintStart_toStartOf="@id/cancel_action_button"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@drawable/bg_fab"
         android:contentDescription="@string/add_new_food_entry"
         android:elevation="5dp"
-        app:fabCustomSize="40dp"
         android:src="@drawable/ic_restaurant_menu"
-        app:borderWidth="0dp"
         android:id="@+id/add_food_button"
         android:layout_marginBottom="16dp"
+        android:theme="?miniFabStyle"
         app:layout_constraintBottom_toTopOf="@id/capture_food_button"
         app:layout_constraintEnd_toEndOf="@id/cancel_action_button"
-        app:layout_constraintStart_toStartOf="@id/cancel_action_button"
-        app:rippleColor="@color/blue"
-        app:tint="@color/blue"
-        android:alpha="0"/>
+        app:layout_constraintStart_toStartOf="@id/cancel_action_button"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@drawable/bg_fab"
         android:contentDescription="@string/capture_a_food_item"
         android:elevation="5dp"
-        app:fabCustomSize="40dp"
         android:src="@drawable/ic_camera"
-        app:borderWidth="0dp"
         android:id="@+id/capture_food_button"
         android:layout_marginBottom="24dp"
+        android:theme="?miniFabStyle"
         app:layout_constraintBottom_toTopOf="@id/cancel_action_button"
         app:layout_constraintEnd_toEndOf="@id/cancel_action_button"
-        app:layout_constraintStart_toStartOf="@id/cancel_action_button"
-        app:rippleColor="@color/blue"
-        app:tint="@color/blue"
-        android:alpha="0"/>
+        app:layout_constraintStart_toStartOf="@id/cancel_action_button"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:visibility="gone"
-        android:alpha="0"
         android:id="@+id/cancel_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@drawable/bg_fab"
         android:contentDescription="@string/close_floating_action_buttons"
         android:elevation="5dp"
-        app:fabCustomSize="56dp"
+        android:rotation="135"
         android:src="@drawable/ic_add"
-        app:borderWidth="0dp"
         android:layout_marginBottom="80dp"
         android:layout_marginEnd="16dp"
-        app:layout_behavior="com.bruhascended.fitapp.util.HideFabOnScrollBehavior"
+        android:theme="?closeFabStyle"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:rippleColor="@color/red"
-        app:tint="@color/red" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

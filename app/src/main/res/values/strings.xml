@@ -17,4 +17,5 @@
     <string name="log_weight">Log Weight</string>
     <string name="capture_a_food_item">Capture a Food Item</string>
     <string name="close_floating_action_buttons">Close Floating Action Buttons</string>
+    <string name="settings">Settings</string>
 </resources>
