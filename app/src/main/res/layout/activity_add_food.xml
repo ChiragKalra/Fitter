@@ -7,7 +7,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?background"
+        android:background="?backgroundColor"
         tools:context=".addfood.AddFoodActivity">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -32,6 +32,4 @@
         </com.google.android.material.appbar.AppBarLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
 </layout>
