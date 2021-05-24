@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style
         name="AppTheme.ParentTheme"
         parent="Theme.MaterialComponents.DayNight">
@@ -36,6 +36,7 @@
         <item name="android:navigationBarColor">?backgroundColor</item>
         <item name="selectedItemBackground">@color/white_500</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
         <item name="tabBackground">?backgroundColor</item>
 
         <!-- Text Colors -->
