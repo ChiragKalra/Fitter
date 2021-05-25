@@ -9,7 +9,7 @@ import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
 import org.tensorflow.lite.support.model.Model
-import kotlin.math.max
+import kotlin.math.min
 
 
 class FoodImageClassifier (
@@ -54,7 +54,7 @@ class FoodImageClassifier (
         val probability = outputs.probabilityAsCategoryList
         probability.sortByDescending { it.score }
 
-        return Array(max(5, probability.size)) {
+        return Array(min(5, probability.size)) {
             probability[it].label
         }
     }

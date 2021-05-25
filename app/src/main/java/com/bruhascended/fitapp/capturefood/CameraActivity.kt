@@ -2,19 +2,17 @@ package com.bruhascended.fitapp.capturefood
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
-import com.bruhascended.fitapp.R
-import com.bruhascended.fitapp.util.setupToolbar
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -26,9 +24,11 @@ abstract class CameraActivity: AppCompatActivity() {
     }
 
     private lateinit var cameraExecutor: ExecutorService
-    protected abstract val cameraViewFinder: PreviewView
 
-    protected fun requestCameraPermissions() {
+    protected abstract val cameraViewFinder: PreviewView
+    protected abstract val imageAnalyzer: ImageAnalyzer
+
+    protected fun requestCameraPermissionsAndStart() {
         // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera()
@@ -55,8 +55,17 @@ abstract class CameraActivity: AppCompatActivity() {
                     it.setSurfaceProvider(cameraViewFinder.surfaceProvider)
                 }
 
+            val imageCapture = ImageCapture.Builder()
+                .build()
+
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .build()
+                .apply {
+                    setAnalyzer(cameraExecutor, imageAnalyzer)
+                }
 
             try {
                 // Unbind use cases before rebinding
@@ -64,7 +73,8 @@ abstract class CameraActivity: AppCompatActivity() {
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview)
+                    this, cameraSelector, preview, imageCapture, imageAnalyzer
+                )
 
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
@@ -78,6 +88,7 @@ abstract class CameraActivity: AppCompatActivity() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 startCamera()
@@ -91,8 +102,7 @@ abstract class CameraActivity: AppCompatActivity() {
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            baseContext, it) == PackageManager.PERMISSION_GRANTED
+        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onDestroy() {

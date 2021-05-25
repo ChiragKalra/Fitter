@@ -41,8 +41,9 @@
 
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/guessRecyclerView"
+            android:id="@+id/predictionRecyclerView"
             android:layout_width="0dp"
+            tools:listitem="@layout/item_food_prediction"
             android:layout_height="0dp"
             android:layout_marginTop="4dp"
             android:background="?translucentBackgroundColor"

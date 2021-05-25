@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-kapt'
 }
@@ -50,8 +50,8 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
 
-    implementation 'org.tensorflow:tensorflow-lite-support:0.1.0-rc1'
-    implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0-rc2'
+    implementation 'org.tensorflow:tensorflow-lite-support:0.1.0'
+    implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0'
     implementation 'org.tensorflow:tensorflow-lite-gpu:2.3.0'
 
     api 'com.google.dagger:dagger:2.34.1'

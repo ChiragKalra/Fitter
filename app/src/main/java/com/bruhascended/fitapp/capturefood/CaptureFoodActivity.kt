@@ -11,18 +11,23 @@ import com.bruhascended.fitapp.util.setupToolbar
 class CaptureFoodActivity : CameraActivity() {
 
     private lateinit var binding: ActivityCaptureFoodBinding
-    private lateinit var guessPresenter: GuessPresenter
+    private lateinit var predictionPresenter: PredictionPresenter
 
-    override val cameraViewFinder: PreviewView
-        get() = binding.viewFinder
+
+    override lateinit var imageAnalyzer: ImageAnalyzer
+    override lateinit var cameraViewFinder: PreviewView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_capture_food)
         setupToolbar(binding.toolbar, mTitle = "", home = true)
 
-        requestCameraPermissions()
+        cameraViewFinder = binding.viewFinder
+        predictionPresenter = PredictionPresenter(this, binding.predictionRecyclerView)
+        imageAnalyzer =  ImageAnalyzer (this) {
+            predictionPresenter.populate(it)
+        }
 
-        guessPresenter = GuessPresenter(this, binding.guessRecyclerView)
+        requestCameraPermissionsAndStart()
     }
 }
