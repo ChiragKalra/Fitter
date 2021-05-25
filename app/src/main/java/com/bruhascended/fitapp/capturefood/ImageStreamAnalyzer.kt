@@ -5,26 +5,16 @@ import android.graphics.*
 import android.media.Image
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import com.bruhascended.classifier.FoodImageClassifier
+import com.bruhascended.classifier.ImageStreamClassifier
 import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
 import kotlin.math.min
 
-typealias PredictionListener = (predictions: Array<String>) -> Unit
-
-class ImageAnalyzer(
+class ImageStreamAnalyzer (
     private val context: Context,
-    private val listener: PredictionListener
+    private val listener: (predictions: Array<String>) -> Unit
 ): ImageAnalysis.Analyzer {
 
-    private var classifier: FoodImageClassifier = FoodImageClassifier(context)
-
-    private fun ByteBuffer.toByteArray(): ByteArray {
-        rewind()    // Rewind the buffer to zero
-        val data = ByteArray(remaining())
-        get(data)   // Copy the buffer into a byte array
-        return data // Return the byte array
-    }
+    private var classifier: ImageStreamClassifier = ImageStreamClassifier(context)
 
     private fun Image.toBitmap(): Bitmap {
         val yBuffer = planes[0].buffer // Y

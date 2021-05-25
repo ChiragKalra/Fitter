@@ -13,7 +13,7 @@ import org.tensorflow.lite.support.model.Model
 import kotlin.math.min
 
 
-class FoodImageClassifier (
+class ImageStreamClassifier (
     private val context: Context
 ) {
 
@@ -43,7 +43,6 @@ class FoodImageClassifier (
             .add(Rot90Op(1))
             .build()
     }
-
 
     fun fetchResults (bitmap: Bitmap): Array<String> {
         var tensorImage = TensorImage(DataType.UINT8)

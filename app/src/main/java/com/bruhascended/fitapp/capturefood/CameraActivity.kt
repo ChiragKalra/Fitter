@@ -26,7 +26,7 @@ abstract class CameraActivity: AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
 
     protected abstract val cameraViewFinder: PreviewView
-    protected abstract val imageAnalyzer: ImageAnalyzer
+    protected abstract val imageAnalyzer: ImageStreamAnalyzer
 
     protected fun requestCameraPermissionsAndStart() {
         // Request camera permissions
@@ -62,6 +62,7 @@ abstract class CameraActivity: AppCompatActivity() {
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             val imageAnalyzer = ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .apply {
                     setAnalyzer(cameraExecutor, imageAnalyzer)

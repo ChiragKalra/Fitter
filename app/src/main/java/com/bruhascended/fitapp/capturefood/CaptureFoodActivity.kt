@@ -14,7 +14,7 @@ class CaptureFoodActivity : CameraActivity() {
     private lateinit var predictionPresenter: PredictionPresenter
 
 
-    override lateinit var imageAnalyzer: ImageAnalyzer
+    override lateinit var imageAnalyzer: ImageStreamAnalyzer
     override lateinit var cameraViewFinder: PreviewView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +24,7 @@ class CaptureFoodActivity : CameraActivity() {
 
         cameraViewFinder = binding.viewFinder
         predictionPresenter = PredictionPresenter(this, binding.predictionRecyclerView)
-        imageAnalyzer =  ImageAnalyzer (this) {
+        imageAnalyzer =  ImageStreamAnalyzer (this) {
             predictionPresenter.populate(it)
         }
 
