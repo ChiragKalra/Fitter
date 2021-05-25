@@ -7,6 +7,7 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?backgroundColor"
         tools:context=".capturefood.CaptureFoodActivity">
 
         <com.google.android.material.appbar.MaterialToolbar
@@ -18,13 +19,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
         <androidx.camera.view.PreviewView
             android:id="@+id/viewFinder"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="3:4"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -39,6 +39,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
+        <View
+            android:id="@+id/fadePreviewWindow"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_translucent_gradient"
+            app:layout_constraintDimensionRatio="3:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/previewWindow"/>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/predictionRecyclerView"
@@ -46,7 +57,6 @@
             tools:listitem="@layout/item_food_prediction"
             android:layout_height="0dp"
             android:layout_marginTop="4dp"
-            android:background="?translucentBackgroundColor"
             app:layout_constraintTop_toBottomOf="@id/previewWindow"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

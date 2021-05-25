@@ -8,6 +8,7 @@ import org.tensorflow.lite.gpu.CompatibilityList
 import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
+import org.tensorflow.lite.support.image.ops.Rot90Op
 import org.tensorflow.lite.support.model.Model
 import kotlin.math.min
 
@@ -39,12 +40,12 @@ class FoodImageClassifier (
                     ResizeOp.ResizeMethod.BILINEAR
                 )
             )
+            .add(Rot90Op(1))
             .build()
     }
 
 
     fun fetchResults (bitmap: Bitmap): Array<String> {
-
         var tensorImage = TensorImage(DataType.UINT8)
         tensorImage.load(bitmap)
         tensorImage = imageProcessor.process(tensorImage)
