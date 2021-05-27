@@ -24,6 +24,7 @@ class CaptureFoodActivity : CameraActivity() {
 
         cameraViewFinder = binding.viewFinder
         predictionPresenter = PredictionPresenter(this, binding.predictionRecyclerView)
+
         imageAnalyzer =  ImageStreamAnalyzer (this) {
             predictionPresenter.populate(it)
         }

@@ -14,7 +14,13 @@ class ImageStreamAnalyzer (
     private val listener: (predictions: Array<String>) -> Unit
 ): ImageAnalysis.Analyzer {
 
-    private var classifier: ImageStreamClassifier = ImageStreamClassifier(context)
+    private lateinit var classifier: ImageStreamClassifier
+    init {
+        // initialise classifier in another thread to not block main
+        Thread {
+            classifier = ImageStreamClassifier(context)
+        }.start()
+    }
 
     private fun Image.toBitmap(): Bitmap {
         val yBuffer = planes[0].buffer // Y
@@ -37,12 +43,15 @@ class ImageStreamAnalyzer (
 
     @androidx.camera.core.ExperimentalGetImage
     override fun analyze (proxy: ImageProxy) {
-        var bm = proxy.image?.toBitmap()
-        if (bm != null) {
-            val dim = min(bm.width, bm.height)
-            bm = Bitmap.createBitmap(bm, 0, 0, dim, dim)
-            val predictions = classifier.fetchResults(bm)
-            listener(predictions)
+        // check if classifier is initialised
+        if (::classifier.isInitialized) {
+            var bm = proxy.image?.toBitmap()
+            if (bm != null) {
+                val dim = min(bm.width, bm.height)
+                bm = Bitmap.createBitmap(bm, 0, 0, dim, dim)
+                val predictions = classifier.fetchResults(bm)
+                listener(predictions)
+            }
         }
         proxy.close()
     }
