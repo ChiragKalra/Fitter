@@ -9,13 +9,12 @@ import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
 import org.tensorflow.lite.support.image.ops.Rot90Op
+import org.tensorflow.lite.support.label.Category
 import org.tensorflow.lite.support.model.Model
-import kotlin.math.min
 
+class ImageStreamClassifier (context: Context) {
 
-class ImageStreamClassifier (
-    private val context: Context
-) {
+    val outputCount = 2024
 
     private var model: AiyVisionClassifierFoodV1
     private var imageProcessor: ImageProcessor
@@ -44,19 +43,14 @@ class ImageStreamClassifier (
             .build()
     }
 
-    fun fetchResults (bitmap: Bitmap): Array<String> {
+    fun fetchResults (bitmap: Bitmap): Array<Category> {
         var tensorImage = TensorImage(DataType.UINT8)
         tensorImage.load(bitmap)
         tensorImage = imageProcessor.process(tensorImage)
 
         // Runs model inference and gets result.
         val outputs = model.process(tensorImage)
-        val probability = outputs.probabilityAsCategoryList
-        probability.sortByDescending { it.score }
-
-        return Array(min(5, probability.size)) {
-            probability[it].label
-        }
+        return outputs.probabilityAsCategoryList.toTypedArray()
     }
 
     fun close() {

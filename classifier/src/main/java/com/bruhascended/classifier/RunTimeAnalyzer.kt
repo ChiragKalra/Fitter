@@ -19,8 +19,8 @@ class RunTimeAnalyzer {
         }
     }
 
-    fun getAverage() : Long {
-        return if (count == 0) 0L
+    fun getAverage() : Long? {
+        return if (count == 0) null
         else total/count
     }
 }
