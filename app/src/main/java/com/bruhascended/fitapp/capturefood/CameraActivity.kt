@@ -5,10 +5,7 @@ import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.Preview
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
@@ -24,6 +21,7 @@ abstract class CameraActivity: AppCompatActivity() {
     }
 
     private lateinit var cameraExecutor: ExecutorService
+    private lateinit var camera: Camera
 
     protected abstract val cameraViewFinder: PreviewView
     protected abstract val imageAnalyzer: ImageStreamAnalyzer
@@ -40,6 +38,11 @@ abstract class CameraActivity: AppCompatActivity() {
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
+    protected fun toggleFlashLight (state: Boolean) {
+        if (camera.cameraInfo.hasFlashUnit()) {
+            camera.cameraControl.enableTorch(state)
+        }
+    }
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -73,7 +76,7 @@ abstract class CameraActivity: AppCompatActivity() {
                 cameraProvider.unbindAll()
 
                 // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
+                camera = cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture, imageAnalyzer
                 )
 

@@ -20,7 +20,7 @@ class CaptureFoodActivity : CameraActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_capture_food)
-        setupToolbar(binding.toolbar, mTitle = "", home = true)
+        setupToolbar(binding.toolbar, home = true)
 
         cameraViewFinder = binding.viewFinder
         predictionPresenter = PredictionPresenter(this, binding.predictionRecyclerView)

@@ -10,21 +10,39 @@
         android:background="?backgroundColor"
         tools:context=".capturefood.CaptureFoodActivity">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
+            android:layout_height="@dimen/app_bar_height"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:expandedTitleMarginBottom="32dp"
+                app:expandedTitleMarginStart="16dp"
+                app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?actionBarSize"
+                    android:background="?backgroundColor"
+                    app:layout_collapseMode="pin" />
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
 
         <androidx.camera.view.PreviewView
             android:id="@+id/viewFinder"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="3:4"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appBarLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -37,7 +55,7 @@
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/appBarLayout"/>
 
         <View
             android:id="@+id/fadePreviewWindow"
@@ -51,6 +69,19 @@
             app:layout_constraintTop_toBottomOf="@id/previewWindow"/>
 
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/flashlight_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/toggle_flashlight_button"
+            android:elevation="5dp"
+            android:src="@drawable/anim_flashlight"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:theme="?closeFabStyle"
+            app:layout_constraintBottom_toBottomOf="@id/previewWindow"
+            app:layout_constraintEnd_toEndOf="@id/previewWindow" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/predictionRecyclerView"
             android:layout_width="0dp"
@@ -61,8 +92,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

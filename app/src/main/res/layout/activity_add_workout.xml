@@ -10,8 +10,7 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/app_bar_height"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="@dimen/app_bar_height">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"

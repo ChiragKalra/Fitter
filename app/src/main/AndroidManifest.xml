@@ -40,7 +40,8 @@
         </activity>
 
         <activity
-            android:name=".capturefood.CaptureFoodActivity">
+            android:name=".capturefood.CaptureFoodActivity"
+            android:label="@string/capture_a_food_item">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bruhascended.fitapp.main.MainActivity" />
