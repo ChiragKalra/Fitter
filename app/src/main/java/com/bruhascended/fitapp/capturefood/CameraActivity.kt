@@ -38,9 +38,15 @@ abstract class CameraActivity: AppCompatActivity() {
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
-    protected fun toggleFlashLight (state: Boolean) {
+    private var torchState = false
+    protected val flashlightState
+        get() = torchState
+
+    protected fun toggleFlashlight (state: Boolean? = null) {
         if (camera.cameraInfo.hasFlashUnit()) {
-            camera.cameraControl.enableTorch(state)
+            val newState = state ?: !flashlightState
+            camera.cameraControl.enableTorch(newState)
+            torchState = newState
         }
     }
 

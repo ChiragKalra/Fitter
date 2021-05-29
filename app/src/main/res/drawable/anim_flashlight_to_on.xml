@@ -28,7 +28,7 @@
         <aapt:attr name="android:animation">
             <objectAnimator
                 android:propertyName="pathData"
-                android:duration="300"
+                android:duration="@integer/iconAnimationDuration"
                 android:valueFrom="M 6 2 L 18 2 L 18 5 L 7.83 5 L 6 3.17 L 6 2"
                 android:valueTo="M 6 2 L 18 2 L 18 5 L 12 5 L 6 5 L 6 2"
                 android:valueType="pathType"
@@ -39,7 +39,7 @@
         <aapt:attr name="android:animation">
             <objectAnimator
                 android:propertyName="pathData"
-                android:duration="300"
+                android:duration="@integer/iconAnimationDuration"
                 android:valueFrom="M 2.81 2.81 L 1.39 4.22 L 8 10.83 L 8 22 L 16 22 L 16 18.83 L 19.78 22.61 L 21.19 21.2 L 2.81 2.81 Z M 12 14 C 12 14 12 14 12 14 C 12 14 12 14 12 14 C 12 14 12 14 12 14 C 12 14 12 14 12 14 L 12 14"
                 android:valueTo="M 6 7 L 6 8 L 8 11 L 8 22 L 16 22 L 16 11 L 18 8 L 18 7 L 6 7 Z M 12 15.5 C 11.17 15.5 10.5 14.83 10.5 14 C 10.5 13.17 11.17 12.5 12 12.5 C 12.83 12.5 13.5 13.17 13.5 14 C 13.5 14.83 12.83 15.5 12 15.5 L 12 15.5"
                 android:valueType="pathType"
@@ -50,7 +50,7 @@
         <aapt:attr name="android:animation">
             <objectAnimator
                 android:propertyName="fillAlpha"
-                android:duration="300"
+                android:duration="@integer/iconAnimationDuration"
                 android:valueFrom="1"
                 android:valueTo="0"
                 android:valueType="floatType"
