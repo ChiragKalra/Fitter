@@ -11,7 +11,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.tensorflow.lite.support.label.Category
 import java.io.ByteArrayOutputStream
-import java.util.concurrent.TimeUnit
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -26,7 +25,8 @@ class ImageStreamAnalyzer (
         const val EXP_AVG_BETA_UPPER_BOUND = 0.90
         const val EXP_AVG_BETA_LOWER_BOUND = 0.70
 
-        const val MIN_LATENCY_MILLI = 250.0
+        const val MIN_LATENCY_MILLI = 250L
+        const val PREDICTION_DURATION_MILLI = 125L
     }
 
     private lateinit var classifier: ImageStreamClassifier
@@ -79,9 +79,9 @@ class ImageStreamAnalyzer (
         runBlocking {
             delay(
                 max(
-                    0.0,
-                    MIN_LATENCY_MILLI - (runTimeAnalyzer.movingAverage ?: 0.0)
-                ).toLong()
+                    0,
+                    MIN_LATENCY_MILLI - (runTimeAnalyzer.movingAverage?.toLong() ?: 0)
+                )
             )
             proxy.close()
         }
@@ -114,8 +114,8 @@ class ImageStreamAnalyzer (
         * @param
         *  the time length that has to be considered
      */
-    private fun getBeta (timeInMilli: Long = 1250): Double {
-        val time = runTimeAnalyzer.movingAverage ?: MIN_LATENCY_MILLI
+    private fun getBeta (timeInMilli: Long = PREDICTION_DURATION_MILLI): Double {
+        val time = runTimeAnalyzer.movingAverage ?: MIN_LATENCY_MILLI.toDouble()
         val beta = 1 - time / timeInMilli
         if (beta > EXP_AVG_BETA_UPPER_BOUND) return EXP_AVG_BETA_UPPER_BOUND
         if (beta < EXP_AVG_BETA_LOWER_BOUND) return EXP_AVG_BETA_LOWER_BOUND
