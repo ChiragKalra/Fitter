@@ -45,7 +45,7 @@
         <item name="headingTextColor">@color/blue_700</item>
         <item name="android:textColor">@color/black_700</item>
         <item name="android:textColorSecondary">@color/black_500</item>
-        <item name="android:textColorHint">@color/purple_700</item>
+        <item name="android:textColorHint">@color/grey</item>
 
         <!-- Widget Themes -->
         <item name="newFabStyle">@style/LightTheme.NewFabTheme</item>

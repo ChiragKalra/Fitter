@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bruhascended.fitapp">
 
-    <uses-feature android:name="android.hardware.camera.any"
+    <uses-feature
+        android:name="android.hardware.camera.any"
         android:required="true" />
+
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -14,7 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity
+            android:name=".addfood.FoodSearchActivity"
+            android:parentActivityName=".addfood.AddFoodActivity" />
         <activity
             android:name=".logweight.LogWeightActivity"
             android:label="@string/log_weight">
@@ -22,7 +26,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bruhascended.fitapp.main.MainActivity" />
         </activity>
-
         <activity
             android:name=".addworkout.AddWorkoutActivity"
             android:label="@string/add_new_workout">
@@ -30,7 +33,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bruhascended.fitapp.main.MainActivity" />
         </activity>
-
         <activity
             android:name=".addfood.AddFoodActivity"
             android:label="@string/add_new_food_entry">
@@ -38,19 +40,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bruhascended.fitapp.main.MainActivity" />
         </activity>
-
-        <activity
-            android:name=".capturefood.CaptureFoodActivity">
+        <activity android:name=".capturefood.CaptureFoodActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bruhascended.fitapp.main.MainActivity" />
         </activity>
-
         <activity
             android:name=".main.MainActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
