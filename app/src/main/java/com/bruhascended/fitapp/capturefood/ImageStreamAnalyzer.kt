@@ -83,8 +83,8 @@ class ImageStreamAnalyzer (
                     MIN_LATENCY_MILLI - (runTimeAnalyzer.movingAverage?.toLong() ?: 0)
                 )
             )
-            proxy.close()
         }
+        proxy.close()
     }
 
     private fun runningAverage (categories: Array<Category>) {
