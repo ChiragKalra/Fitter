@@ -2,6 +2,7 @@ package com.bruhascended.fitapp.capturefood
 
 import android.content.Context
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.fitapp.addfood.AddFoodActivity
@@ -26,6 +27,7 @@ class PredictionPresenter(
                         putExtra(KEY_FOOD_LABEL, it)
                     }
                 )
+                (context as AppCompatActivity).finish()
             }
         }
     }
