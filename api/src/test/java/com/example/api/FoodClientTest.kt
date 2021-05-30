@@ -1,17 +1,26 @@
 package com.example.api
 
+import com.example.api.models.food.FoodResponse
+import com.example.api.models.foods.FoodsResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class FoodClientTest {
-    private val foodClient = FoodClient()
 
     @Test
-    fun getFoods() {
-        val foods = foodClient.api.getFoods(query = "paratha").execute()
+    fun getFoods(){
+        CoroutineScope(IO).launch{
+            val foods:FoodsResponse = FoodClient.fdaApi.getFoods("Banana")
+        }
     }
 
     @Test
     fun getFood(){
-        val food = foodClient.api.getFood().execute()
+        CoroutineScope(IO).launch{
+            val foods: FoodResponse = FoodClient.fdaApi.getFood()
+        }
     }
 }

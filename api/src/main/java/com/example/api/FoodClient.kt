@@ -8,16 +8,15 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 private const val base_url = "https://api.nal.usda.gov/fdc/v1/"
 
-class FoodClient {
+private val moshi = Moshi.Builder()
+    .add(KotlinJsonAdapterFactory())
+    .build()
 
-    private val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
+private val retrofit = Retrofit.Builder()
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .baseUrl(base_url)
+    .build()
 
-    private val retrofit = Retrofit.Builder()
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .baseUrl(base_url)
-        .build()
-
-    val api = retrofit.create(FoodApi::class.java)
+object FoodClient {
+    val fdaApi: FoodApi by lazy { retrofit.create(FoodApi::class.java) }
 }

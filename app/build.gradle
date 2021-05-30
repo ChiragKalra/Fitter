@@ -53,11 +53,18 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
 
+    //retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
 
-// CameraX core library using camera2 implementation
+    //api
+    implementation project(":api")
+
+    // CameraX core library using camera2 implementation
     implementation "androidx.camera:camera-camera2:1.0.0"
-// CameraX Lifecycle Library
+    // CameraX Lifecycle Library
     implementation "androidx.camera:camera-lifecycle:1.0.0"
-// CameraX View class
+    // CameraX View class
     implementation "androidx.camera:camera-view:1.0.0-alpha24"
 }

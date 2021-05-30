@@ -1,6 +1,7 @@
 package com.bruhascended.fitapp.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -10,6 +11,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
+import com.example.api.FoodClient
+import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -24,18 +27,28 @@ class MainActivity : AppCompatActivity() {
 
         // initialise navController
         val navHostFragment = supportFragmentManager
-                .findFragmentById(R.id.fragment) as NavHostFragment
+            .findFragmentById(R.id.fragment) as NavHostFragment
         navController = navHostFragment.navController
 
         // set our defined toolbar as actionbar(only needed if we want overflow options in actionbar)
         setSupportActionBar(binding.toolbar)
 
         //setup bottomNav with navController
-        val appBarConfiguration = AppBarConfiguration(setOf(R.id.dashboardFragment, R.id.challengesFragment, R.id.journalFragment))
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.dashboardFragment,
+                R.id.challengesFragment,
+                R.id.journalFragment
+            )
+        )
         binding.bottomNav.setupWithNavController(navController)
 
         //setup collapsing toolbar with navController
-        binding.collapsingToolbar.setupWithNavController(binding.toolbar, navController, appBarConfiguration)
+        binding.collapsingToolbar.setupWithNavController(
+            binding.toolbar,
+            navController,
+            appBarConfiguration
+        )
 
         // setup FloatingActionButtons
         fabPresenter = FabPresenter(this, binding)
