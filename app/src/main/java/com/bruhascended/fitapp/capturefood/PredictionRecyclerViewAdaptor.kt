@@ -3,17 +3,20 @@ package com.bruhascended.fitapp.capturefood
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.fitapp.R
 
+typealias ClickListener = (foodLabel: String) -> Unit
+
 class PredictionRecyclerViewAdaptor(
-    private val predictions: Array<String>
-):
-    RecyclerView.Adapter<PredictionRecyclerViewAdaptor.PredictionViewHolder>()
-{
+    private val predictions: Array<String>,
+    private val listener: ClickListener? = null
+): RecyclerView.Adapter<PredictionRecyclerViewAdaptor.PredictionViewHolder>() {
+
     class PredictionViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        val nameText: TextView = root.findViewById(R.id.predictionName)
+        val nameButton: Button = root.findViewById(R.id.predictionName)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PredictionViewHolder {
@@ -30,6 +33,9 @@ class PredictionRecyclerViewAdaptor(
     override fun getItemCount() = predictions.size
 
     override fun onBindViewHolder(holder: PredictionViewHolder, position: Int) {
-        holder.nameText.text =  predictions[position]
+        holder.nameButton.text =  predictions[position]
+        holder.nameButton.setOnClickListener {
+            listener?.invoke(predictions[position])
+        }
     }
 }

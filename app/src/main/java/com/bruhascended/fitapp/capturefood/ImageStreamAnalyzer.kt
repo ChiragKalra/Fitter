@@ -25,7 +25,7 @@ class ImageStreamAnalyzer (
         const val EXP_AVG_BETA_UPPER_BOUND = 0.90
         const val EXP_AVG_BETA_LOWER_BOUND = 0.70
 
-        const val MIN_LATENCY_MILLI = 250L
+        const val MIN_LATENCY_MILLI = 300L
         const val PREDICTION_DURATION_MILLI = 1250L
     }
 
