@@ -12,7 +12,7 @@
             android:id="@+id/coordinator_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".main.MainActivity">
+            tools:context=".ui.main.MainActivity">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/app_bar"
@@ -57,7 +57,7 @@
                 android:contentDescription="@string/add_new"
                 android:src="@drawable/ic_add"
                 android:theme="?newFabStyle"
-                app:layout_behavior="com.bruhascended.fitapp.util.HideFabOnScrollBehavior" />
+                app:layout_behavior=".ui.util.HideFabOnScrollBehavior" />
 
 
             <com.google.android.material.bottomnavigation.BottomNavigationView

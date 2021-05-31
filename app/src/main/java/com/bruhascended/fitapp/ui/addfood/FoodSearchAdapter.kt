@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.addfood
+package com.bruhascended.fitapp.ui.addfood
 
 import android.view.LayoutInflater
 import android.view.View

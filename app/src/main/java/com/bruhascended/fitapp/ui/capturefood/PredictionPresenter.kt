@@ -1,11 +1,11 @@
-package com.bruhascended.fitapp.capturefood
+package com.bruhascended.fitapp.ui.capturefood
 
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bruhascended.fitapp.addfood.FoodSearchActivity
+import com.bruhascended.fitapp.ui.addfood.FoodSearchActivity
 
 class PredictionPresenter(
     private val context: Context,

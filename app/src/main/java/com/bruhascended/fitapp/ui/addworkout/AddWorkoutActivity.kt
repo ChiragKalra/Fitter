@@ -1,11 +1,11 @@
-package com.bruhascended.fitapp.addworkout
+package com.bruhascended.fitapp.ui.addworkout
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityAddWorkoutBinding
-import com.bruhascended.fitapp.util.setupToolbar
+import com.bruhascended.fitapp.ui.util.setupToolbar
 
 class AddWorkoutActivity : AppCompatActivity() {
 

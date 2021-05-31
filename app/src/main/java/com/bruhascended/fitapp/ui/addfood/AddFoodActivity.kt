@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.addfood
+package com.bruhascended.fitapp.ui.addfood
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +8,7 @@ import android.view.MenuItem
 import androidx.databinding.DataBindingUtil
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityAddFoodBinding
-import com.bruhascended.fitapp.util.setupToolbar
+import com.bruhascended.fitapp.ui.util.setupToolbar
 
 class AddFoodActivity : AppCompatActivity() {
 

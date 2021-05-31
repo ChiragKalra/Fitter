@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.capturefood
+package com.bruhascended.fitapp.ui.capturefood
 
 import android.content.Context
 import android.graphics.*

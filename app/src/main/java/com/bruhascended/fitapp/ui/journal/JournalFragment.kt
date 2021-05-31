@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.journal
+package com.bruhascended.fitapp.ui.journal
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,8 +10,6 @@ import com.bruhascended.fitapp.databinding.FragmentJournalBinding
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import java.util.*
-import java.util.concurrent.CopyOnWriteArrayList
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL as SCROLL_FLAG_SCROLL1
 
 

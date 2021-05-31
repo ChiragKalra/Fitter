@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.util
+package com.bruhascended.fitapp.ui.util
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity

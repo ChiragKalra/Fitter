@@ -1,15 +1,15 @@
-package com.bruhascended.fitapp.main
+package com.bruhascended.fitapp.ui.main
 
 import android.app.Activity
 import android.content.Intent
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.bruhascended.fitapp.addfood.AddFoodActivity
-import com.bruhascended.fitapp.addworkout.AddWorkoutActivity
-import com.bruhascended.fitapp.capturefood.CaptureFoodActivity
+import com.bruhascended.fitapp.ui.addfood.AddFoodActivity
+import com.bruhascended.fitapp.ui.addworkout.AddWorkoutActivity
+import com.bruhascended.fitapp.ui.capturefood.CaptureFoodActivity
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
-import com.bruhascended.fitapp.logweight.LogWeightActivity
-import com.bruhascended.fitapp.util.*
+import com.bruhascended.fitapp.ui.logweight.LogWeightActivity
+import com.bruhascended.fitapp.ui.util.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class FabPresenter (

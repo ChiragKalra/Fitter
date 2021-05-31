@@ -6,7 +6,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".logweight.LogWeightActivity">
+        tools:context=".ui.logweight.LogWeightActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"

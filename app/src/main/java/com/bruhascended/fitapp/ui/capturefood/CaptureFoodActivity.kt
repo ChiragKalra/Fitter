@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.capturefood
+package com.bruhascended.fitapp.ui.capturefood
 
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
@@ -7,7 +7,7 @@ import androidx.camera.view.PreviewView
 import androidx.databinding.DataBindingUtil
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityCaptureFoodBinding
-import com.bruhascended.fitapp.util.setupToolbar
+import com.bruhascended.fitapp.ui.util.setupToolbar
 
 
 class CaptureFoodActivity : CameraActivity() {

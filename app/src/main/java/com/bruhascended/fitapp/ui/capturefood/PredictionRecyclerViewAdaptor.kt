@@ -1,10 +1,9 @@
-package com.bruhascended.fitapp.capturefood
+package com.bruhascended.fitapp.ui.capturefood
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.fitapp.R
 

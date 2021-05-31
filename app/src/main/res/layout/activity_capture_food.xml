@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?backgroundColor"
-        tools:context=".capturefood.CaptureFoodActivity">
+        tools:context=".ui.capturefood.CaptureFoodActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"

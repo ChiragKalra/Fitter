@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.main
+package com.bruhascended.fitapp.ui.main
 
 import android.os.Bundle
 import android.view.Menu
