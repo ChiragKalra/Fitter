@@ -26,6 +26,8 @@ abstract class CameraActivity: AppCompatActivity() {
     protected abstract val cameraViewFinder: PreviewView
     protected abstract val imageAnalyzer: ImageStreamAnalyzer
 
+    protected abstract fun onCameraStarted()
+
     protected fun requestCameraPermissionsAndStart() {
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -39,14 +41,17 @@ abstract class CameraActivity: AppCompatActivity() {
     }
 
     private var torchState = false
-    protected val flashlightState
-        get() = torchState
+    protected val liveFlashlightState
+        get() = camera.cameraInfo.torchState
 
-    protected fun toggleFlashlight (state: Boolean? = null) {
-        if (camera.cameraInfo.hasFlashUnit()) {
-            val newState = state ?: !flashlightState
+    protected fun toggleFlashlight (state: Boolean? = null): Boolean {
+        return if (camera.cameraInfo.hasFlashUnit()) {
+            val newState = state ?: !torchState
             camera.cameraControl.enableTorch(newState)
             torchState = newState
+            true
+        } else {
+            false
         }
     }
 
@@ -86,6 +91,11 @@ abstract class CameraActivity: AppCompatActivity() {
                     this, cameraSelector, preview, imageCapture, imageAnalyzer
                 )
 
+                camera.cameraInfo.torchState.observe (this) {
+                    torchState = it == TorchState.ON
+                }
+
+                onCameraStarted()
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }

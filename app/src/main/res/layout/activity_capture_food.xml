@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/toggle_flashlight_button"
             android:elevation="5dp"
-            android:src="@drawable/anim_flashlight_to_on"
+            android:src="@drawable/ic_flashlight_on"
             android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
             android:theme="?closeFabStyle"

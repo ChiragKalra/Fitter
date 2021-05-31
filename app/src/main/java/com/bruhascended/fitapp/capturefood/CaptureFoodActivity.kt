@@ -2,6 +2,7 @@ package com.bruhascended.fitapp.capturefood
 
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
+import androidx.camera.core.TorchState
 import androidx.camera.view.PreviewView
 import androidx.databinding.DataBindingUtil
 import com.bruhascended.fitapp.R
@@ -16,22 +17,29 @@ class CaptureFoodActivity : CameraActivity() {
 
 
     override lateinit var imageAnalyzer: ImageStreamAnalyzer
+
     override lateinit var cameraViewFinder: PreviewView
 
     private fun setupFlashlightFab() {
         binding.flashlightFab.apply {
-            setOnClickListener {
+            liveFlashlightState.observe(this@CaptureFoodActivity) {
                 setImageResource(
-                    if (flashlightState)
-                        R.drawable.anim_flashlight_to_on
-                    else
+                    if (it == TorchState.ON)
                         R.drawable.anim_flashlight_to_off
+                    else
+                        R.drawable.anim_flashlight_to_on
                 )
                 val animatedDrawable = drawable as AnimatedVectorDrawable
-                toggleFlashlight()
                 animatedDrawable.start()
             }
+            setOnClickListener {
+                toggleFlashlight()
+            }
         }
+    }
+
+    override fun onCameraStarted() {
+        setupFlashlightFab()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +55,5 @@ class CaptureFoodActivity : CameraActivity() {
         }
 
         requestCameraPermissionsAndStart()
-
-        setupFlashlightFab()
     }
 }
