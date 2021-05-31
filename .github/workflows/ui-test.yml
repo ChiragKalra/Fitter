@@ -19,7 +19,7 @@ jobs:
   build:
     name: Assemble 
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -29,4 +29,7 @@ jobs:
 
       -  name: Android Emulator Runner
          uses: ReactiveCircus/android-emulator-runner@v2.17.0
+         with:
+            api-level: 30
+            script: ./gradlew connectedCheck
 
