@@ -14,6 +14,7 @@ import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityFoodSearchBinding
 import com.bruhascended.fitapp.util.setupToolbar
 import com.bruhascended.api.models.foods.Food
+import com.bruhascended.fitapp.capturefood.PredictionPresenter
 import kotlinx.coroutines.*
 
 class FoodSearchActivity : AppCompatActivity() {
@@ -33,6 +34,11 @@ class FoodSearchActivity : AppCompatActivity() {
         //search bar customisations
         searchBarCustomize()
 
+        //captureFood intent
+        val intent = intent
+        val query = intent.getStringExtra(PredictionPresenter.KEY_FOOD_LABEL)
+        if (query != null) setUpCapturedFoodSearch(query)
+
         //setUp recyclerview
         setUpRecyclerview()
 
@@ -50,6 +56,11 @@ class FoodSearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun setUpCapturedFoodSearch(query: String) {
+        binding.searchBar.setQuery(query, false)
+        onSearchCustomise(query)
+    }
+
     private fun handleError() {
         binding.progressBar.visibility = View.GONE
         Toast.makeText(this, viewModel.getError(), Toast.LENGTH_SHORT).show()
@@ -64,9 +75,7 @@ class FoodSearchActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                viewModel.getFoods(query)
-                binding.searchBar.clearFocus()
-                binding.progressBar.isVisible = true
+                onSearchCustomise(query)
                 return false
             }
 
@@ -94,5 +103,11 @@ class FoodSearchActivity : AppCompatActivity() {
             isIconified = false
             requestFocusFromTouch()
         }
+    }
+
+    private fun onSearchCustomise(query: String) {
+        viewModel.getFoods(query)
+        binding.searchBar.clearFocus()
+        binding.progressBar.isVisible = true
     }
 }

@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bruhascended.fitapp.addfood.AddFoodActivity
+import com.bruhascended.fitapp.addfood.FoodSearchActivity
 
 class PredictionPresenter(
     private val context: Context,
@@ -23,7 +23,7 @@ class PredictionPresenter(
         recyclerView.post {
             recyclerView.adapter = PredictionRecyclerViewAdaptor(predictions) {
                 context.startActivity(
-                    Intent(context, AddFoodActivity::class.java).apply {
+                    Intent(context, FoodSearchActivity::class.java).apply {
                         putExtra(KEY_FOOD_LABEL, it)
                     }
                 )
