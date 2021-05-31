@@ -1,13 +1,12 @@
-package com.example.api.services
+package com.bruhascended.api.services
 
-import com.example.api.models.food.FoodResponse
-import com.example.api.models.foods.FoodsResponse
-import retrofit2.Call
+import com.bruhascended.api.models.food.FoodResponse
+import com.bruhascended.api.models.foods.FoodsResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-private const val KEY: String = "Vy1XpFHUzBIXF0SF2UbVQVBLmv8ZhwgSTxP60Jec"
+private const val KEY: String = ""
 
 interface FoodApi {
 
@@ -16,10 +15,10 @@ interface FoodApi {
         @Query("query") query: String,
         @Query("dataType") dataType: List<String> = listOf<String>("Survey (FNDDS)", "Branded"),
         @Query("requireAllWords") requireAllWords: String = "false",
-        @Query("pageSize") pageSize: Int = 10,
+        @Query("pageSize") pageSize: Int = 20,
         @Query("pageNumber") pageNumber: Int = 1
-    ): FoodsResponse
+    ): Response<FoodsResponse>
 
     @GET("food/1731228?api_key=${KEY}")
-    suspend fun getFood(): FoodResponse
+    suspend fun getFood(): Response<FoodResponse>
 }

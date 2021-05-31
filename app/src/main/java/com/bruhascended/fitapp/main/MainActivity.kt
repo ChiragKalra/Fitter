@@ -1,7 +1,6 @@
 package com.bruhascended.fitapp.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -11,8 +10,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
-import com.example.api.FoodClient
-import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

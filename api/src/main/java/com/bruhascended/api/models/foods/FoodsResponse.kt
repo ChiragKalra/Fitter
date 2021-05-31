@@ -1,4 +1,4 @@
-package com.example.api.models.foods
+package com.bruhascended.api.models.foods
 
 data class FoodsResponse(
     val foods: List<Food>,

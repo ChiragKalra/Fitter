@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.bruhascended.fitapp">
 
     <uses-feature
@@ -7,7 +8,7 @@
         android:required="true" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -16,39 +17,48 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="LockedOrientationActivity">
         <activity
             android:name=".addfood.FoodSearchActivity"
-            android:parentActivityName=".addfood.AddFoodActivity" />
+            android:parentActivityName=".addfood.AddFoodActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".logweight.LogWeightActivity"
-            android:label="@string/log_weight">
+            android:label="@string/log_weight"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bruhascended.fitapp.main.MainActivity" />
         </activity>
         <activity
             android:name=".addworkout.AddWorkoutActivity"
-            android:label="@string/add_new_workout">
+            android:label="@string/add_new_workout"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bruhascended.fitapp.main.MainActivity" />
         </activity>
         <activity
             android:name=".addfood.AddFoodActivity"
-            android:label="@string/add_new_food_entry">
+            android:label="@string/add_new_food_entry"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bruhascended.fitapp.main.MainActivity" />
         </activity>
-        <activity android:name=".capturefood.CaptureFoodActivity">
+        <activity
+            android:name=".capturefood.CaptureFoodActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bruhascended.fitapp.main.MainActivity" />
         </activity>
         <activity
             android:name=".main.MainActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,6 +1,6 @@
-package com.example.api
+package com.bruhascended.api
 
-import com.example.api.services.FoodApi
+import com.bruhascended.api.services.FoodApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit

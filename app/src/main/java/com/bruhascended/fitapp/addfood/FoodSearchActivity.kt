@@ -2,14 +2,18 @@ package com.bruhascended.fitapp.addfood
 
 import android.app.SearchManager
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil.setContentView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityFoodSearchBinding
 import com.bruhascended.fitapp.util.setupToolbar
-import com.example.api.models.foods.Food
+import com.bruhascended.api.models.foods.Food
 import kotlinx.coroutines.*
 
 class FoodSearchActivity : AppCompatActivity() {
@@ -23,7 +27,7 @@ class FoodSearchActivity : AppCompatActivity() {
         binding = setContentView(this, R.layout.activity_food_search)
         setupToolbar(binding.foodSearchToolbar, home = true)
 
-        //setUp viewmodel
+        //setUp viewModel
         viewModel = ViewModelProvider(this).get(FoodSearchActivityViewModel::class.java)
 
         //search bar customisations
@@ -32,14 +36,46 @@ class FoodSearchActivity : AppCompatActivity() {
         //setUp recyclerview
         setUpRecyclerview()
 
+        //setUp search
+        setUpSearch()
+
         //setUp LiveData Observer
         viewModel.foods_list.observe({ lifecycle }) {
             updateList(it)
         }
+
+        //setUp errorHandler observer
+        viewModel.error.observe({ lifecycle }) {
+            handleError()
+        }
+    }
+
+    private fun handleError() {
+        binding.progressBar.visibility = View.GONE
+        Toast.makeText(this, viewModel.getError(), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun setUpSearch() {
+        binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) updateList(emptyList())
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                viewModel.getFoods(query)
+                binding.searchBar.clearFocus()
+                binding.progressBar.isVisible = true
+                return false
+            }
+
+        })
     }
 
     private fun updateList(list: List<Food>) {
         FoodsAdapter.submitList(list)
+        binding.progressBar.visibility = View.GONE
     }
 
     private fun setUpRecyclerview() {
@@ -55,7 +91,6 @@ class FoodSearchActivity : AppCompatActivity() {
         binding.searchBar.apply {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
             setIconifiedByDefault(false)
-            isFocusable = true
             isIconified = false
             requestFocusFromTouch()
         }

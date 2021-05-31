@@ -12,11 +12,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     //retrofit
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
-    implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
+    api "com.squareup.retrofit2:retrofit:$retrofit_version"
+    api "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+    api "com.squareup.moshi:moshi-kotlin:$moshi_version"
 
-    //coroutines
+    //coroutines (only for testing api)
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
 
     //test

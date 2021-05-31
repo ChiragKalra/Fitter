@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.FoodsListItemBinding
-import com.example.api.models.foods.Food
+import com.bruhascended.api.models.foods.Food
+import java.util.*
 
 class FoodSearchAdapter : ListAdapter<Food, FoodSearchAdapter.FoodViewHolder>(
     object : DiffUtil.ItemCallback<Food>() {
@@ -34,8 +35,8 @@ class FoodSearchAdapter : ListAdapter<Food, FoodSearchAdapter.FoodViewHolder>(
         FoodsListItemBinding.bind(holder.itemView).apply {
             val food = getItem(position)
 
-            foodName.text = food.description
-            tellBranded.text = food.fdcId.toString()
+            foodName.text = food.description?.toLowerCase(Locale.ROOT)
+            tellBranded.text = food.brandOwner
         }
     }
 }

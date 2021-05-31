@@ -1,4 +1,4 @@
-package com.example.api.models.food
+package com.bruhascended.api.models.food
 
 data class FoodResponse(
     val description: String,
