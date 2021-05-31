@@ -1,3 +1,4 @@
 include ':app'
 include ':classifier'
 rootProject.name = "FitApp"
+include ':api'

@@ -24,18 +24,28 @@ class MainActivity : AppCompatActivity() {
 
         // initialise navController
         val navHostFragment = supportFragmentManager
-                .findFragmentById(R.id.fragment) as NavHostFragment
+            .findFragmentById(R.id.fragment) as NavHostFragment
         navController = navHostFragment.navController
 
         // set our defined toolbar as actionbar(only needed if we want overflow options in actionbar)
         setSupportActionBar(binding.toolbar)
 
         //setup bottomNav with navController
-        val appBarConfiguration = AppBarConfiguration(setOf(R.id.dashboardFragment, R.id.challengesFragment, R.id.journalFragment))
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.dashboardFragment,
+                R.id.challengesFragment,
+                R.id.journalFragment
+            )
+        )
         binding.bottomNav.setupWithNavController(navController)
 
         //setup collapsing toolbar with navController
-        binding.collapsingToolbar.setupWithNavController(binding.toolbar, navController, appBarConfiguration)
+        binding.collapsingToolbar.setupWithNavController(
+            binding.toolbar,
+            navController,
+            appBarConfiguration
+        )
 
         // setup FloatingActionButtons
         fabPresenter = FabPresenter(this, binding)

@@ -19,4 +19,5 @@
     <string name="capture_a_food_item">Capture a Food Item</string>
     <string name="close_floating_action_buttons">Close Floating Action Buttons</string>
     <string name="toggle_flashlight_button">Toggle flashlight button</string>
+    <string name="search">search</string>
 </resources>
