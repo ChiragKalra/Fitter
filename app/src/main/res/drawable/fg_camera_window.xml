@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:gravity="bottom|end" android:height="16dp" android:width="4dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/background_light" />
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+    <item  android:gravity="bottom|end"  android:width="16dp" android:height="4dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/background_light" />
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+
+    <item android:gravity="top|end" android:height="16dp" android:width="4dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/background_light" />
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+    <item  android:gravity="top|end"  android:width="16dp" android:height="4dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/background_light" />
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+
+    <item android:gravity="top|end" android:height="16dp" android:width="4dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/background_light" />
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+    <item  android:gravity="top|end"  android:width="16dp" android:height="4dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/background_light" />
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+
+    <item android:gravity="top|start" android:height="16dp" android:width="4dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/background_light" />
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+    <item  android:gravity="top|start"  android:width="16dp" android:height="4dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/background_light" />
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+
+    <item android:gravity="bottom|start" android:height="16dp" android:width="4dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/background_light" />
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+    <item  android:gravity="bottom|start"  android:width="16dp" android:height="4dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/background_light" />
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+
+
+    <item android:gravity="center" android:height="16dp" android:width="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/background_light" />
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+    <item  android:gravity="center"  android:width="16dp" android:height="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/background_light" />
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+</layer-list>

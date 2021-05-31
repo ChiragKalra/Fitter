@@ -31,6 +31,7 @@
 
         <!-- Background Colors -->
         <item name="backgroundColor">@color/white_700</item>
+        <item name="translucentBackgroundColor">@color/translucent_white_700</item>
         <item name="colorOnPrimary">?backgroundColor</item>
         <item name="android:windowBackground">?backgroundColor</item>
         <item name="android:navigationBarColor">?backgroundColor</item>
@@ -133,6 +134,7 @@
 
         <!-- Background Colors -->
         <item name="backgroundColor">@color/black_700</item>
+        <item name="translucentBackgroundColor">@color/translucent_black_700</item>
         <item name="colorOnPrimary">?backgroundColor</item>
         <item name="android:windowBackground">?backgroundColor</item>
         <item name="android:navigationBarColor">?backgroundColor</item>

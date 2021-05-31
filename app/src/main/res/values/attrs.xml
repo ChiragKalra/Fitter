@@ -2,6 +2,7 @@
 <resources>
     <attr name="selectedItemBackground" format="reference"/>
     <attr name="headingTextColor" format="reference"/>
+    <attr name="translucentBackgroundColor" format="reference"/>
 
     <attr name="newFabStyle" format="reference"/>
     <attr name="closeFabStyle" format="reference"/>

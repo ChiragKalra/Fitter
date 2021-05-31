@@ -10,6 +10,6 @@ gradle/wrapper/gradle-wrapper.jar
 .cxx
 local.properties
 gradlew.bat
-gradlew
 app/release
 app/libs/
+classifier/libs/

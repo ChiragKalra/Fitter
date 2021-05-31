@@ -10,6 +10,7 @@
     <string name="challenges">Challenges</string>
     <string name="journal">Journal</string>
     <string name="add_new">Add New</string>
+    <string name="settings">Settings</string>
 
     <!-- Long Descriptions -->
     <string name="add_new_food_entry">Add New Food Entry</string>
@@ -17,5 +18,5 @@
     <string name="log_weight">Log Weight</string>
     <string name="capture_a_food_item">Capture a Food Item</string>
     <string name="close_floating_action_buttons">Close Floating Action Buttons</string>
-    <string name="settings">Settings</string>
+    <string name="toggle_flashlight_button">Toggle flashlight button</string>
 </resources>
