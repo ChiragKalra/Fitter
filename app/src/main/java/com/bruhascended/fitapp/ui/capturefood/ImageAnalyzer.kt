@@ -5,16 +5,12 @@ import android.graphics.*
 import android.media.Image
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import com.bruhascended.classifier.foodimage.ImageClassifier
-import com.bruhascended.classifier.RunTimeAnalyzer
 import com.bruhascended.classifier.foodimage.ImageStreamClassifier
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.tensorflow.lite.support.label.Category
 import java.io.ByteArrayOutputStream
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.pow
 
 class ImageAnalyzer (
     private val context: Context,
@@ -67,13 +63,17 @@ class ImageAnalyzer (
                 val dim = min(bm.width, bm.height)
                 bm = Bitmap.createBitmap(bm, 0, 0, dim, dim)
                 val predictions = streamClassifier.fetchResults(bm)
-                predictionsListener(predictions)
+                predictionsListener(
+                    predictions.sliceArray(
+                        0 until min(predictions.size, 4)
+                    )
+                )
+            }
+            runBlocking {
+                delay(streamClassifier.getLatencyCorrection())
             }
         }
-        runBlocking {
-            delay(streamClassifier.getLatencyCorrection())
-            proxy.close()
-        }
+        proxy.close()
     }
 
     fun close () {
