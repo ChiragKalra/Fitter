@@ -1,4 +1,4 @@
-package com.bruhascended.classifier
+package com.bruhascended.classifier.foodimage
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -12,7 +12,7 @@ import org.tensorflow.lite.support.image.ops.Rot90Op
 import org.tensorflow.lite.support.label.Category
 import org.tensorflow.lite.support.model.Model
 
-class ImageStreamClassifier (context: Context) {
+class ImageClassifier (context: Context) {
 
     val outputCount = 2024
 

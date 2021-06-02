@@ -24,7 +24,7 @@ abstract class CameraActivity: AppCompatActivity() {
     private lateinit var camera: Camera
 
     protected abstract val cameraViewFinder: PreviewView
-    protected abstract val imageAnalyzer: ImageStreamAnalyzer
+    protected abstract val imageAnalyzer: ImageAnalyzer
 
     protected abstract fun onCameraStarted()
 

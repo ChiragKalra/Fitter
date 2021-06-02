@@ -1,4 +1,4 @@
 include ':app'
-include ':classifier'
-rootProject.name = "FitApp"
+include ':analysis'
 include ':api'
+rootProject.name = "FitApp"

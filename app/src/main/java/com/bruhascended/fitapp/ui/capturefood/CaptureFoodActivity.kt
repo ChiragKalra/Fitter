@@ -16,7 +16,7 @@ class CaptureFoodActivity : CameraActivity() {
     private lateinit var predictionPresenter: PredictionPresenter
 
 
-    override lateinit var imageAnalyzer: ImageStreamAnalyzer
+    override lateinit var imageAnalyzer: ImageAnalyzer
 
     override lateinit var cameraViewFinder: PreviewView
 
@@ -50,7 +50,7 @@ class CaptureFoodActivity : CameraActivity() {
         cameraViewFinder = binding.viewFinder
         predictionPresenter = PredictionPresenter(this, binding.predictionRecyclerView)
 
-        imageAnalyzer =  ImageStreamAnalyzer (this) {
+        imageAnalyzer =  ImageAnalyzer (this) {
             predictionPresenter.populate(it)
         }
 
