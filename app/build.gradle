@@ -72,6 +72,7 @@ dependencies {
 
 
     //api
+    implementation project(":db")
     implementation project(":api")
-    implementation project(':analysis')
+    implementation project(":analysis")
 }
