@@ -35,14 +35,15 @@ abstract class FoodEntryDatabase : RoomDatabase() {
 
     abstract fun loadFoodEntry(): FoodEntryDao
 
-    fun insertEntry (foodEntry: FoodEntry) {
-        insertEntry (foodEntry.food, foodEntry.entry)
+    fun insertEntry (foodEntry: FoodEntry): Long {
+        return insertEntry (foodEntry.food, foodEntry.entry)
     }
 
-    fun insertEntry (food: Food, entry: Entry) {
+    fun insertEntry (food: Food, entry: Entry): Long {
         val entryId = entryManager().insert(entry)
         foodManager().insert(food)
         crossRefManager().insert(CrossReference(entryId, food.foodName))
+        return entryId
     }
 
     fun deleteEntry (foodEntry: FoodEntry) {

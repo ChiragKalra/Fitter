@@ -65,8 +65,8 @@ class FoodEntryDbTest {
             food = food
         )
 
-        db.insertEntry(foodEntry)
-        val first = db.loadFoodEntry().allSync().first()
+        val entryId = db.insertEntry(foodEntry)
+        val first = db.loadFoodEntry().singleById(entryId+1)
 
         assertEquals(foodEntry, first)
     }
