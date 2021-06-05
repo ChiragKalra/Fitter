@@ -3,7 +3,7 @@ package com.bruhascended.db.food
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 
-class FoodEntryConverters {
+internal class FoodEntryConverters {
     @TypeConverter
     fun listToJson(value: Array<Float>?): String = Gson().toJson(value)
 

@@ -38,7 +38,7 @@ class FoodEntryDbTest {
             foodName = "Apple",
             healthRating = 4
         ).apply {
-            setCalorieInfo(QuantityType.Count, 100f)
+            setCalorieInfo(QuantityType.Units, 100f)
         }
 
         // insertion test
@@ -59,12 +59,13 @@ class FoodEntryDbTest {
             foodName = "Mango",
             healthRating = -2
         ).apply {
-            setCalorieInfo(QuantityType.Count, 125f)
+            setCalorieInfo(QuantityType.Units, 125f)
         }
         val foodEntry = FoodEntry(
             entry = Entry (
+                food.getCalorieInfo()[QuantityType.Units] ?: 0f,
                 1f,
-                QuantityType.Count,
+                QuantityType.Units,
                 0
             ),
             food = food

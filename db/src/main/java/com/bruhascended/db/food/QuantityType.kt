@@ -4,7 +4,7 @@ enum class QuantityType (
     val abbreviation: String,
 ) {
     Grams("gm"),
-    Count(""),
+    Units(""),
     MilliLiter("ml"),
     Ounce("oz"),
 }
