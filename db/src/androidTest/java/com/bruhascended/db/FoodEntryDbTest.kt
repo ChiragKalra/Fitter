@@ -41,10 +41,15 @@ class FoodEntryDbTest {
             setCalorieInfo(QuantityType.Count, 100f)
         }
 
+        // insertion test
         db.foodManager().insert(food)
         val byId = db.foodManager().findByName(food.foodName)
-
         assertEquals(food, byId)
+
+        // deletion test
+        db.foodManager().delete(food)
+        val afterDelete = db.foodManager().findByName(food.foodName)
+        assertEquals(afterDelete, null)
     }
 
     @Test
@@ -65,9 +70,14 @@ class FoodEntryDbTest {
             food = food
         )
 
+        // insertion test
         val entryId = db.insertEntry(foodEntry)
         val first = db.loadFoodEntry().singleById(entryId)
-
         assertEquals(foodEntry, first)
+
+        // deletion test
+        db.deleteEntry(foodEntry)
+        val afterDelete = db.loadFoodEntry().singleById(entryId)
+        assertEquals(null, afterDelete)
     }
 }

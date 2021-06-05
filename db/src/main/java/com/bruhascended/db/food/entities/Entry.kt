@@ -6,6 +6,7 @@ import java.io.Serializable
 
 @Entity
 data class Entry (
+    val calories: Float,
     val quantity: Float,
     val quantityType: QuantityType,
     val time: Long,
