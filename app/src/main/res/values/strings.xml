@@ -13,6 +13,7 @@
     <string name="settings">Settings</string>
 
     <!-- Long Descriptions -->
+    <string name="no_food_item_detected">No Food Item Detected</string>
     <string name="add_new_food_entry">Add New Food Entry</string>
     <string name="add_new_workout">Add New Workout</string>
     <string name="log_weight">Log Weight</string>

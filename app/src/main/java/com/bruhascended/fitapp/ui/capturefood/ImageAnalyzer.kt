@@ -9,7 +9,6 @@ import com.bruhascended.classifier.foodimage.ImageStreamClassifier
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.io.ByteArrayOutputStream
-import kotlin.math.max
 import kotlin.math.min
 
 class ImageAnalyzer (
@@ -19,10 +18,12 @@ class ImageAnalyzer (
 
     companion object {
         const val MIN_LATENCY_MILLI = 400L
-        const val PREDICTION_DURATION_MILLI = 1250L
+        const val PREDICTION_DURATION_MILLI = 2500L
     }
 
     private lateinit var streamClassifier: ImageStreamClassifier
+
+    private var executionCount = 0L
 
     init {
         // initialise classifier in another thread to not block main
@@ -62,12 +63,13 @@ class ImageAnalyzer (
             if (bm != null) {
                 val dim = min(bm.width, bm.height)
                 bm = Bitmap.createBitmap(bm, 0, 0, dim, dim)
-                val predictions = streamClassifier.fetchResults(bm)
-                predictionsListener(
-                    predictions.sliceArray(
-                        0 until min(predictions.size, 4)
-                    )
-                )
+                val predictions = streamClassifier.fetchResults(bm).apply {
+                    sliceArray(0 until min(size, 4))
+                }
+                if (executionCount % streamClassifier.getUpdatePeriod() == 0L) {
+                    predictionsListener(predictions)
+                }
+                executionCount++
             }
             runBlocking {
                 delay(streamClassifier.getLatencyCorrection())

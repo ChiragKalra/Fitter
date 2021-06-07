@@ -14,10 +14,10 @@ class ImageStreamClassifier(
 ) {
 
     companion object {
-        const val EXP_AVG_EXPONENT = 4
+        const val EXP_AVG_EXPONENT = 6
         const val EXP_AVG_BETA_UPPER_BOUND = 0.95
         const val EXP_AVG_BETA_LOWER_BOUND = 0.70
-        const val SCORE_LOWER_BOUND = 0.55
+        const val SCORE_LOWER_BOUND = 0.75
     }
 
     private var classifier: ImageClassifier = ImageClassifier(context)
@@ -37,6 +37,8 @@ class ImageStreamClassifier(
         0,
         expectedLatency - (runTimeAnalyzer.movingAverage?.toLong() ?: 0)
     )
+
+    fun getUpdatePeriod() = predictionFadeDuration/expectedLatency
 
     private fun runningAverage (categories: Array<Category>) {
         val currBeta = getBeta()
