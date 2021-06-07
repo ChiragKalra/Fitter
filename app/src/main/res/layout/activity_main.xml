@@ -57,7 +57,7 @@
                 android:contentDescription="@string/add_new"
                 android:src="@drawable/ic_add"
                 android:theme="?newFabStyle"
-                app:layout_behavior=".ui.util.HideFabOnScrollBehavior" />
+                app:layout_behavior=".ui.main.HideFabOnScrollBehavior" />
 
 
             <com.google.android.material.bottomnavigation.BottomNavigationView

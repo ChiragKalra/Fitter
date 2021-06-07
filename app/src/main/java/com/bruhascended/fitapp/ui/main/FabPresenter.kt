@@ -9,7 +9,7 @@ import com.bruhascended.fitapp.ui.addworkout.AddWorkoutActivity
 import com.bruhascended.fitapp.ui.capturefood.CaptureFoodActivity
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
 import com.bruhascended.fitapp.ui.logweight.LogWeightActivity
-import com.bruhascended.fitapp.ui.util.*
+import com.bruhascended.fitapp.util.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class FabPresenter (

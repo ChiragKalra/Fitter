@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityLogWeightBinding
-import com.bruhascended.fitapp.ui.util.setupToolbar
+import com.bruhascended.fitapp.util.setupToolbar
 
 class LogWeightActivity : AppCompatActivity() {
 

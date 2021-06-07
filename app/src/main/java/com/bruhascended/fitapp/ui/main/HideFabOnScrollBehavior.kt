@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.ui.util
+package com.bruhascended.fitapp.ui.main
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter

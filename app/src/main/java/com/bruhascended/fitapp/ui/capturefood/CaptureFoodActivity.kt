@@ -7,7 +7,7 @@ import androidx.camera.view.PreviewView
 import androidx.databinding.DataBindingUtil
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityCaptureFoodBinding
-import com.bruhascended.fitapp.ui.util.setupToolbar
+import com.bruhascended.fitapp.util.setupToolbar
 
 
 class CaptureFoodActivity : CameraActivity() {
