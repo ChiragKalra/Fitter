@@ -1,4 +1,5 @@
+rootProject.name = "FitApp"
 include ':app'
 include ':analysis'
 include ':api'
-rootProject.name = "FitApp"
+include ':db'
