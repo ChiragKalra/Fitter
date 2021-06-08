@@ -6,9 +6,16 @@ import androidx.room.Room
 class FoodEntryDatabaseFactory (
     private val mContext: Context
 ) {
-    fun with (allowMainThread: Boolean) = Room.databaseBuilder(
+    private var mainThread = false
+
+    fun allowMainThreadOperations (bool: Boolean): FoodEntryDatabaseFactory {
+        mainThread = bool
+        return this
+    }
+
+    fun build() = Room.databaseBuilder(
         mContext, FoodEntryDatabase::class.java, "FoodEntries"
     ).apply {
-        if (allowMainThread) allowMainThreadQueries()
+        if (mainThread) allowMainThreadQueries()
     }.build()
 }
