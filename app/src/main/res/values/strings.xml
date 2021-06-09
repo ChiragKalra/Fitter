@@ -21,4 +21,9 @@
     <string name="close_floating_action_buttons">Close Floating Action Buttons</string>
     <string name="toggle_flashlight_button">Toggle flashlight button</string>
     <string name="search">search</string>
+    <string name="food_hint">Food</string>
+    <string name="energy_hint">Energy</string>
+    <string name="unit_hint">Unit</string>
+    <string name="amount_hint">Amount</string>
+    <string name="description_hint">Description</string>
 </resources>
