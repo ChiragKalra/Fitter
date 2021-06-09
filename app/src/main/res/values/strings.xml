@@ -26,4 +26,5 @@
     <string name="unit_hint">Unit</string>
     <string name="amount_hint">Amount</string>
     <string name="description_hint">Description</string>
+    <string name="favourites">favourites</string>
 </resources>
