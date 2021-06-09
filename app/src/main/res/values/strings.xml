@@ -27,4 +27,16 @@
     <string name="amount_hint">Amount</string>
     <string name="description_hint">Description</string>
     <string name="favourites">favourites</string>
+
+    <array name="Amount">
+        <item>Kcal/Cal</item>
+        <item>cal</item>
+    </array>
+    <array name="Calorie_Amount">
+        <item>Gram</item>
+        <item>Kilogram</item>
+        <item>Ounce</item>
+        <item>Millilitre</item>
+        <item>Litre</item>
+    </array>
 </resources>

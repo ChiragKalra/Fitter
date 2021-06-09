@@ -33,5 +33,9 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <include
+            android:id="@+id/content"
+            layout="@layout/activity_add_food_content" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
