@@ -9,8 +9,8 @@ import com.bruhascended.db.food.FoodEntryComparator
 import com.bruhascended.db.food.entities.FoodEntry
 import com.bruhascended.fitapp.databinding.ItemFoodEntryBinding
 import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEntryItemHolder
-import com.bruhascended.fitapp.ui.util.DateTimePresenter
-import com.bruhascended.fitapp.ui.util.QuantityPresenter
+import com.bruhascended.fitapp.util.DateTimePresenter
+import com.bruhascended.fitapp.util.QuantityPresenter
 import com.bruhascended.fitapp.util.AnimationDuration
 import com.bruhascended.fitapp.util.animateProgressTo
 

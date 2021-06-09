@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="Units">
-        <item quantity="one">%d</item>
-        <item quantity="other">%d</item>
+        <item quantity="one">%d Unit</item>
+        <item quantity="other">%d Units</item>
     </plurals>
     <plurals name="Grams">
         <item quantity="one">%d Gm</item>
