@@ -6,12 +6,12 @@ import java.io.Serializable
 
 @Entity
 data class Entry (
-    val calories: Float,
-    val quantity: Float,
+    val calories: Double,
+    val quantity: Double,
     val quantityType: QuantityType,
-    val time: Long,
+    val timeInMillis: Long,
     @PrimaryKey(autoGenerate = true)
-    var entryId: Long = -1,
+    var entryId: Long? = null,
 ): Serializable {
 
     override fun equals(other: Any?): Boolean {
@@ -21,7 +21,7 @@ data class Entry (
         other as Entry
         if (quantity != other.quantity) return false
         if (quantityType != other.quantityType) return false
-        if (time != other.time) return false
+        if (timeInMillis != other.timeInMillis) return false
         return true
     }
 

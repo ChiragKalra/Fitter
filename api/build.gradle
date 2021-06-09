@@ -9,7 +9,7 @@ java {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     //retrofit
     api "com.squareup.retrofit2:retrofit:$retrofit_version"
@@ -17,7 +17,7 @@ dependencies {
     api "com.squareup.moshi:moshi-kotlin:$moshi_version"
 
     //coroutines (only for testing api)
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_version"
 
     //test
     testImplementation "junit:junit:4.13.2"

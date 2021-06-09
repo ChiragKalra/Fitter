@@ -16,15 +16,15 @@ interface FoodEntryDao {
     fun singleLiveById (id: Long): LiveData<FoodEntry?>
 
     @Transaction
-    @Query("SELECT * FROM entry ORDER BY time DESC")
+    @Query("SELECT * FROM entry ORDER BY timeInMillis DESC")
     fun allPaged(): PagingSource<Int, FoodEntry>
 
     @Transaction
-    @Query("SELECT * FROM entry ORDER BY time DESC")
+    @Query("SELECT * FROM entry ORDER BY timeInMillis DESC")
     fun allSync(): List<FoodEntry>
 
     @Transaction
-    @Query("SELECT * FROM entry ORDER BY time DESC")
+    @Query("SELECT * FROM entry ORDER BY timeInMillis DESC")
     fun allLive(): LiveData<List<FoodEntry>>
 
     @Query("SELECT COUNT(entryId) FROM entry")

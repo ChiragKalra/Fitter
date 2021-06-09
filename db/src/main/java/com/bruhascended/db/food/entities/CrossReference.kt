@@ -8,6 +8,6 @@ data class CrossReference (
     val foodName: String
 ) {
     constructor (foodEntry: FoodEntry) : this(
-        foodEntry.entry.entryId, foodEntry.food.foodName
+        foodEntry.entry.entryId!!, foodEntry.food.foodName
     )
 }

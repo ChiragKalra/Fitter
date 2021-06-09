@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.service
+package com.bruhascended.fitapp.repository
 
 import com.bruhascended.api.FoodClient
 

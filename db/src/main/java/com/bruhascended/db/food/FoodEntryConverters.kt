@@ -5,12 +5,12 @@ import com.google.gson.Gson
 
 internal class FoodEntryConverters {
     @TypeConverter
-    fun listToJson(value: Array<Float>?): String = Gson().toJson(value)
+    fun listToJson (value: Array<Double>?): String = Gson().toJson(value)
 
     @TypeConverter
-    fun jsonToList(value: String?): Array<Float> = Gson().fromJson(
+    fun jsonToList (value: String?): Array<Double> = Gson().fromJson(
         value,
-        Array<Float>::class.java
+        Array<Double>::class.java
     )
 
     @TypeConverter

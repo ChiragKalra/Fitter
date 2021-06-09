@@ -3,6 +3,7 @@ package com.bruhascended.fitapp.ui.journal
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.bruhascended.fitapp.ui.foodjournal.FoodJournalFragment
 
 class ViewPagerAdaptor (
     fm: FragmentManager,

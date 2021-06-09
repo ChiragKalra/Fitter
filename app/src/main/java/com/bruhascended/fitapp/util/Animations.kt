@@ -6,14 +6,31 @@ import android.content.res.ColorStateList
 import android.view.View
 import android.widget.ImageView
 import androidx.core.widget.ImageViewCompat
+import com.google.android.material.progressindicator.LinearProgressIndicator
 
 
 enum class AnimationDuration (
         val ms: Long
 ) {
+    VERY_LONG(900),
     LONG(700),
     MEDIUM(500),
     SHORT(350)
+}
+
+fun LinearProgressIndicator.animateProgressTo (
+        dest: Int, steps: Int = 64, duration: AnimationDuration = AnimationDuration.SHORT
+): View {
+    max = 5 * steps
+    progress = 0
+    ValueAnimator.ofInt(0, dest*steps).apply {
+        addUpdateListener {
+            progress = it.animatedValue as Int
+        }
+        setDuration(duration.ms)
+        start()
+    }
+    return this
 }
 
 fun ImageView.animateTintColor (

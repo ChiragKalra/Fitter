@@ -11,23 +11,23 @@ data class Food (
     val foodName: String,
     val description: String? = null,
     val healthRating: Int = 0,
-    val calorieInfoArray: Array<Float> = Array(QuantityType.values().size) { -1f }
+    val calorieInfoArray: Array<Double> = Array(QuantityType.values().size) { -1.0 }
 ): Serializable {
 
-    fun setCalorieInfo (quantityType: QuantityType, value: Float) {
+    fun setCalorieInfo (quantityType: QuantityType, value: Double) {
         calorieInfoArray[quantityType.ordinal] = value
     }
 
-    fun setCalorieInfo (pairs: HashMap<QuantityType, Float>) {
+    fun setCalorieInfo (pairs: HashMap<QuantityType, Double>) {
         pairs.forEach { (q, v) ->
             calorieInfoArray[q.ordinal] = v
         }
     }
 
-    fun getCalorieInfo(): HashMap<QuantityType, Float> {
-        return HashMap<QuantityType, Float>().apply {
+    fun getCalorieInfo(): HashMap<QuantityType, Double> {
+        return HashMap<QuantityType, Double>().apply {
             calorieInfoArray.forEachIndexed { i, v ->
-                if (v != -1f) {
+                if (v != -1.0) {
                     put(QuantityType.values()[i], v)
                 }
             }

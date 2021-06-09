@@ -3,7 +3,7 @@ package com.bruhascended.fitapp.ui.addfood
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bruhascended.fitapp.service.FdaApi
+import com.bruhascended.fitapp.repository.FdaApi
 import com.bruhascended.api.models.foods.Food
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
