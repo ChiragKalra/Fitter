@@ -1,7 +1,12 @@
 package com.bruhascended.fitapp.ui.addfood
 
+
+import android.app.Activity
 import android.app.SearchManager
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,9 +17,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityFoodSearchBinding
-import com.bruhascended.fitapp.util.setupToolbar
+import com.bruhascended.fitapp.ui.util.setupToolbar
 import com.bruhascended.api.models.foods.Food
+import com.bruhascended.api.models.foods.Nutrition
 import com.bruhascended.fitapp.ui.capturefood.PredictionPresenter
+import com.bruhascended.fitapp.util.setupToolbar
 import kotlinx.coroutines.*
 
 class FoodSearchActivity : AppCompatActivity() {
@@ -22,6 +29,10 @@ class FoodSearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFoodSearchBinding
     private lateinit var viewModel: FoodSearchActivityViewModel
     private lateinit var FoodsAdapter: FoodSearchAdapter
+
+    companion object {
+        const val KEY_FOOD_DATA = "FOOD_DATA"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +47,7 @@ class FoodSearchActivity : AppCompatActivity() {
 
         //captureFood intent
         val intent = intent
+        //val query = intent.getStringExtra(PredictionPresenter.KEY_FOOD_LABEL)
         val query = intent.getStringExtra(PredictionPresenter.KEY_FOOD_LABEL)
         if (query != null) setUpCapturedFoodSearch(query)
 
@@ -76,6 +88,7 @@ class FoodSearchActivity : AppCompatActivity() {
 
             override fun onQueryTextSubmit(query: String): Boolean {
                 onSearchCustomise(query)
+                FoodsAdapter.submitList(emptyList())
                 return false
             }
 
@@ -90,9 +103,16 @@ class FoodSearchActivity : AppCompatActivity() {
     private fun setUpRecyclerview() {
         binding.recyclerviewFoods.apply {
             layoutManager = LinearLayoutManager(this@FoodSearchActivity)
-            FoodsAdapter = FoodSearchAdapter()
+            FoodsAdapter = FoodSearchAdapter { onFoodItemClicked(it) }
             adapter = FoodsAdapter
         }
+    }
+
+    private fun onFoodItemClicked(food: Food) {
+        val intent = Intent(this, AddFoodActivity::class.java)
+        intent.putExtra(KEY_FOOD_DATA, food)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     private fun searchBarCustomize() {
@@ -109,5 +129,21 @@ class FoodSearchActivity : AppCompatActivity() {
         viewModel.getFoods(query)
         binding.searchBar.clearFocus()
         binding.progressBar.isVisible = true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+            }
+        }
+        return true
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        setResult(Activity.RESULT_CANCELED)
+        finish()
     }
 }
