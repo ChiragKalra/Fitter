@@ -1,12 +1,13 @@
 package com.bruhascended.api.services
 
+import com.bruhascended.api.Private
 import com.bruhascended.api.models.food.FoodResponse
 import com.bruhascended.api.models.foods.FoodsResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-private const val KEY: String = ""
+private const val KEY: String = Private.apiKey // provide your own path
 
 interface FoodApi {
 
