@@ -28,11 +28,11 @@
     <string name="description_hint">Description</string>
     <string name="favourites">favourites</string>
 
-    <array name="Amount">
-        <item>Kcal/Cal</item>
+    <array name="Calorie_Amount">
+        <item>kcal/Cal</item>
         <item>cal</item>
     </array>
-    <array name="Calorie_Amount">
+    <array name="Amount">
         <item>Gram</item>
         <item>Kilogram</item>
         <item>Ounce</item>

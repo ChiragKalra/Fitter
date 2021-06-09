@@ -7,8 +7,6 @@ import com.bruhascended.api.models.foods.Food
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
-import java.sql.Date
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 

@@ -156,9 +156,9 @@
                         android:id="@+id/time_picker"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:text="@{viewModel.setTime}"
                         android:inputType="none"
-                        android:paddingLeft="16dp" />
+                        android:paddingLeft="16dp"
+                        android:text="@{viewModel.setTime}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

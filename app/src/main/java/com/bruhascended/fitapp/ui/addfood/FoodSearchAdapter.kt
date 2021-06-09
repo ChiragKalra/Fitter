@@ -1,28 +1,30 @@
 package com.bruhascended.fitapp.ui.addfood
 
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bruhascended.api.models.foods.Food
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.FoodsListItemBinding
-import com.bruhascended.api.models.foods.Food
 import java.util.*
 
-class FoodSearchAdapter : ListAdapter<Food, FoodSearchAdapter.FoodViewHolder>(
-    object : DiffUtil.ItemCallback<Food>() {
-        override fun areItemsTheSame(oldItem: Food, newItem: Food): Boolean {
-            return oldItem == newItem
-        }
+class FoodSearchAdapter(val onFoodItemClicked: (food: Food) -> Unit) :
+    ListAdapter<Food, FoodSearchAdapter.FoodViewHolder>(
+        object : DiffUtil.ItemCallback<Food>() {
+            override fun areItemsTheSame(oldItem: Food, newItem: Food): Boolean {
+                return oldItem == newItem
+            }
 
-        override fun areContentsTheSame(oldItem: Food, newItem: Food): Boolean {
-            return oldItem == newItem
-        }
+            override fun areContentsTheSame(oldItem: Food, newItem: Food): Boolean {
+                return oldItem == newItem
+            }
 
-    }
-) {
+        }
+    ) {
     inner class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodViewHolder {
@@ -35,8 +37,9 @@ class FoodSearchAdapter : ListAdapter<Food, FoodSearchAdapter.FoodViewHolder>(
         FoodsListItemBinding.bind(holder.itemView).apply {
             val food = getItem(position)
 
-            foodName.text = food.description?.toLowerCase(Locale.ROOT)
+            foodName.text = food.description.lowercase(Locale.ROOT)
             tellBranded.text = food.brandOwner
+            root.setOnClickListener { onFoodItemClicked(food) }
         }
     }
 }

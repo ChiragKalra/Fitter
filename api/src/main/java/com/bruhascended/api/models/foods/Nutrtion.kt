@@ -1,3 +1,9 @@
 package com.bruhascended.api.models.foods
 
-data class Nutrtion()
+import java.io.Serializable
+
+data class Nutrition(
+    val nutrientId: Int,
+    val unitName: String,
+    val value: Double
+) : Serializable

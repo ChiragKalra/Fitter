@@ -5,7 +5,6 @@ import android.app.Activity
 import android.app.SearchManager
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -15,11 +14,9 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil.setContentView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bruhascended.api.models.foods.Food
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityFoodSearchBinding
-import com.bruhascended.fitapp.ui.util.setupToolbar
-import com.bruhascended.api.models.foods.Food
-import com.bruhascended.api.models.foods.Nutrition
 import com.bruhascended.fitapp.ui.capturefood.PredictionPresenter
 import com.bruhascended.fitapp.util.setupToolbar
 import kotlinx.coroutines.*
