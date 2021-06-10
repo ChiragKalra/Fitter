@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.util
+package com.bruhascended.fitapp.util.datetime
 
 import android.content.Context
 import android.text.format.DateFormat

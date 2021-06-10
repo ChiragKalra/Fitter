@@ -3,6 +3,7 @@ package com.bruhascended.db.food.entities
 import androidx.room.*
 import com.bruhascended.db.food.QuantityType
 import java.io.Serializable
+import java.util.*
 
 @Entity
 data class Entry (
@@ -13,6 +14,16 @@ data class Entry (
     @PrimaryKey(autoGenerate = true)
     var entryId: Long? = null,
 ): Serializable {
+
+    val date: Date
+    get() = Calendar.getInstance().also {
+            it.timeInMillis = timeInMillis
+            it.set(Calendar.HOUR_OF_DAY, 0)
+            it.set(Calendar.MINUTE, 0)
+            it.set(Calendar.SECOND, 0)
+            it.set(Calendar.MILLISECOND, 0)
+        }.time
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

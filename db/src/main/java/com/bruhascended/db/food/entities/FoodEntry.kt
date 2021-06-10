@@ -5,7 +5,7 @@ import androidx.room.Junction
 import androidx.room.Relation
 import java.io.Serializable
 
-data class FoodEntry(
+data class FoodEntry (
     @Embedded
     val entry: Entry,
     @Relation(

@@ -47,7 +47,7 @@
         <item name="headingTextColor">@color/blue_700</item>
         <item name="android:textColor">@color/black_700</item>
         <item name="android:textColorSecondary">@color/black_500</item>
-        <item name="android:textColorHint">@color/grey</item>
+        <item name="android:textColorHint">@color/blue_500</item>
 
         <!-- Widget Themes -->
         <item name="newFabStyle">@style/LightTheme.NewFabTheme</item>
@@ -100,8 +100,8 @@
         <item name="android:colorAccent">@color/blue_700</item>
         <item name="colorControlNormal">@color/blue_200</item>
         <item name="colorControlActivated">@color/blue_500</item>
-        <item name="android:textColorHint">@color/purple_500</item>
-        <item name="android:textColorPrimary">@color/purple_500</item>
+        <item name="android:textColorHint">@color/blue_500</item>
+        <item name="android:textColorPrimary">@color/blue_700</item>
     </style>
 
     <style name="LightTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -150,7 +150,7 @@
         <item name="headingTextColor">@color/blue_700</item>
         <item name="android:textColor">@color/white_700</item>
         <item name="android:textColorSecondary">@color/white_500</item>
-        <item name="android:textColorHint">@color/purple_200</item>
+        <item name="android:textColorHint">@color/blue_200</item>
 
         <!-- Widget Themes -->
         <item name="newFabStyle">@style/DarkTheme.NewFabTheme</item>

@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import androidx.paging.insertSeparators
+import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bruhascended.fitapp.databinding.FragmentJournalFoodBinding
+import com.bruhascended.fitapp.util.datetime.DateSeparatedItem
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class FoodJournalFragment: Fragment() {
@@ -34,8 +36,27 @@ class FoodJournalFragment: Fragment() {
             adapter = mAdaptor
         }
 
+        val dateSeparated = viewModel.foodEntries
+            .map { pagingData -> pagingData.map { DateSeparatedItem(item = it) } }
+            .map {
+                it.insertSeparators{ after, before ->
+                    val afterDate = after?.item?.entry?.date
+                    val beforeDate = before?.item?.entry?.date
+                    when {
+                        beforeDate == null ->
+                            null
+                        afterDate == null ->
+                            DateSeparatedItem(separator = beforeDate)
+                        afterDate > beforeDate ->
+                            DateSeparatedItem(separator = beforeDate)
+                        else ->
+                            null
+                    }
+                }
+            }
+
         lifecycleScope.launch {
-            viewModel.foodEntries.cachedIn(lifecycleScope).collectLatest {
+            dateSeparated.cachedIn(lifecycleScope).collectLatest {
                 mAdaptor.submitData(it)
             }
         }
