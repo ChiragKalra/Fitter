@@ -27,7 +27,11 @@ class FoodJournalFragment: Fragment() {
     private fun setupRecyclerView() {
         mAdaptor = FoodJournalRecyclerAdapter(requireContext()).apply {
             setOnItemClickListener {
-                // TODO FoodEntry Details
+                ActionDialogPresenter(
+                    requireContext(),
+                    viewModel,
+                    it
+                ).show()
             }
         }
 

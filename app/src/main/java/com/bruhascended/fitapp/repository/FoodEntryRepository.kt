@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.reflect.KProperty
 
 class FoodEntryRepository (
-    private val mApp: Application
+    mApp: Application
 ) {
 
     companion object {
@@ -41,6 +41,8 @@ class FoodEntryRepository (
     suspend fun writeEntry (foodEntry: FoodEntry) = db.insertEntry(foodEntry)
 
     suspend fun writeEntry (food: Food, entry: Entry) = db.insertEntry(food, entry)
+
+    fun deleteEntry (foodEntry: FoodEntry) = db.deleteEntry(foodEntry)
 
     fun loadConsumedFoodEntries(): Flow<PagingData<FoodEntry>> {
         return Pager(
