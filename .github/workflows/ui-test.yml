@@ -20,12 +20,20 @@ jobs:
     name: Assemble 
     # The type of runner that the job will run on
     runs-on: macos-latest
+    
+    # LOAD FDA API KEY
+    env:
+      FDA_API_KEY: ${{ secrets.FDA_API_KEY }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       -  name: checkout 
          uses: actions/checkout@v2
+         
+     
+      -  run: echo -e "FDA_API_KEY=$FDA_API_KEY" >> local.properties
+      -  run: cat local.properties
 
       -  name: Android Emulator Runner
          uses: ReactiveCircus/android-emulator-runner@v2.16.0
