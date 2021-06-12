@@ -22,7 +22,7 @@ class FoodEntryDbTest {
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = FoodEntryDatabaseFactory(context).with(allowMainThread = false)
+        db = FoodEntryDatabaseFactory(context).allowMainThreadOperations(false).build()
     }
 
     @After
@@ -38,7 +38,7 @@ class FoodEntryDbTest {
             foodName = "Apple",
             healthRating = 4
         ).apply {
-            setCalorieInfo(QuantityType.Units, 100f)
+            setCalorieInfo(QuantityType.Units, 100.0)
         }
 
         // insertion test
@@ -59,12 +59,12 @@ class FoodEntryDbTest {
             foodName = "Mango",
             healthRating = -2
         ).apply {
-            setCalorieInfo(QuantityType.Units, 125f)
+            setCalorieInfo(QuantityType.Units, 125.0)
         }
         val foodEntry = FoodEntry(
             entry = Entry (
-                food.getCalorieInfo()[QuantityType.Units] ?: 0f,
-                1f,
+                food.getCalorieInfo()[QuantityType.Units] ?: 0.0,
+                1.0,
                 QuantityType.Units,
                 0
             ),
@@ -73,6 +73,7 @@ class FoodEntryDbTest {
 
         // insertion test
         val entryId = db.insertEntry(foodEntry)
+        foodEntry.entry.entryId = entryId
         val first = db.loadFoodEntry().singleById(entryId)
         assertEquals(foodEntry, first)
 
