@@ -14,7 +14,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil.setContentView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bruhascended.api.models.foods.Food
+import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityFoodSearchBinding
 import com.bruhascended.fitapp.ui.capturefood.PredictionPresenter
@@ -44,7 +44,6 @@ class FoodSearchActivity : AppCompatActivity() {
 
         //captureFood intent
         val intent = intent
-        //val query = intent.getStringExtra(PredictionPresenter.KEY_FOOD_LABEL)
         val query = intent.getStringExtra(PredictionPresenter.KEY_FOOD_LABEL)
         if (query != null) setUpCapturedFoodSearch(query)
 
@@ -54,8 +53,8 @@ class FoodSearchActivity : AppCompatActivity() {
         //setUp search
         setUpSearch()
 
-        //setUp LiveData Observer
-        viewModel.foods_list.observe({ lifecycle }) {
+        //setUp LiveData Observer v2
+        viewModel.food_hints_list.observe({ lifecycle }) {
             updateList(it)
         }
 
@@ -92,7 +91,7 @@ class FoodSearchActivity : AppCompatActivity() {
         })
     }
 
-    private fun updateList(list: List<Food>) {
+    private fun updateList(list: List<Hint?>) {
         FoodsAdapter.submitList(list)
         binding.progressBar.visibility = View.GONE
     }
@@ -105,9 +104,9 @@ class FoodSearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun onFoodItemClicked(food: Food) {
+    private fun onFoodItemClicked(food_hint: Hint?) {
         val intent = Intent(this, AddFoodActivity::class.java)
-        intent.putExtra(KEY_FOOD_DATA, food)
+        intent.putExtra(KEY_FOOD_DATA, food_hint)
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
@@ -123,7 +122,7 @@ class FoodSearchActivity : AppCompatActivity() {
     }
 
     private fun onSearchCustomise(query: String) {
-        viewModel.getFoods(query)
+        viewModel.getFoodsv2(query)
         binding.searchBar.clearFocus()
         binding.progressBar.isVisible = true
     }

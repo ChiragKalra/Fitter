@@ -37,5 +37,18 @@
             android:id="@+id/content"
             layout="@layout/activity_add_food_content" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:elevation="8dp"
+            android:backgroundTint="@color/white_1000"
+            app:backgroundTint="@color/white_1000"
+            app:srcCompat="@drawable/ic_done"
+            android:layout_gravity="bottom|right"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"/>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

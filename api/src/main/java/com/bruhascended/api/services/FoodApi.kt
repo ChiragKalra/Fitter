@@ -1,25 +1,20 @@
 package com.bruhascended.api.services
 
 import com.bruhascended.api.Private
-import com.bruhascended.api.models.food.FoodResponse
-import com.bruhascended.api.models.foods.FoodsResponse
+import com.bruhascended.api.models.foodsv2.Foodsv2Response
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-private const val KEY: String = Private.apiKey // provide your own path
+private const val API_KEY: String = Private.api_key // provide your own path
+private const val APP_ID: String = Private.api_id // provide your own path
 
 interface FoodApi {
 
-    @GET("foods/search?api_key=${KEY}")
-    suspend fun getFoods(
-        @Query("query") query: String,
-        @Query("dataType") dataType: List<String> = listOf<String>("Survey (FNDDS)", "Branded"),
-        @Query("requireAllWords") requireAllWords: String = "false",
-        @Query("pageSize") pageSize: Int = 20,
-        @Query("pageNumber") pageNumber: Int = 1
-    ): Response<FoodsResponse>
-
-    @GET("food/1731228?api_key=${KEY}")
-    suspend fun getFood(): Response<FoodResponse>
+    @GET("parser")
+    suspend fun getFoodsv2(
+        @Query("ingr") query: String,
+        @Query("app_id") app_id: String = APP_ID,
+        @Query("app_key") app_key: String = API_KEY
+    ): Response<Foodsv2Response?>
 }

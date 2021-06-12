@@ -1,23 +1,15 @@
 package com.bruhascended.api
 
-import com.bruhascended.api.models.food.FoodResponse
-import com.bruhascended.api.models.foods.FoodsResponse
+import com.bruhascended.api.models.foodsv2.Foodsv2Response
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class FoodClientTest {
 
     @Test
-    fun getFoods() {
+    fun getFoodv2() {
         runBlocking {
-            val response: FoodsResponse? = FoodClient.fdaApi.getFoods("Banana").body()
-        }
-    }
-
-    @Test
-    fun getFood() {
-        runBlocking {
-            val response: FoodResponse? = FoodClient.fdaApi.getFood().body()
+            val response: Foodsv2Response? = FoodClient.fdaApi.getFoodsv2("Banana").body()
         }
     }
 }

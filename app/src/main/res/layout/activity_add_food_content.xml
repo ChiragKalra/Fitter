@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="viewModel"
             type="com.bruhascended.fitapp.ui.addfood.AddFoodActivityViewModel" />
-
-        <variable
-            name="activity"
-            type="com.bruhascended.fitapp.ui.addfood.AddFoodActivity" />
     </data>
 
     <ScrollView
@@ -18,19 +15,21 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="16dp">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/food_layout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
                 android:hint="@string/food_hint"
-                app:boxStrokeWidth="2dp">
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <EditText
                     android:layout_width="match_parent"
@@ -40,147 +39,167 @@
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/energy_hint"
-                    app:boxStrokeWidth="2dp">
-
-                    <EditText
-                        android:layout_width="180dp"
-                        android:layout_height="60dp"
-                        android:inputType="numberDecimal"
-                        android:text="@{viewModel.foodEnergy}"
-                        android:textSize="16sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:hint="@string/unit_hint"
-                    app:boxStrokeWidth="2dp">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/calorie_dropdown"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:inputType="none"
-                        android:paddingLeft="16dp"
-                        android:text="@{viewModel.energyUnit}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/amount_hint"
-                    app:boxStrokeWidth="2dp">
-
-                    <EditText
-                        android:layout_width="180dp"
-                        android:layout_height="60dp"
-                        android:inputType="numberDecimal"
-                        android:textSize="16sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:hint="@string/unit_hint"
-                    app:boxStrokeWidth="2dp">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/amount_dropdown"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:inputType="none"
-                        android:paddingLeft="16dp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Date"
-                    app:boxStrokeWidth="2dp">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/date_picker"
-                        android:layout_width="180dp"
-                        android:layout_height="60dp"
-                        android:inputType="none"
-                        android:text="@{viewModel.setDate}"
-                        android:textSize="16sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:hint="Time"
-                    app:boxStrokeWidth="2dp">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/time_picker"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:inputType="none"
-                        android:paddingLeft="16dp"
-                        android:text="@{viewModel.setTime}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
-
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/quantity_layout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="100dp"
-                android:hint="@string/description_hint"
-                app:boxStrokeWidth="2dp">
+                android:layout_marginTop="16dp"
+                android:hint="Quantity"
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintEnd_toStartOf="@+id/amount_dropdown_layout"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/food_layout">
 
                 <EditText
+                    android:id="@+id/quantity"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:inputType="numberDecimal"
+                    android:text="@{viewModel.default_quantity}"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/amount_dropdown_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:hint="Unit"
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintBottom_toBottomOf="@+id/quantity_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/quantity_layout">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/amount_dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:inputType="none"
+                    android:paddingLeft="16dp"
+                    android:text="@{viewModel.default_type}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/per_energy_textview"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="kcal/Unit"
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintEnd_toStartOf="@+id/energy_layout"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/quantity_layout">
+
+                <EditText
+                    android:id="@+id/per_energy_Edittextview"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:inputType="numberDecimal"
+                    android:text="@{viewModel.per_kcal.toString()}"
+                    android:textColorHint="@color/grey"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/energy_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:hint="Energy"
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintBottom_toBottomOf="@+id/per_energy_textview"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/per_energy_textview">
+
+                <EditText
+                    android:text="@{viewModel.energy}"
+                    android:id="@+id/energy"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:paddingLeft="16dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/date_picker_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Date"
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintEnd_toStartOf="@+id/meal_type_layout"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/per_energy_textview">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/date_picker"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:inputType="none"
+                    android:text="@{viewModel.setDate}"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/meal_type_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:hint="Meal"
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintBottom_toBottomOf="@+id/date_picker_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/date_picker_layout">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/meal_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:inputType="none"
+                    android:paddingLeft="16dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/description_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="@string/description_hint"
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/date_picker_layout">
+
+                <EditText
+                    android:id="@+id/description"
                     android:layout_width="match_parent"
                     android:layout_height="110dp"
                     android:gravity="top"
+                    android:importantForAutofill="no"
                     android:inputType="textMultiLine"
                     android:textSize="16sp" />
+
             </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 </layout>

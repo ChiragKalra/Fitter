@@ -112,6 +112,8 @@
     <string name="favourites">Favourites</string>
     <string name="yesterday">Yesterday</string>
     <string name="today">Today</string>
+    <string name="default_online_quantity">100</string>
+    <string name="default_online_type">Gram(g)</string>
 
     <!-- Long Descriptions -->
     <string name="no_food_item_detected">No Food Item Detected</string>
@@ -128,15 +130,23 @@
     <string name="Ounces">Oz</string>
     <string name="MilliLiters">ML</string>
 
-    <array name="Calorie_Amount">
-        <item>kcal/Cal</item>
-        <item>cal</item>
+    <array name="Meal_type">
+        <item>Breakfast</item>
+        <item>Lunch</item>
+        <item>Dinner</item>
+        <item>snacks</item>
     </array>
-    <array name="Amount">
+
+    <array name="Amount_type">
+        <item>Unit</item>
         <item>Gram</item>
+        <item>Millilitre</item>
+    </array>
+
+    <string-array name="toRemoveTypes">
         <item>Kilogram</item>
         <item>Ounce</item>
-        <item>Millilitre</item>
-        <item>Litre</item>
-    </array>
+        <item>Pound</item>
+    </string-array>
 </resources>
+

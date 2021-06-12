@@ -7,24 +7,22 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bruhascended.api.models.foods.Food
+import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.FoodsListItemBinding
-import java.util.*
 
-class FoodSearchAdapter(val onFoodItemClicked: (food: Food) -> Unit) :
-    ListAdapter<Food, FoodSearchAdapter.FoodViewHolder>(
-        object : DiffUtil.ItemCallback<Food>() {
-            override fun areItemsTheSame(oldItem: Food, newItem: Food): Boolean {
-                return oldItem == newItem
-            }
-
-            override fun areContentsTheSame(oldItem: Food, newItem: Food): Boolean {
-                return oldItem == newItem
-            }
-
+class FoodSearchAdapter(val itemClicked:(food_hint: Hint?)->Unit) : ListAdapter<Hint, FoodSearchAdapter.FoodViewHolder>(
+    object : DiffUtil.ItemCallback<Hint>() {
+        override fun areItemsTheSame(oldItem: Hint, newItem: Hint): Boolean {
+            return oldItem == newItem
         }
-    ) {
+
+        override fun areContentsTheSame(oldItem: Hint, newItem: Hint): Boolean {
+            return oldItem == newItem
+        }
+
+    }
+) {
     inner class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodViewHolder {
@@ -35,11 +33,10 @@ class FoodSearchAdapter(val onFoodItemClicked: (food: Food) -> Unit) :
 
     override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
         FoodsListItemBinding.bind(holder.itemView).apply {
-            val food = getItem(position)
-
-            foodName.text = food.description.lowercase(Locale.ROOT)
-            tellBranded.text = food.brandOwner
-            root.setOnClickListener { onFoodItemClicked(food) }
+            val hint = getItem(position)
+            foodName.text = hint.food?.label
+            tellBranded.text = hint.food?.brand
+            root.setOnClickListener { itemClicked(hint) }
         }
     }
 }
