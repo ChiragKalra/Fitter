@@ -17,42 +17,6 @@ class FoodJournalViewModel (mApp: Application) : AndroidViewModel(mApp) {
 
     val foodEntries = foodEntryRepository.loadConsumedFoodEntries()
 
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            foodEntryRepository.apply {
-                writeEntry(
-                    Food("Apple"),
-                    Entry(
-                        100.0,
-                        1.0,
-                        QuantityType.Whole,
-                        MealType.Breakfast,
-                        Calendar.getInstance().timeInMillis
-                    )
-                )
-                writeEntry(
-                    Food("Mango"),
-                    Entry(
-                        200.0,
-                        1.0,
-                        QuantityType.Whole,
-                        MealType.Breakfast,
-                        Calendar.getInstance().timeInMillis
-                    )
-                )
-                writeEntry(
-                    Food("Rice"),
-                    Entry(
-                        100.0,
-                        1.0,
-                        QuantityType.Serving,
-                        MealType.Breakfast,
-                        Calendar.getInstance().timeInMillis
-                    )
-                )
-            }
-        }
-    }
 
     fun deleteEntry(foodEntry: FoodEntry) {
         CoroutineScope(Dispatchers.IO).launch {
