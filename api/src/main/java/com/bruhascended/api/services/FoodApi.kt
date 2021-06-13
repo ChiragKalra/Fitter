@@ -1,6 +1,5 @@
 package com.bruhascended.api.services
 
-import com.bruhascended.api.Private
 import com.bruhascended.api.models.foodsv2.Foodsv2Response
 import retrofit2.Response
 import retrofit2.http.GET
