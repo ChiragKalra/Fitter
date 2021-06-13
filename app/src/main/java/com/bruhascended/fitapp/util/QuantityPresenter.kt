@@ -19,6 +19,7 @@ class QuantityPresenter (
                     QuantityType.Grams -> R.plurals.Grams
                     QuantityType.Ounces -> R.plurals.Ounces
                     QuantityType.MilliLiters -> R.plurals.MilliLiters
+                    else -> R.plurals.Units // #TODO generate strings etc.
                 },
                 floor(entry.quantity).toInt(),
                 floor(entry.quantity).toInt(),
@@ -30,6 +31,7 @@ class QuantityPresenter (
                     QuantityType.Grams -> R.string.Grams
                     QuantityType.Ounces -> R.string.Ounces
                     QuantityType.MilliLiters -> R.string.MilliLiters
+                    else -> R.plurals.Units //TODO generate strings etc.
                 }
             )
         }

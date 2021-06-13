@@ -11,22 +11,43 @@ data class Food (
     val foodName: String,
     val description: String? = null,
     val healthRating: Int = 0,
-    val calorieInfoArray: Array<Double> = Array(QuantityType.values().size) { -1.0 }
+    val calorieInfoArray: Array<Double> = Array(QuantityType.values().size) { -1.0 },
+    val weightInfoArray: Array<Double> = Array(QuantityType.values().size) { -1.0 }
 ): Serializable {
 
-    fun setCalorieInfo (quantityType: QuantityType, value: Double) {
+    fun setSingleCalorieInfo (quantityType: QuantityType, value: Double) {
         calorieInfoArray[quantityType.ordinal] = value
     }
 
-    fun setCalorieInfo (pairs: HashMap<QuantityType, Double>) {
+    var calorieInfo: HashMap<QuantityType, Double>
+    set (pairs) {
         pairs.forEach { (q, v) ->
             calorieInfoArray[q.ordinal] = v
         }
     }
-
-    fun getCalorieInfo(): HashMap<QuantityType, Double> {
+    get() {
         return HashMap<QuantityType, Double>().apply {
             calorieInfoArray.forEachIndexed { i, v ->
+                if (v != -1.0) {
+                    put(QuantityType.values()[i], v)
+                }
+            }
+        }
+    }
+
+    fun setSingleWeightInfo (quantityType: QuantityType, weight: Double) {
+        weightInfoArray[quantityType.ordinal] = weight
+    }
+
+    var weightInfo: HashMap<QuantityType, Double>
+    set (pairs) {
+        pairs.forEach { (q, v) ->
+            weightInfoArray[q.ordinal] = v
+        }
+    }
+    get() {
+        return HashMap<QuantityType, Double>().apply {
+            weightInfoArray.forEachIndexed { i, v ->
                 if (v != -1.0) {
                     put(QuantityType.values()[i], v)
                 }
