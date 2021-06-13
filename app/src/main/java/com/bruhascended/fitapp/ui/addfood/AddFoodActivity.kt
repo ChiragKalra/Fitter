@@ -138,6 +138,8 @@ class AddFoodActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener 
                         quantity.setText("")
                         perEnergyEdittextview.setText("")
                         perEnergyTextview.hint = "kcal/g"
+                        quantity.requestFocus()
+                        amountDropdown.showDropDown()
                     }
                     searchSuccess = true
                     val hint =
