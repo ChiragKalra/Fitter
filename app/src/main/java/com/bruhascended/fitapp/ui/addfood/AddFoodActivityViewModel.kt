@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bruhascended.api.models.foodsv2.Hint
-import com.bruhascended.fitapp.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -13,14 +12,12 @@ import java.util.*
 
 class AddFoodActivityViewModel : ViewModel() {
 
-
     private var _per_kcal = MutableLiveData<Double>()
     var per_kcal: LiveData<Double> = _per_kcal
 
-
     private var item_map = HashMap<String?, Double?>()
 
-    val default_types = arrayOf("Unit","Gram","Millilitre")  // extract as string resource
+    val default_types = arrayOf("Unit", "Gram", "Millilitre")  // extract as string resource
     private var _type_arr = MutableLiveData<List<String>>()
     var type_arr: LiveData<List<String>> = _type_arr
 
@@ -38,6 +35,10 @@ class AddFoodActivityViewModel : ViewModel() {
 
 
     val setDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+
+    init {
+        _default_type.postValue("Unit")
+    }
 
     fun setData(hint: Hint?) {
         CoroutineScope(IO).launch {

@@ -10,19 +10,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.FoodsListItemBinding
+import com.bumptech.glide.Glide
 
-class FoodSearchAdapter(val itemClicked:(food_hint: Hint?)->Unit) : ListAdapter<Hint, FoodSearchAdapter.FoodViewHolder>(
-    object : DiffUtil.ItemCallback<Hint>() {
-        override fun areItemsTheSame(oldItem: Hint, newItem: Hint): Boolean {
-            return oldItem == newItem
+class FoodSearchAdapter(val itemClicked: (food_hint: Hint?) -> Unit) :
+    ListAdapter<Hint, FoodSearchAdapter.FoodViewHolder>(
+        object : DiffUtil.ItemCallback<Hint>() {
+            override fun areItemsTheSame(oldItem: Hint, newItem: Hint): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(oldItem: Hint, newItem: Hint): Boolean {
+                return oldItem == newItem
+            }
+
         }
-
-        override fun areContentsTheSame(oldItem: Hint, newItem: Hint): Boolean {
-            return oldItem == newItem
-        }
-
-    }
-) {
+    ) {
     inner class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodViewHolder {
@@ -36,6 +38,14 @@ class FoodSearchAdapter(val itemClicked:(food_hint: Hint?)->Unit) : ListAdapter<
             val hint = getItem(position)
             foodName.text = hint.food?.label
             tellBranded.text = hint.food?.brand
+            Glide
+                .with(imageView.context)
+                .load(hint.food?.image)
+                .circleCrop()
+                .placeholder(R.drawable.ic_food_placeholder)
+                .into(imageView)
+
+
             root.setOnClickListener { itemClicked(hint) }
         }
     }

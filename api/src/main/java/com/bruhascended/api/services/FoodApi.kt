@@ -6,8 +6,8 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-private const val API_KEY: String = Private.api_key // provide your own path
-private const val APP_ID: String = Private.api_id // provide your own path
+private const val API_KEY: String = "" // provide your own path
+private const val APP_ID: String = "" // provide your own path
 
 interface FoodApi {
 
