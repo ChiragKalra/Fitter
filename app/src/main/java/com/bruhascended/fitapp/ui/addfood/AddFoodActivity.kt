@@ -117,8 +117,10 @@ class AddFoodActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener 
     private fun setEnergyDataOffline() {
         val quantity = binding.content.quantity.text.toString()
         val kcal_per_type = binding.content.perEnergyEdittextview.text.toString()
-        if (quantity.isNotEmpty() && kcal_per_type.isNotEmpty()) {
-            viewModel.calculateEnergyOffline(quantity, kcal_per_type)
+        if (quantity != "." && kcal_per_type != ".") {
+            if (quantity.isNotEmpty() && kcal_per_type.isNotEmpty()) {
+                viewModel.calculateEnergyOffline(quantity, kcal_per_type)
+            }
         } else binding.content.energy.setText("")
     }
 
