@@ -20,16 +20,25 @@ jobs:
     name: Assemble 
     # The type of runner that the job will run on
     runs-on: macos-latest
+    
+    # LOAD FDA API KEY
+    env:
+      EDAMAM_API_ID: ${{ secrets.EDAMAM_API_ID }}
+      EDAMAM_API_KEY: ${{ secrets.EDAMAM_API_KEY }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       -  name: checkout 
          uses: actions/checkout@v2
+         
+     
+      -  run: echo -e "EDAMAM_API_ID=$EDAMAM_API_ID" >> local.properties
+      -  run: echo -e "EDAMAM_API_KEY=$EDAMAM_API_KEY" >> local.properties
+      -  run: cat local.properties
 
       -  name: Android Emulator Runner
          uses: ReactiveCircus/android-emulator-runner@v2.16.0
          with:
             api-level: 29
             script: ./gradlew connectedCheck
-

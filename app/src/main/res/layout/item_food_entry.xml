@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:paddingTop="18dp">
+        android:paddingTop="18dp"
+        android:background="?selectableItemBackground">
 
         <TextView
             android:id="@+id/textview_time"
