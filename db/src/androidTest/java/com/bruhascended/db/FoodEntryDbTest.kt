@@ -13,6 +13,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
+import java.util.*
 
 
 @RunWith(AndroidJUnit4::class)
@@ -62,11 +63,12 @@ class FoodEntryDbTest {
             setSingleCalorieInfo(QuantityType.Units, 125.0)
         }
         val foodEntry = FoodEntry(
-            entry = Entry (
-                food.calorieInfo[QuantityType.Units] ?: 0.0,
+            entry = Entry(
+                100.0,
                 1.0,
-                QuantityType.Units,
-                0
+                QuantityType.Serving,
+                MealType.Breakfast,
+                Calendar.getInstance().timeInMillis
             ),
             food = food
         )

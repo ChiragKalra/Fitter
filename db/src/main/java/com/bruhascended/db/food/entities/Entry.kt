@@ -1,6 +1,7 @@
 package com.bruhascended.db.food.entities
 
 import androidx.room.*
+import com.bruhascended.db.food.MealType
 import com.bruhascended.db.food.QuantityType
 import java.io.Serializable
 import java.util.*
@@ -10,6 +11,7 @@ data class Entry (
     val calories: Double,
     val quantity: Double,
     val quantityType: QuantityType,
+    val mealType: MealType,
     val timeInMillis: Long,
     @PrimaryKey(autoGenerate = true)
     var entryId: Long? = null,
