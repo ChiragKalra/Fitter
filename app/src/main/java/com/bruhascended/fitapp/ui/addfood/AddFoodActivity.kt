@@ -15,6 +15,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.bruhascended.api.models.foodsv2.Hint
+import com.bruhascended.db.food.types.MealType
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityAddFoodBinding
 import com.bruhascended.fitapp.ui.capturefood.PredictionPresenter
@@ -92,7 +93,8 @@ class AddFoodActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener 
         binding.content.amountDropdown.setAdapter(amounts_adapter)
 
         //setUp mealType drop down
-        val meal_dropdown = resources.getStringArray(R.array.Meal_type)
+        val mealTypes = MealType.values()
+        val meal_dropdown = Array(mealTypes.size) { mealTypes[it].getString(this) }
         val meal_dropdown_adapter =
             CustomArrayAdapter(this, R.layout.meal_type_drop_down, meal_dropdown)
         binding.content.mealType.setAdapter(meal_dropdown_adapter)

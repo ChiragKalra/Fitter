@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="ounce">
+        <item quantity="other">%d Oz</item>
+    </plurals>
+    <string name="quantity_ounce">%1$s Oz</string>
+
+    <plurals name="gram">
+        <item quantity="other">%d Gm</item>
+    </plurals>
+    <string name="quantity_gram">%1$s Oz</string>
+
+    <plurals name="ml">
+        <item quantity="other">%d ml</item>
+    </plurals>
+    <string name="quantity_ml">%1$s ml</string>
+
+    <plurals name="whole">
+        <item quantity="other">%d whole</item>
+    </plurals>
+    <string name="quantity_whole">%1$s whole</string>
+
+    <plurals name="serving">
+        <item quantity="one">%d serving</item>
+        <item quantity="other">%d servings</item>
+    </plurals>
+    <string name="quantity_serving">%1$s servings</string>
+
+    <plurals name="cup">
+        <item quantity="one">%d cup</item>
+        <item quantity="other">%d cups</item>
+    </plurals>
+    <string name="quantity_cup">%1$s cups</string>
+</resources>

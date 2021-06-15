@@ -8,6 +8,8 @@ import com.bruhascended.db.food.*
 import com.bruhascended.db.food.entities.Entry
 import com.bruhascended.db.food.entities.Food
 import com.bruhascended.db.food.entities.FoodEntry
+import com.bruhascended.db.food.types.MealType
+import com.bruhascended.db.food.types.QuantityType
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -37,7 +39,6 @@ class FoodEntryDbTest {
     fun foodDbTest() {
         val food = Food(
             foodName = "Apple",
-            healthRating = 4
         ).apply {
             setSingleCalorieInfo(QuantityType.Units, 100.0)
         }

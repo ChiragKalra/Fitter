@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="cup">Cup</string>
+    <!-- Meal Types -->
+    <string name="breakfast">Breakfast</string>
+    <string name="brunch">Brunch</string>
+    <string name="lunch">Lunch</string>
+    <string name="evening_snack">Evening Snack</string>
+    <string name="dinner">Dinner</string>
+    <string name="late_night_snack">Late Night Snack</string>
+    <string name="other_meal_type">Other</string>
+
+    <!-- Nutrients -->
+    <string name="energy">Energy</string>
+    <string name="carbs">Carbs</string>
+    <string name="fat">Fat</string>
+    <string name="fiber">Fiber</string>
+    <string name="protein">Protein</string>
 
 </resources>

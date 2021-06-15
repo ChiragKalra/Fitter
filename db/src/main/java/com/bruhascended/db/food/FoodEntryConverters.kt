@@ -1,29 +1,40 @@
 package com.bruhascended.db.food
 
 import androidx.room.TypeConverter
+import com.bruhascended.db.food.types.MealType
+import com.bruhascended.db.food.types.NutrientType
+import com.bruhascended.db.food.types.QuantityType
+import java.util.*
 
 internal class FoodEntryConverters {
-    @TypeConverter
-    fun listToJson (arr: Array<Double>?): String = StringBuilder().apply {
-        arr?.forEach {
-            append(it)
-            append(',')
-        }
-    }.toString()
 
     @TypeConverter
-    fun jsonToList (value: String?): Array<Double> {
-        return if (value.isNullOrBlank()) {
-            return emptyArray()
-        } else {
-            arrayListOf<Double>().apply {
-                value.split(',').forEach {
-                    if (it.isNotBlank()) {
-                        add(it.toDouble())
-                    }
-                }
-            }.toTypedArray()
+    fun fromQuantityTypeMap (value: EnumMap<QuantityType, Double>) = value.toString()
+
+    @TypeConverter
+    fun toQuantityTypeMap (str: String): EnumMap<QuantityType, Double> {
+        val genMap = EnumMap<QuantityType, Double>(QuantityType::class.java)
+        str.slice(1 until str.lastIndex).split(',').forEach {
+            if (it.isBlank()) return@forEach
+            val got = it.trim().split('=')
+            genMap[QuantityType.valueOf(got[0])] = got[1].toDouble()
         }
+        return genMap
+    }
+
+
+    @TypeConverter
+    fun fromNutrientTypeMap (value: EnumMap<NutrientType, Double>) = value.toString()
+
+    @TypeConverter
+    fun toNutrientTypeMap (str: String): EnumMap<NutrientType, Double> {
+        val genMap = EnumMap<NutrientType, Double>(NutrientType::class.java)
+        str.slice(1 until str.lastIndex).split(',').forEach {
+            if (it.isBlank()) return@forEach
+            val got = it.trim().split('=')
+            genMap[NutrientType.valueOf(got[0])] = got[1].toDouble()
+        }
+        return genMap
     }
 
 

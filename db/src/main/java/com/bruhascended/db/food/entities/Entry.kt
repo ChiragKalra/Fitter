@@ -1,8 +1,8 @@
 package com.bruhascended.db.food.entities
 
 import androidx.room.*
-import com.bruhascended.db.food.MealType
-import com.bruhascended.db.food.QuantityType
+import com.bruhascended.db.food.types.MealType
+import com.bruhascended.db.food.types.QuantityType
 import java.io.Serializable
 import java.util.*
 

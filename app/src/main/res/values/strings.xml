@@ -123,30 +123,5 @@
     <string name="capture_a_food_item">Capture a Food Item</string>
     <string name="close_floating_action_buttons">Close Floating Action Buttons</string>
     <string name="toggle_flashlight_button">Toggle flashlight button</string>
-
-    <!-- Quantity -->
-    <string name="Units">Units</string>
-    <string name="Grams">Gm</string>
-    <string name="Ounces">Oz</string>
-    <string name="MilliLiters">ML</string>
-
-    <array name="Meal_type">
-        <item>Breakfast</item>
-        <item>Lunch</item>
-        <item>Dinner</item>
-        <item>snacks</item>
-    </array>
-
-    <array name="Amount_type">
-        <item>Unit</item>
-        <item>Gram</item>
-        <item>Millilitre</item>
-    </array>
-
-    <string-array name="toRemoveTypes">
-        <item>Kilogram</item>
-        <item>Ounce</item>
-        <item>Pound</item>
-    </string-array>
 </resources>
 

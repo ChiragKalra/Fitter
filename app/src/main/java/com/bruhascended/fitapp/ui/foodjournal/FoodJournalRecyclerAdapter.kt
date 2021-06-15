@@ -10,7 +10,6 @@ import com.bruhascended.db.food.entities.FoodEntry
 import com.bruhascended.fitapp.databinding.ItemFoodEntryBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorDateBinding
 import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEntryItemHolder
-import com.bruhascended.fitapp.util.*
 import com.bruhascended.fitapp.util.datetime.DateSeparatedItem
 import com.bruhascended.fitapp.util.datetime.DateSeparatedItemComparator
 import com.bruhascended.fitapp.util.datetime.DateTimePresenter
@@ -67,12 +66,7 @@ class FoodJournalRecyclerAdapter (
                 textviewTime.text = DateTimePresenter(mContext, entry.timeInMillis).condensedTime
                 textviewCalories.text = entry.calories.toString()
                 textviewFoodName.text = food.foodName
-                textviewQuantity.text = QuantityPresenter(mContext, entry).quantityDescription
-
-                progressindicatorHealth.animateProgressTo(
-                    food.healthRating,
-                    duration = AnimationDuration.VERY_LONG,
-                )
+                textviewQuantity.text = entry.quantityType.toString(mContext, entry.quantity)
 
                 root.setOnClickListener {
                     mOnItemClickListener?.invoke(foodEntry)
