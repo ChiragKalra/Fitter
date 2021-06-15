@@ -39,9 +39,9 @@ class FoodEntryDbTest {
     fun foodDbTest() {
         val food = Food(
             foodName = "Apple",
-        ).apply {
-            setSingleCalorieInfo(QuantityType.Units, 100.0)
-        }
+            calories = 50.0,
+            perQuantityType = QuantityType.Whole,
+        )
 
         // insertion test
         db.foodManager().insert(food)
@@ -59,15 +59,14 @@ class FoodEntryDbTest {
     fun foodEntryDbTest() {
         val food = Food(
             foodName = "Mango",
-            healthRating = -2
-        ).apply {
-            setSingleCalorieInfo(QuantityType.Units, 125.0)
-        }
+            calories = 100.0,
+            perQuantityType = QuantityType.Whole
+        )
         val foodEntry = FoodEntry(
             entry = Entry(
                 100.0,
                 1.0,
-                QuantityType.Serving,
+                QuantityType.Whole,
                 MealType.Breakfast,
                 Calendar.getInstance().timeInMillis
             ),

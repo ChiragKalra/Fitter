@@ -24,10 +24,10 @@ data class Food (
 
         other as Food
         if (foodName != other.foodName) return false
-        if (calories == other.calories) return false
-        if (perQuantityType == other.perQuantityType) return false
-        if (weightInfo == other.weightInfo) return false
-        if (nutrientInfo == other.nutrientInfo) return false
+        if (calories != other.calories) return false
+        if (perQuantityType != other.perQuantityType) return false
+        if (weightInfo != other.weightInfo) return false
+        if (nutrientInfo != other.nutrientInfo) return false
         return true
     }
 
