@@ -10,15 +10,13 @@ import com.bruhascended.db.food.entities.FoodEntry
 import com.bruhascended.fitapp.databinding.ItemFoodEntryBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorDateBinding
 import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEntryItemHolder
-import com.bruhascended.fitapp.util.datetime.DateSeparatedItem
-import com.bruhascended.fitapp.util.datetime.DateSeparatedItemComparator
-import com.bruhascended.fitapp.util.datetime.DateTimePresenter
+import com.bruhascended.fitapp.util.DateTimePresenter
 import java.text.SimpleDateFormat
 import java.util.*
 
 class FoodJournalRecyclerAdapter (
     private val mContext: Context
-): PagingDataAdapter<DateSeparatedItem<FoodEntry>, FoodEntryItemHolder> (
+): PagingDataAdapter<DateSeparatedItem, FoodEntryItemHolder> (
     DateSeparatedItemComparator()
 ) {
 

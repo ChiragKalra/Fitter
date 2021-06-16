@@ -12,10 +12,10 @@ import androidx.paging.insertSeparators
 import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bruhascended.fitapp.databinding.FragmentJournalFoodBinding
-import com.bruhascended.fitapp.util.datetime.DateSeparatedItem
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.util.*
 
 class FoodJournalFragment: Fragment() {
 
@@ -40,21 +40,33 @@ class FoodJournalFragment: Fragment() {
             adapter = mAdaptor
         }
 
+        val separatorMap = hashMapOf<Date, com.bruhascended.fitapp.ui.foodjournal.DateSeparatedItem>()
+
         val dateSeparated = viewModel.foodEntries
-            .map { pagingData -> pagingData.map { DateSeparatedItem(item = it) } }
+            .map { pagingData -> pagingData.map { com.bruhascended.fitapp.ui.foodjournal.DateSeparatedItem(item = it) } }
             .map {
                 it.insertSeparators{ after, before ->
                     val afterDate = after?.item?.entry?.date
                     val beforeDate = before?.item?.entry?.date
-                    when {
-                        beforeDate == null ->
+                    if (beforeDate == null) {
+                        null
+                    } else {
+                        if (!separatorMap.containsKey(beforeDate)) {
+                            separatorMap[beforeDate] = com.bruhascended.fitapp.ui.foodjournal.DateSeparatedItem(
+                                separator = beforeDate,
+                            )
+                        }
+                        separatorMap[beforeDate]?.apply {
+                            totalCalories += before.item.entry.calories
+                            before.item.food.nutrientInfo.forEach { (key, item) ->
+                                totalNutrients[key] = item + (totalNutrients[key] ?: 0.0)
+                            }
+                        }
+                        if (afterDate == null || afterDate > beforeDate) {
+                            separatorMap[beforeDate]
+                        } else {
                             null
-                        afterDate == null ->
-                            DateSeparatedItem(separator = beforeDate)
-                        afterDate > beforeDate ->
-                            DateSeparatedItem(separator = beforeDate)
-                        else ->
-                            null
+                        }
                     }
                 }
             }

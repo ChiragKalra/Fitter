@@ -3,13 +3,13 @@ package com.bruhascended.db.food.types
 import android.content.Context
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
-
-import com.bruhascended.db.R.plurals.*
-import com.bruhascended.db.R.string.*
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
 import kotlin.math.floor
+
+import com.bruhascended.db.R.plurals.*
+import com.bruhascended.db.R.string.*
 
 
 enum class QuantityType (

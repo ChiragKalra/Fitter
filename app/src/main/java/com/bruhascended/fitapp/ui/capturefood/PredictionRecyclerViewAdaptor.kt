@@ -20,12 +20,11 @@ class PredictionRecyclerViewAdaptor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PredictionViewHolder {
         return PredictionViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(
-                    R.layout.item_food_prediction,
-                    parent,
-                    false
-                )
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.item_food_prediction,
+                parent,
+                false
+            )
         )
     }
 
