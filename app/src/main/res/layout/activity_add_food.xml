@@ -35,7 +35,7 @@
 
         <include
             android:id="@+id/content"
-            layout="@layout/activity_add_food_content" />
+            layout="@layout/layout_add_food_content" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatingActionButton"

@@ -89,20 +89,20 @@ class AddFoodActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener 
 
         //setUp Amount drop down
         val amounts_adapter =
-            CustomArrayAdapter(this, R.layout.meal_type_drop_down, viewModel.default_types)
+            CustomArrayAdapter(this, R.layout.view_dropdown_mealtype, viewModel.default_types)
         binding.content.amountDropdown.setAdapter(amounts_adapter)
 
         //setUp mealType drop down
         val mealTypes = MealType.values()
         val meal_dropdown = Array(mealTypes.size) { mealTypes[it].getString(this) }
         val meal_dropdown_adapter =
-            CustomArrayAdapter(this, R.layout.meal_type_drop_down, meal_dropdown)
+            CustomArrayAdapter(this, R.layout.view_dropdown_mealtype, meal_dropdown)
         binding.content.mealType.setAdapter(meal_dropdown_adapter)
 
         // live data observer for drop down
         viewModel.type_arr.observe({ lifecycle }) {
             val amounts_adapter =
-                CustomArrayAdapter(this, R.layout.meal_type_drop_down, it.toTypedArray())
+                CustomArrayAdapter(this, R.layout.view_dropdown_mealtype, it.toTypedArray())
             binding.content.amountDropdown.setAdapter(amounts_adapter)
         }
 

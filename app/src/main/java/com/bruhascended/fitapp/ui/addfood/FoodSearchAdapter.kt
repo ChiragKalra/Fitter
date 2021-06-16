@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.fitapp.R
-import com.bruhascended.fitapp.databinding.FoodsListItemBinding
+import com.bruhascended.fitapp.databinding.ItemFoodsListBinding
 import com.bumptech.glide.Glide
 
 class FoodSearchAdapter(val itemClicked: (food_hint: Hint?) -> Unit) :
@@ -29,12 +29,12 @@ class FoodSearchAdapter(val itemClicked: (food_hint: Hint?) -> Unit) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodViewHolder {
         return FoodViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.foods_list_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_foods_list, parent, false)
         )
     }
 
     override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
-        FoodsListItemBinding.bind(holder.itemView).apply {
+        ItemFoodsListBinding.bind(holder.itemView).apply {
             val hint = getItem(position)
             foodName.text = hint.food?.label
             tellBranded.text = hint.food?.brand
