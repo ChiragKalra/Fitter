@@ -28,6 +28,7 @@
 
         <!-- Background Colors -->
         <item name="backgroundColor">@color/white_700</item>
+        <item name="headerBackgroundColor">@color/white_1000</item>
         <item name="translucentBackgroundColor">@color/translucent_white_700</item>
         <item name="trackbarBackgroundColor">@color/white_200</item>
         <item name="colorOnPrimary">?backgroundColor</item>
@@ -45,6 +46,12 @@
         <item name="android:textColor">@color/black_700</item>
         <item name="android:textColorSecondary">@color/black_500</item>
         <item name="android:textColorHint">@color/blue_500</item>
+
+        <!-- Element Colors -->
+        <item name="colorControlPurple">@color/purple_700</item>
+        <item name="colorControlGreen">@color/green_700</item>
+        <item name="colorControlBlue">@color/blue_700</item>
+        <item name="colorControlRed">@color/red_700</item>
 
         <!-- Widget Themes -->
         <item name="newFabStyle">@style/LightTheme.NewFabTheme</item>
@@ -124,6 +131,7 @@
 
         <!-- Background Colors -->
         <item name="backgroundColor">@color/black_700</item>
+        <item name="headerBackgroundColor">@color/black_1000</item>
         <item name="translucentBackgroundColor">@color/translucent_black_700</item>
         <item name="trackbarBackgroundColor">@color/black_200</item>
         <item name="colorOnPrimary">?backgroundColor</item>
@@ -140,6 +148,12 @@
         <item name="android:textColor">@color/white_700</item>
         <item name="android:textColorSecondary">@color/white_500</item>
         <item name="android:textColorHint">@color/blue_200</item>
+
+        <!-- Element Colors -->
+        <item name="colorControlPurple">@color/purple_200</item>
+        <item name="colorControlGreen">@color/green_200</item>
+        <item name="colorControlBlue">@color/blue_200</item>
+        <item name="colorControlRed">@color/red_200</item>
 
         <!-- Widget Themes -->
         <item name="newFabStyle">@style/DarkTheme.NewFabTheme</item>
@@ -184,8 +198,8 @@
         <item name="android:colorAccent">@color/blue_700</item>
         <item name="colorControlNormal">@color/blue_200</item>
         <item name="colorControlActivated">@color/blue_500</item>
-        <item name="android:textColorHint">@color/purple_500</item>
-        <item name="android:textColorPrimary">@color/purple_500</item>
+        <item name="android:textColorHint">@color/blue_500</item>
+        <item name="android:textColorPrimary">@color/blue_200</item>
     </style>
 
     <style name="DarkTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">

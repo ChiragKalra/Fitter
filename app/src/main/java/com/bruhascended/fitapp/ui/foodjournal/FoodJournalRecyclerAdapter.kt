@@ -7,10 +7,15 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.db.food.entities.FoodEntry
+import com.bruhascended.db.food.types.NutrientType
+import com.bruhascended.db.food.types.QuantityType
+import com.bruhascended.db.food.types.QuantityType.Companion.doubleToString
+import com.bruhascended.db.R.string.calorie_count
 import com.bruhascended.fitapp.databinding.ItemFoodEntryBinding
-import com.bruhascended.fitapp.databinding.ItemSeparatorDateBinding
+import com.bruhascended.fitapp.databinding.ItemSeparatorFoodentryBinding
 import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEntryItemHolder
-import com.bruhascended.fitapp.util.DateTimePresenter
+import com.bruhascended.fitapp.util.AnimationDuration
+import java.lang.IndexOutOfBoundsException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,7 +30,7 @@ class FoodJournalRecyclerAdapter (
     class FoodEntryItemHolder (
         val root: View,
         val itemBinding: ItemFoodEntryBinding? = null,
-        val separatorBinding: ItemSeparatorDateBinding? = null,
+        val separatorBinding: ItemSeparatorFoodentryBinding? = null,
     ) : RecyclerView.ViewHolder(root)
 
     fun setOnItemClickListener (listener: ((foodEntry: FoodEntry) -> Unit)?) {
@@ -45,7 +50,7 @@ class FoodJournalRecyclerAdapter (
             )
             FoodEntryItemHolder(binding.root, itemBinding = binding)
         } else {
-            val binding = ItemSeparatorDateBinding.inflate(
+            val binding = ItemSeparatorFoodentryBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -57,23 +62,78 @@ class FoodJournalRecyclerAdapter (
     override fun onBindViewHolder (holder: FoodEntryItemHolder, position: Int) {
         val item = getItem(position) ?: return
         val foodEntry = item.item
-        if (foodEntry != null) {
+        if (item.isSeparator && item.separator != null) {
+            holder.separatorBinding?.apply {
+                textviewDate.text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    .format(item.separator)
+
+                textviewCalories.text = mContext.getString(
+                    calorie_count,
+                    doubleToString(item.totalCalories)
+                )
+                // TODO: Set Using User Preference
+                progressbarCalories.apply {
+                    progress = 0f
+                    progressMax = 1800f
+                    setProgressWithAnimation(item.totalCalories.toFloat())
+                }
+
+                item.totalNutrients.forEach { (type, value) ->
+                    if (type == null) return@forEach
+                    when (type) {
+                        NutrientType.Protein -> textviewProteinGram
+                        NutrientType.Carbs -> textviewCarbsGram
+                        NutrientType.Fiber -> textviewFiberGram
+                        NutrientType.Fat -> textviewFatGram
+                    }.text = QuantityType.Gram.toString(mContext, value)
+
+                    when (type) {
+                        NutrientType.Protein -> progressbarProtein
+                        NutrientType.Carbs -> progressbarCarbs
+                        NutrientType.Fiber -> progressbarFiber
+                        NutrientType.Fat -> progressbarFat
+                    }.apply {
+                        // TODO: Set Using User Preference
+                        progressMax = 100f
+                        progress = 0f
+                        setProgressWithAnimation(value.toFloat(), AnimationDuration.VERY_LONG.ms)
+                    }
+                }
+            }
+        } else if (foodEntry != null) {
             val food = foodEntry.food
             val entry = foodEntry.entry
             holder.itemBinding?.apply {
-                textviewTime.text = DateTimePresenter(mContext, entry.timeInMillis).condensedTime
-                textviewCalories.text = entry.calories.toString()
+                textviewMeal.text = entry.mealType.getString(mContext)
+                textviewCalories.text = mContext.getString(
+                    calorie_count,
+                    doubleToString(entry.calories)
+                )
                 textviewFoodName.text = food.foodName
                 textviewQuantity.text = entry.quantityType.toString(mContext, entry.quantity)
+
+                val weight = entry.quantity * (food.weightInfo[entry.quantityType] ?: .0) / 100.0
+                food.nutrientInfo.forEach { (type, value) ->
+                    if (type == null) return@forEach
+                    when (type) {
+                        NutrientType.Protein -> textviewProteinGram
+                        NutrientType.Carbs -> textviewCarbsGram
+                        NutrientType.Fiber -> textviewFiberGram
+                        NutrientType.Fat -> textviewFatGram
+                    }.text = QuantityType.Gram.toString(mContext, value*weight)
+                }
 
                 root.setOnClickListener {
                     mOnItemClickListener?.invoke(foodEntry)
                 }
-            }
-        } else if (item.separator != null) {
-            holder.separatorBinding?.apply {
-                textviewDate.text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                    .format(item.separator)
+
+                val shouldDisplayDivider = try {
+                    getItem(position + 1)?.isSeparator == false
+                } catch (e: IndexOutOfBoundsException) {
+                    false
+                }
+                bottomDivider.visibility = if (shouldDisplayDivider)
+                    View.VISIBLE else View.INVISIBLE
             }
         }
     }

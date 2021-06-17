@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="colorControlPurple" format="reference"/>
+    <attr name="colorControlBlue" format="reference"/>
+    <attr name="colorControlRed" format="reference"/>
+    <attr name="colorControlGreen" format="reference"/>
     <attr name="selectedItemBackground" format="reference"/>
     <attr name="headingTextColor" format="reference"/>
     <attr name="translucentBackgroundColor" format="reference"/>
     <attr name="trackbarBackgroundColor" format="reference"/>
+    <attr name="headerBackgroundColor" format="reference"/>
 
     <attr name="newFabStyle" format="reference"/>
     <attr name="closeFabStyle" format="reference"/>

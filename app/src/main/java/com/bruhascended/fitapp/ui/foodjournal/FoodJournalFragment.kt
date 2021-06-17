@@ -40,10 +40,10 @@ class FoodJournalFragment: Fragment() {
             adapter = mAdaptor
         }
 
-        val separatorMap = hashMapOf<Date, com.bruhascended.fitapp.ui.foodjournal.DateSeparatedItem>()
+        val separatorMap = hashMapOf<Date, DateSeparatedItem>()
 
         val dateSeparated = viewModel.foodEntries
-            .map { pagingData -> pagingData.map { com.bruhascended.fitapp.ui.foodjournal.DateSeparatedItem(item = it) } }
+            .map { pagingData -> pagingData.map { DateSeparatedItem(item = it) } }
             .map {
                 it.insertSeparators{ after, before ->
                     val afterDate = after?.item?.entry?.date
@@ -52,14 +52,19 @@ class FoodJournalFragment: Fragment() {
                         null
                     } else {
                         if (!separatorMap.containsKey(beforeDate)) {
-                            separatorMap[beforeDate] = com.bruhascended.fitapp.ui.foodjournal.DateSeparatedItem(
+                            separatorMap[beforeDate] = DateSeparatedItem(
                                 separator = beforeDate,
                             )
                         }
-                        separatorMap[beforeDate]?.apply {
-                            totalCalories += before.item.entry.calories
-                            before.item.food.nutrientInfo.forEach { (key, item) ->
-                                totalNutrients[key] = item + (totalNutrients[key] ?: 0.0)
+                        if (before.item.food.weightInfo.containsKey(before.item.entry.quantityType)) {
+                            separatorMap[beforeDate]?.apply {
+                                totalCalories += before.item.entry.calories
+                                val weight =
+                                    before.item.entry.quantity *
+                                            (before.item.food.weightInfo[before.item.entry.quantityType] ?: .0)
+                                before.item.food.nutrientInfo.forEach { (key, item) ->
+                                    totalNutrients[key] = item*weight/100.0 + (totalNutrients[key] ?: 0.0)
+                                }
                             }
                         }
                         if (afterDate == null || afterDate > beforeDate) {

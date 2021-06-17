@@ -10,7 +10,6 @@
     <string name="other_meal_type">Other</string>
 
     <!-- Nutrients -->
-    <string name="energy">Energy</string>
     <string name="carbs">Carbs</string>
     <string name="fat">Fat</string>
     <string name="fiber">Fiber</string>

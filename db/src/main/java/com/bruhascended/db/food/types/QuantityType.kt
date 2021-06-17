@@ -25,18 +25,20 @@ enum class QuantityType (
     Whole(quantity_whole, whole),
     Cup(quantity_cup, cup);
 
-    private fun doubleToString(d: Double): String {
-        return DecimalFormat(
-            "0",
-            DecimalFormatSymbols.getInstance(Locale.getDefault())
-        ).apply {
-            maximumFractionDigits = 2
-        }.format(d)
+    companion object {
+        fun doubleToString(d: Double): String {
+            return DecimalFormat(
+                "0",
+                DecimalFormatSymbols.getInstance(Locale.getDefault())
+            ).apply {
+                maximumFractionDigits = 2
+            }.format(d)
+        }
     }
 
     fun toString(context: Context, quantity: Double) : String {
         return if (quantity == floor(quantity)) {
-            context.resources.getQuantityString(pluralsRes, quantity.toInt())
+            context.resources.getQuantityString(pluralsRes, quantity.toInt(), quantity.toInt())
         } else {
             context.getString(stringRes, doubleToString(quantity))
         }

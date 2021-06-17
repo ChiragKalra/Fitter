@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="ounce">
-        <item quantity="other">%d Oz</item>
+        <item quantity="other">%d oz</item>
     </plurals>
-    <string name="quantity_ounce">%1$s Oz</string>
+    <string name="quantity_ounce">%1$s oz</string>
 
     <plurals name="gram">
-        <item quantity="other">%d Gm</item>
+        <item quantity="other">%d gm</item>
     </plurals>
-    <string name="quantity_gram">%1$s Oz</string>
+    <string name="quantity_gram">%1$s gm</string>
 
     <plurals name="ml">
         <item quantity="other">%d ml</item>
@@ -31,4 +31,6 @@
         <item quantity="other">%d cups</item>
     </plurals>
     <string name="quantity_cup">%1$s cups</string>
+
+    <string name="calorie_count">%1$s kcal</string>
 </resources>
