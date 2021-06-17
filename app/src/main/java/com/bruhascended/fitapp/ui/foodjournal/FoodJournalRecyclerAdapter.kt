@@ -14,7 +14,7 @@ import com.bruhascended.db.R.string.calorie_count
 import com.bruhascended.fitapp.databinding.ItemFoodEntryBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorFoodentryBinding
 import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEntryItemHolder
-import com.bruhascended.fitapp.util.AnimationDuration
+import com.bruhascended.fitapp.util.*
 import java.lang.IndexOutOfBoundsException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,10 +28,12 @@ class FoodJournalRecyclerAdapter (
     private var mOnItemClickListener: ((foodEntry: FoodEntry) -> Unit)? = null
 
     class FoodEntryItemHolder (
-        val root: View,
+        root: View,
         val itemBinding: ItemFoodEntryBinding? = null,
         val separatorBinding: ItemSeparatorFoodentryBinding? = null,
-    ) : RecyclerView.ViewHolder(root)
+    ) : RecyclerView.ViewHolder(root) {
+        var layoutNutrientsWrapHeight = root.context.toPx(36).toInt()
+    }
 
     fun setOnItemClickListener (listener: ((foodEntry: FoodEntry) -> Unit)?) {
         mOnItemClickListener = listener
@@ -126,6 +128,19 @@ class FoodJournalRecyclerAdapter (
                 root.setOnClickListener {
                     mOnItemClickListener?.invoke(foodEntry)
                 }
+
+                var expanded = false
+                layoutNutrients.layoutParams = layoutNutrients.layoutParams.apply {
+                    height = 0
+                }
+                buttonExpand.setOnClickListener {
+                    layoutNutrients.animateHeightTo(
+                        if (expanded) 0 else holder.layoutNutrientsWrapHeight
+                    )
+                    buttonExpand.animateScaleY(if (expanded) 1f else -1f)
+                    expanded = !expanded
+                }
+
 
                 val shouldDisplayDivider = try {
                     getItem(position + 1)?.isSeparator == false

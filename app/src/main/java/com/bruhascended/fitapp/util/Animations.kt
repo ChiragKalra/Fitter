@@ -47,12 +47,38 @@ fun ImageView.animateTintColor (
     return this
 }
 
+fun View.animateHeightTo (
+    height: Int, duration: AnimationDuration = AnimationDuration.SHORT
+) {
+    val valueAnimator = ValueAnimator.ofInt(measuredHeight, height)
+    valueAnimator.duration = duration.ms
+    valueAnimator.addUpdateListener {
+        val animatedValue = valueAnimator.animatedValue as Int
+        layoutParams = layoutParams.also {
+            it.height = animatedValue
+        }
+    }
+    valueAnimator.start()
+}
+
 fun View.animateRotation (
         degrees: Float, duration: AnimationDuration = AnimationDuration.SHORT
 ): View {
     animate()
         .setDuration(duration.ms)
         .rotation(degrees)
+        .setListener(null)
+        .start()
+    return this
+}
+
+
+fun View.animateScaleY (
+        scale: Float, duration: AnimationDuration = AnimationDuration.SHORT
+): View {
+    animate()
+        .setDuration(duration.ms)
+        .scaleY(scale)
         .setListener(null)
         .start()
     return this
