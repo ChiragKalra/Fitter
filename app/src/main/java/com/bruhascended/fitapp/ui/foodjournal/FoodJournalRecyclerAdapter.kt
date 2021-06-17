@@ -133,6 +133,7 @@ class FoodJournalRecyclerAdapter (
                 layoutNutrients.layoutParams = layoutNutrients.layoutParams.apply {
                     height = 0
                 }
+                buttonExpand.scaleY = 1f
                 buttonExpand.setOnClickListener {
                     layoutNutrients.animateHeightTo(
                         if (expanded) 0 else holder.layoutNutrientsWrapHeight
