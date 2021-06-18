@@ -28,7 +28,7 @@
 
         <!-- Background Colors -->
         <item name="backgroundColor">@color/white_700</item>
-        <item name="headerBackgroundColor">@color/white_1000</item>
+        <item name="headerBackgroundColor">@color/white_900</item>
         <item name="translucentBackgroundColor">@color/translucent_white_700</item>
         <item name="trackbarBackgroundColor">@color/white_200</item>
         <item name="colorOnPrimary">?backgroundColor</item>
@@ -131,7 +131,7 @@
 
         <!-- Background Colors -->
         <item name="backgroundColor">@color/black_700</item>
-        <item name="headerBackgroundColor">@color/black_1000</item>
+        <item name="headerBackgroundColor">@color/black_900</item>
         <item name="translucentBackgroundColor">@color/translucent_black_700</item>
         <item name="trackbarBackgroundColor">@color/black_200</item>
         <item name="colorOnPrimary">?backgroundColor</item>
