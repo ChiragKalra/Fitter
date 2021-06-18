@@ -17,7 +17,7 @@
         <TextView
             android:id="@+id/textview_meal"
             tools:text="Breakfast"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textColor="?android:textColorSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         <TextView
             android:id="@+id/textview_calories"
             tools:text="200 kcal"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/textview_meal"

@@ -15,7 +15,6 @@ import com.bruhascended.fitapp.databinding.ItemFoodEntryBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorFoodentryBinding
 import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEntryItemHolder
 import com.bruhascended.fitapp.util.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class FoodJournalRecyclerAdapter (
@@ -65,8 +64,7 @@ class FoodJournalRecyclerAdapter (
         val foodEntry = item.item
         if (item.isSeparator && item.separator != null) {
             holder.separatorBinding?.apply {
-                textviewDate.text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                    .format(item.separator)
+                textviewDate.text = DateTimePresenter(mContext, item.separator.time).fullDate
 
                 textviewCalories.text = mContext.getString(
                     calorie_count,
