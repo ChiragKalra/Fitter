@@ -23,7 +23,14 @@ enum class QuantityType (
     Ounce(quantity_ounce, ounce),
     Serving(quantity_serving, serving),
     Whole(quantity_whole, whole),
-    Cup(quantity_cup, cup);
+    Cup(quantity_cup, cup),
+    Pound(quantity_pound, pound),
+    KG(quantity_kg, kg),
+    Liter(quantity_liter, liter),
+    Gallon(quantity_gallon, gallon),
+    Tablespoon(quantity_tablespoon, tablespoon),
+    Teaspoon(quantity_teaspoon, teaspoon),
+    Pint(quantity_pint, pint);
 
     companion object {
         fun doubleToString(d: Double): String {

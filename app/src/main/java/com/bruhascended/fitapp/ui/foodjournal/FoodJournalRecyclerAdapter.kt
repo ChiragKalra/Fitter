@@ -15,7 +15,6 @@ import com.bruhascended.fitapp.databinding.ItemFoodEntryBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorFoodentryBinding
 import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEntryItemHolder
 import com.bruhascended.fitapp.util.*
-import java.lang.IndexOutOfBoundsException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -85,14 +84,12 @@ class FoodJournalRecyclerAdapter (
                     when (type) {
                         NutrientType.Protein -> textviewProteinGram
                         NutrientType.Carbs -> textviewCarbsGram
-                        NutrientType.Fiber -> textviewFiberGram
                         NutrientType.Fat -> textviewFatGram
                     }.text = QuantityType.Gram.toString(mContext, value)
 
                     when (type) {
                         NutrientType.Protein -> progressbarProtein
                         NutrientType.Carbs -> progressbarCarbs
-                        NutrientType.Fiber -> progressbarFiber
                         NutrientType.Fat -> progressbarFat
                     }.apply {
                         // TODO: Set Using User Preference
@@ -114,13 +111,12 @@ class FoodJournalRecyclerAdapter (
                 textviewFoodName.text = food.foodName
                 textviewQuantity.text = entry.quantityType.toString(mContext, entry.quantity)
 
-                val weight = entry.quantity * (food.weightInfo[entry.quantityType] ?: .0) / 100.0
+                val weight = entry.quantity * (food.weightInfo[entry.quantityType] ?: .0)
                 food.nutrientInfo.forEach { (type, value) ->
                     if (type == null) return@forEach
                     when (type) {
                         NutrientType.Protein -> textviewProteinGram
                         NutrientType.Carbs -> textviewCarbsGram
-                        NutrientType.Fiber -> textviewFiberGram
                         NutrientType.Fat -> textviewFatGram
                     }.text = QuantityType.Gram.toString(mContext, value*weight)
                 }
@@ -141,15 +137,6 @@ class FoodJournalRecyclerAdapter (
                     buttonExpand.animateScaleY(if (expanded) 1f else -1f)
                     expanded = !expanded
                 }
-
-
-                val shouldDisplayDivider = try {
-                    getItem(position + 1)?.isSeparator == false
-                } catch (e: IndexOutOfBoundsException) {
-                    false
-                }
-                bottomDivider.visibility = if (shouldDisplayDivider)
-                    View.VISIBLE else View.INVISIBLE
             }
         }
     }
