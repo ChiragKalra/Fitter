@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
+        <activity android:name=".ui.addFood.AddCustomFood"></activity>
         <activity
             android:name=".ui.addFood.FoodDetailsActivity"
             android:parentActivityName=".ui.addfood.FoodSearchActivity" />
