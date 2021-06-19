@@ -19,7 +19,7 @@ enum class QuantityType (
     val pluralsRes: Int
 ) {
     Gram(quantity_gram, gram),
-    ML(quantity_ml, ml),
+    Milliliter(quantity_ml, ml),
     Ounce(quantity_ounce, ounce),
     Serving(quantity_serving, serving),
     Whole(quantity_whole, whole),

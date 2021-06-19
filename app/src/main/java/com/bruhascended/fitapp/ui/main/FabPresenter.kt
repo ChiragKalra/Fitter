@@ -8,19 +8,20 @@ import com.bruhascended.fitapp.ui.addfood.AddFoodActivity
 import com.bruhascended.fitapp.ui.addworkout.AddWorkoutActivity
 import com.bruhascended.fitapp.ui.capturefood.CaptureFoodActivity
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
+import com.bruhascended.fitapp.ui.addFoodv2.FoodSearchActivityv2
 import com.bruhascended.fitapp.ui.logweight.LogWeightActivity
 import com.bruhascended.fitapp.util.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class FabPresenter (
+class FabPresenter(
     private val mActivity: Activity,
     private val binding: ActivityMainBinding
 ) {
 
     // onClick destinations
-    private val actionDestinations = arrayOf (
+    private val actionDestinations = arrayOf(
         CaptureFoodActivity::class.java,
-        AddFoodActivity::class.java,
+        FoodSearchActivityv2::class.java,
         AddWorkoutActivity::class.java,
         LogWeightActivity::class.java
     )
@@ -31,10 +32,10 @@ class FabPresenter (
 
     init {
         binding.fabsLayout.apply {
-            actionButtons = arrayOf (
+            actionButtons = arrayOf(
                 captureFoodButton, addFoodButton, addWorkoutButton, addWeightButton
             )
-            actionDescriptions = arrayOf (
+            actionDescriptions = arrayOf(
                 textCapture, textFood, textWorkout, textWeight
             )
         }
@@ -66,7 +67,7 @@ class FabPresenter (
         binding.fabsLayout.root.isVisible = true
     }
 
-    private fun setupIntents () {
+    private fun setupIntents() {
         // attach destination intents to FABs
         for (i in 0..3) {
             actionButtons[i].setOnClickListener {
@@ -76,7 +77,7 @@ class FabPresenter (
         }
     }
 
-    private fun setupEntryAndExit () {
+    private fun setupEntryAndExit() {
         binding.fabsLayout.apply {
             // on show FAB buttons
             binding.addActionButton.setOnClickListener {

@@ -1,11 +1,14 @@
 package com.bruhascended.api.models.foodsv2
 
+import com.squareup.moshi.Json
 import java.io.Serializable
 
 data class Nutrients(
-    val ENERC_KCAL: Double?
-//    val CHOCDF: Double?,
-//    val FAT: Double?,
-//    val FIBTG: Double?,
-//    val PROCNT: Double?
-): Serializable
+    @Json(name = "ENERC_KCAL") val Energy: Double,
+    @Json(name = "CHOCDF") val Carbs: Double,
+    @Json(name = "FAT") val Fat: Double,
+    @Json(name = "FIBTG") val Fiber: Double = 0.0,
+    @Json(name = "PROCNT") val Protein: Double
+) : Serializable {
+    val nutrientList = listOf(Carbs, Fat, Fiber, Protein)
+}

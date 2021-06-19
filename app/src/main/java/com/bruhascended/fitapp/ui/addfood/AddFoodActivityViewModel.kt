@@ -54,7 +54,7 @@ class AddFoodActivityViewModel : ViewModel() {
             // Value Updating
             _default_quantity.postValue("100") // extract as string resource
             _default_type.postValue("Gram(1g)")
-            _per_kcal.postValue(hint.food?.nutrients?.ENERC_KCAL!! / 100)
+            _per_kcal.postValue(hint.food?.nutrients?.Energy!! / 100)
             _FoodName.postValue(hint.food?.label)
             _type_arr.postValue(temp)
         }

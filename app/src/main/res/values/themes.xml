@@ -147,7 +147,7 @@
         <item name="headingTextColor">@color/blue_700</item>
         <item name="android:textColor">@color/white_700</item>
         <item name="android:textColorSecondary">@color/white_500</item>
-        <item name="android:textColorHint">@color/blue_200</item>
+        <item name="android:textColorHint">@color/grey</item>
 
         <!-- Element Colors -->
         <item name="colorControlPurple">@color/purple_200</item>

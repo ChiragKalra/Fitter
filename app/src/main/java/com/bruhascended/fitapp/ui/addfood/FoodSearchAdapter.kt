@@ -12,7 +12,7 @@ import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemFoodsListBinding
 import com.bumptech.glide.Glide
 
-class FoodSearchAdapter(val itemClicked: (food_hint: Hint?) -> Unit) :
+class FoodSearchAdapter(val itemClicked: (food_hint: Hint) -> Unit) :
     ListAdapter<Hint, FoodSearchAdapter.FoodViewHolder>(
         object : DiffUtil.ItemCallback<Hint>() {
             override fun areItemsTheSame(oldItem: Hint, newItem: Hint): Boolean {
@@ -36,11 +36,11 @@ class FoodSearchAdapter(val itemClicked: (food_hint: Hint?) -> Unit) :
     override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
         ItemFoodsListBinding.bind(holder.itemView).apply {
             val hint = getItem(position)
-            foodName.text = hint.food?.label
-            tellBranded.text = hint.food?.brand
+            foodName.text = hint.food.label
+            tellBranded.text = hint.food.brand
             Glide
                 .with(imageView.context)
-                .load(hint.food?.image)
+                .load(hint.food.image)
                 .circleCrop()
                 .placeholder(R.drawable.ic_food_placeholder)
                 .into(imageView)
