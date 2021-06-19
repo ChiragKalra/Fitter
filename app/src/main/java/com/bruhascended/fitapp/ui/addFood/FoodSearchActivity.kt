@@ -1,11 +1,16 @@
 package com.bruhascended.fitapp.ui.addFood
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -21,6 +26,7 @@ class FoodSearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFoodSearchBinding
     private lateinit var FoodsAdapter: FoodSearchAdapter
     private val viewModel: FoodSearchActivityViewModel by viewModels()
+    private lateinit var resultContracts: ActivityResultLauncher<Intent>
 
     companion object {
         const val KEY_FOOD_DATA = "FOOD_DATA"
@@ -29,13 +35,11 @@ class FoodSearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //binding = DataBindingUtil.setContentView(this, R.layout.activity_food_search)
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_food_search)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_food_search)
         setupToolbar(binding.toolbar, home = true)
 
-        //setUp recyclerview
+        setUpResultContract()
         setUpRecyclerview()
-
-        //setUp search
         setUpSearch()
 
         //setUp LiveData Observer for recyclerView list items
@@ -49,6 +53,13 @@ class FoodSearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun setUpResultContract() {
+        resultContracts =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Activity.RESULT_OK) finish()
+            }
+    }
+
     private fun setUpRecyclerview() {
         binding.recyclerviewFoods.apply {
             layoutManager = LinearLayoutManager(this@FoodSearchActivity)
@@ -60,7 +71,7 @@ class FoodSearchActivity : AppCompatActivity() {
     private fun onFoodItemClicked(food_hint: Hint) {
         val intent = Intent(this, FoodDetailsActivity::class.java)
         intent.putExtra(KEY_FOOD_DATA, food_hint)
-        startActivity(intent)
+        resultContracts.launch(intent)
     }
 
     private fun setUpSearch() {

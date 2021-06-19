@@ -1,5 +1,6 @@
 package com.bruhascended.fitapp.ui.addFood
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
@@ -67,8 +68,9 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
     private fun submitData() {
         if (foodDetails.checkIfNull()) {
             viewModel.insertData(binding.content.foodName.text.toString())
+            setResult(Activity.RESULT_OK)
             finish()
-        } else Toast.makeText(this, "Fill all the Details", Toast.LENGTH_SHORT).show()
+        } else Toast.makeText(this, "Fill all the Details", Toast.LENGTH_SHORT).show() //TODO
     }
 
     private fun setUpTextChangeListener() {

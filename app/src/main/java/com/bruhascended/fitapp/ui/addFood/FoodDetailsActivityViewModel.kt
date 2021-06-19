@@ -38,7 +38,7 @@ class FoodDetailsActivityViewModel(application: Application) : ViewModel() {
 
             for (nutrient in NutrientType.values()) {
                 nutrientInfo_map[nutrient] =
-                    hint.food.nutrients.nutrientList[nutrient.ordinal]
+                    hint.food.nutrients.nutrientList[nutrient.ordinal] / 100.0
             } // Creating nutrient Info hash map for food Db
 
             // update the quantity type drop down
@@ -71,7 +71,7 @@ class FoodDetailsActivityViewModel(application: Application) : ViewModel() {
             val food = Food(
                 foodName,
                 foodHint.food.nutrients.Energy / 100.0,
-                QuantityType.Cup,
+                QuantityType.Cup, // TODO THIS COLUMN TO BE REMOBVED FROM FOOD DB
                 weightInfo_map,
                 nutrientInfo_map
             )
@@ -80,7 +80,7 @@ class FoodDetailsActivityViewModel(application: Application) : ViewModel() {
                 NutrientDetails.value?.quantity!!,
                 NutrientDetails.value?.quantityType!!,
                 NutrientDetails.value?.mealType!!,
-                0
+                0 // TODO DATE TO BE CORRECTED
             )
             db.writeEntry(food, entry)
         }
