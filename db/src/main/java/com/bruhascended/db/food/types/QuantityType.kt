@@ -25,7 +25,7 @@ enum class QuantityType (
     Whole(quantity_whole, whole),
     Cup(quantity_cup, cup),
     Pound(quantity_pound, pound),
-    KG(quantity_kg, kg),
+    Kilogram(quantity_kg, kg),
     Liter(quantity_liter, liter),
     Gallon(quantity_gallon, gallon),
     Tablespoon(quantity_tablespoon, tablespoon),

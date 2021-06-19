@@ -20,10 +20,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
         <activity
-            android:name=".ui.addFoodv2.FoodDetailsActivity"
+            android:name=".ui.addFood.FoodDetailsActivity"
             android:parentActivityName=".ui.addfood.FoodSearchActivity" />
         <activity
-            android:name=".ui.addFoodv2.FoodSearchActivityv2"
+            android:name=".ui.addFood.FoodSearchActivity"
             android:parentActivityName=".ui.main.MainActivity" />
         <activity
             android:name=".ui.addfood.FoodSearchActivity"

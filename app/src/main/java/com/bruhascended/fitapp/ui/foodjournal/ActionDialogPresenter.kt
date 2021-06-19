@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AlertDialog
 import com.bruhascended.db.food.entities.FoodEntry
 import com.bruhascended.fitapp.R
-import com.bruhascended.fitapp.ui.addfood.AddFoodActivity
+import com.bruhascended.fitapp.ui.addFood.FoodSearchActivity
 
 class ActionDialogPresenter (
     private val mContext: Context,
@@ -22,7 +22,7 @@ class ActionDialogPresenter (
     private val dialog = AlertDialog.Builder(mContext).setItems(actions) { d, c ->
         when (c) {
             0 -> mContext.startActivity(
-                Intent (mContext, AddFoodActivity::class.java).apply {
+                Intent (mContext, FoodSearchActivity::class.java).apply {
                     putExtra(KEY_FOOD_ENTRY, foodEntry)
                 }
             )

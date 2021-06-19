@@ -1,8 +1,8 @@
-package com.bruhascended.fitapp.ui.addFoodv2
+package com.bruhascended.fitapp.ui.addFood
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.provider.ContactsContract
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
@@ -14,14 +14,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.fitapp.R
-import com.bruhascended.fitapp.databinding.ActivityFoodSearchActivityv2Binding
-import com.bruhascended.fitapp.ui.addfood.FoodSearchAdapter
+import com.bruhascended.fitapp.databinding.ActivityFoodSearchBinding
 import com.bruhascended.fitapp.util.setupToolbar
 
-class FoodSearchActivityv2 : AppCompatActivity() {
-    private lateinit var binding: ActivityFoodSearchActivityv2Binding
+class FoodSearchActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityFoodSearchBinding
     private lateinit var FoodsAdapter: FoodSearchAdapter
-    private val viewModel: FoodSearchActivityv2ViewModel by viewModels()
+    private val viewModel: FoodSearchActivityViewModel by viewModels()
 
     companion object {
         const val KEY_FOOD_DATA = "FOOD_DATA"
@@ -29,7 +28,8 @@ class FoodSearchActivityv2 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_food_search_activityv2)
+        //binding = DataBindingUtil.setContentView(this, R.layout.activity_food_search)
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_food_search)
         setupToolbar(binding.toolbar, home = true)
 
         //setUp recyclerview
@@ -51,7 +51,7 @@ class FoodSearchActivityv2 : AppCompatActivity() {
 
     private fun setUpRecyclerview() {
         binding.recyclerviewFoods.apply {
-            layoutManager = LinearLayoutManager(this@FoodSearchActivityv2)
+            layoutManager = LinearLayoutManager(this@FoodSearchActivity)
             FoodsAdapter = FoodSearchAdapter { onFoodItemClicked(it) }
             adapter = FoodsAdapter
         }

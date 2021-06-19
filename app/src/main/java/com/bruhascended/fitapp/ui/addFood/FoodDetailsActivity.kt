@@ -1,14 +1,14 @@
-package com.bruhascended.fitapp.ui.addFoodv2
+package com.bruhascended.fitapp.ui.addFood
 
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.DatePicker
-import androidx.activity.viewModels
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.db.food.types.MealType
 import com.bruhascended.db.food.types.QuantityType
@@ -17,33 +17,34 @@ import com.bruhascended.fitapp.databinding.ActivityFoodDetailsBinding
 import com.bruhascended.fitapp.util.CustomArrayAdapter
 import com.bruhascended.fitapp.util.FoodNutrientDetails
 import com.bruhascended.fitapp.util.setupToolbar
-import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
 import java.util.*
-import kotlin.collections.ArrayList
 
 class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private lateinit var binding: ActivityFoodDetailsBinding
-    private val viewModel: FoodDetailsActivityViewModel by viewModels()
+    private lateinit var viewModel: FoodDetailsActivityViewModel
     private val foodDetails = FoodNutrientDetails()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_food_details)
         setupToolbar(binding.toolbar, home = true)
+
+        // viewModel
+        val viewModelFactory = FoodDetailsViewModelFactory(application)
+        viewModel =
+            ViewModelProvider(this, viewModelFactory).get(FoodDetailsActivityViewModel::class.java)
         binding.content.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
 
         // setUp intent
         val intent = intent
-        val hint = intent.getSerializableExtra(FoodSearchActivityv2.KEY_FOOD_DATA) as Hint
+        val hint = intent.getSerializableExtra(FoodSearchActivity.KEY_FOOD_DATA) as Hint
         viewModel.setData(hint)
 
         setUpMealDropDown()
         setUpDatePickerDialog()
         setUpQuantityTypeDropDownItemListener()
+        setUpMealTypeDropDownItemListener()
         setUpTextChangeListener()
 
         // setUp live data observer for quantity type drop down
@@ -56,8 +57,19 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
                 )
             )
         }
+
+        // setUp submit FAB click listener
+        binding.submit.setOnClickListener {
+            submitData()
+        }
     }
 
+    private fun submitData() {
+        if (foodDetails.checkIfNull()) {
+            viewModel.insertData(binding.content.foodName.text.toString())
+            finish()
+        } else Toast.makeText(this, "Fill all the Details", Toast.LENGTH_SHORT).show()
+    }
 
     private fun setUpTextChangeListener() {
         binding.content.quantity.addTextChangedListener(object : TextWatcher {
@@ -66,13 +78,21 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 foodDetails.quantity = s.toString().toDouble()
-                if (foodDetails.quantityType != null) viewModel.calculateNutrientData(foodDetails)
+                if (foodDetails.quantityType != null && foodDetails.quantity != null) viewModel.calculateNutrientData(
+                    foodDetails
+                )
             }
 
             override fun afterTextChanged(s: Editable?) {
             }
 
         })
+    }
+
+    private fun setUpMealTypeDropDownItemListener() {
+        binding.content.mealType.setOnItemClickListener { parent, view, position, id ->
+            foodDetails.mealType = MealType.valueOf(parent.getItemAtPosition(position).toString())
+        }
     }
 
     private fun setUpQuantityTypeDropDownItemListener() {

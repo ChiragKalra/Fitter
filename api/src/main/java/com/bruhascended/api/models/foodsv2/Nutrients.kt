@@ -7,8 +7,7 @@ data class Nutrients(
     @Json(name = "ENERC_KCAL") val Energy: Double,
     @Json(name = "CHOCDF") val Carbs: Double,
     @Json(name = "FAT") val Fat: Double,
-    @Json(name = "FIBTG") val Fiber: Double = 0.0,
     @Json(name = "PROCNT") val Protein: Double
 ) : Serializable {
-    val nutrientList = listOf(Carbs, Fat, Fiber, Protein)
+    val nutrientList = listOf(Carbs, Fat, Protein)
 }

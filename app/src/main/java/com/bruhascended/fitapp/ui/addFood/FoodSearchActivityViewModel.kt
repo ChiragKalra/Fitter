@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.ui.addfood
+package com.bruhascended.fitapp.ui.addFood
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -6,18 +6,16 @@ import com.bruhascended.api.models.foodsv2.Foodsv2Response
 import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.fitapp.repository.FdaApi
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FoodSearchActivityViewModel : ViewModel() {
-
+class FoodSearchActivityViewModel: ViewModel() {
     var error = MutableLiveData<String?>()
-    private val _food_hints_list = MutableLiveData<Foodsv2Response?>() // To be corrected
     val food_hints_list = MutableLiveData<List<Hint?>>()
 
 
     fun getFoodsv2(query: String) {
-        CoroutineScope(IO).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = FdaApi.fetchFoodsv2(query)
                 if (response.isSuccessful) processData(response.body()?.hints)
@@ -27,7 +25,7 @@ class FoodSearchActivityViewModel : ViewModel() {
         }
     }
 
-    fun processData(hints: List<Hint>?) {
+    private fun processData(hints: List<Hint>?) {
         food_hints_list.postValue(hints)
     }
 

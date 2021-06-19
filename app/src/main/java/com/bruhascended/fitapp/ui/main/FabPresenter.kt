@@ -4,11 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.bruhascended.fitapp.ui.addfood.AddFoodActivity
+import com.bruhascended.fitapp.databinding.ActivityMainBinding
+import com.bruhascended.fitapp.ui.addFood.FoodSearchActivity
 import com.bruhascended.fitapp.ui.addworkout.AddWorkoutActivity
 import com.bruhascended.fitapp.ui.capturefood.CaptureFoodActivity
-import com.bruhascended.fitapp.databinding.ActivityMainBinding
-import com.bruhascended.fitapp.ui.addFoodv2.FoodSearchActivityv2
 import com.bruhascended.fitapp.ui.logweight.LogWeightActivity
 import com.bruhascended.fitapp.util.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -21,7 +20,7 @@ class FabPresenter(
     // onClick destinations
     private val actionDestinations = arrayOf(
         CaptureFoodActivity::class.java,
-        FoodSearchActivityv2::class.java,
+        FoodSearchActivity::class.java,
         AddWorkoutActivity::class.java,
         LogWeightActivity::class.java
     )
