@@ -32,5 +32,43 @@
     </plurals>
     <string name="quantity_cup">%1$s cups</string>
 
+    <plurals name="pound">
+        <item quantity="one">%d pound</item>
+        <item quantity="other">%d pounds</item>
+    </plurals>
+    <string name="quantity_pound">%1$s pounds</string>
+
+    <plurals name="kg">
+        <item quantity="other">%d kg</item>
+    </plurals>
+    <string name="quantity_kg">%1$s kg</string>
+
+    <plurals name="liter">
+        <item quantity="other">%d l</item>
+    </plurals>
+    <string name="quantity_liter">%1$s l</string>
+
+    <plurals name="gallon">
+        <item quantity="one">%d gallon</item>
+        <item quantity="other">%d gallons</item>
+    </plurals>
+    <string name="quantity_gallon">%1$s gallons</string>
+
+    <plurals name="tablespoon">
+        <item quantity="other">%d tbsp</item>
+    </plurals>
+    <string name="quantity_tablespoon">%1$s tbsp</string>
+
+    <plurals name="teaspoon">
+        <item quantity="other">%d tsp</item>
+    </plurals>
+    <string name="quantity_teaspoon">%1$s tsp</string>
+
+    <plurals name="pint">
+        <item quantity="one">%d pint</item>
+        <item quantity="other">%d pints</item>
+    </plurals>
+    <string name="quantity_pint">%1$s pints</string>
+
     <string name="calorie_count">%1$s kcal</string>
 </resources>

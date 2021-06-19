@@ -7,18 +7,20 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="16dp"
+        android:paddingTop="18dp"
         android:paddingBottom="18dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:elevation="6dp"
-        android:layout_margin="4dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:backgroundTint="?headerBackgroundColor"
         android:background="@drawable/bg_foodjournal_separator">
 
         <TextView
             android:id="@+id/textview_date"
-            tools:text="12/06/2017"
+            tools:text="12 June"
             android:textSize="18sp"
             android:textColor="?android:textColorHint"
             android:layout_width="wrap_content"
@@ -43,7 +45,7 @@
             app:cpb_background_progressbar_color="?trackbarBackgroundColor"
             app:cpb_background_progressbar_width="2dp"
             app:cpb_progress_direction="to_left"
-            app:cpb_progressbar_color="?android:textColor"
+            app:cpb_progressbar_color="?colorControlBlue"
             app:cpb_progressbar_width="4dp"
             app:cpb_round_border="true" />
 
@@ -59,170 +61,134 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
 
-        <!-- Protein -->
-        <TextView
-            android:id="@+id/textview_protein"
-            android:text="@string/protein"
-            android:textSize="16sp"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/layout_nutrient_labels"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
             android:layout_marginTop="16dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
             app:layout_constraintTop_toBottomOf="@id/textview_date"
-            app:layout_constraintStart_toStartOf="@id/progressbar_protein"
-            app:layout_constraintEnd_toEndOf="@id/progressbar_protein"/>
-
-        <com.mikhaellopez.circularprogressbar.CircularProgressBar
-            android:id="@+id/progressbar_protein"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_margin="8dp"
-            app:layout_constraintTop_toBottomOf="@id/textview_protein"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/progressbar_carbs"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            app:cpb_progress="24"
-            app:cpb_background_progressbar_color="?trackbarBackgroundColor"
-            app:cpb_background_progressbar_width="3dp"
-            app:cpb_progress_direction="to_left"
-            app:cpb_progressbar_color="?colorControlBlue"
-            app:cpb_progressbar_width="6dp"
-            app:cpb_round_border="true" />
+            <TextView
+                android:id="@+id/textview_protein"
+                android:text="@string/protein"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/textview_carbs"
+                android:text="@string/carbs"
+                android:textSize="16sp"
+                android:layout_width="0dp"
+                android:textAlignment="center"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/textview_fat"
+                android:text="@string/fat"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
 
-        <TextView
-            android:id="@+id/textview_protein_gram"
-            tools:text="54.3 gm"
-            android:textSize="16sp"
-            android:textColor="?colorControlBlue"
-            android:layout_width="wrap_content"
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout_nutrients"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/progressbar_protein"
-            app:layout_constraintStart_toStartOf="@id/progressbar_protein"
-            app:layout_constraintEnd_toEndOf="@id/progressbar_protein"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <!-- Carbs -->
-        <TextView
-            android:id="@+id/textview_carbs"
-            android:text="@string/carbs"
-            android:textSize="16sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/textview_date"
-            app:layout_constraintStart_toStartOf="@id/progressbar_carbs"
-            app:layout_constraintEnd_toEndOf="@id/progressbar_carbs"/>
-
-        <com.mikhaellopez.circularprogressbar.CircularProgressBar
-            android:id="@+id/progressbar_carbs"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_margin="8dp"
-            app:layout_constraintTop_toBottomOf="@id/textview_carbs"
-            app:layout_constraintStart_toEndOf="@id/progressbar_protein"
-            app:layout_constraintEnd_toStartOf="@id/progressbar_fiber"
-
-            app:cpb_progress="75"
-            app:cpb_background_progressbar_color="?trackbarBackgroundColor"
-            app:cpb_background_progressbar_width="3dp"
-            app:cpb_progress_direction="to_left"
-            app:cpb_progressbar_color="?colorControlGreen"
-            app:cpb_progressbar_width="6dp"
-            app:cpb_round_border="true" />
-
-        <TextView
-            android:id="@+id/textview_carbs_gram"
-            tools:text="104.3 gm"
-            android:textSize="16sp"
-            android:textColor="?colorControlGreen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/progressbar_carbs"
-            app:layout_constraintStart_toStartOf="@id/progressbar_carbs"
-            app:layout_constraintEnd_toEndOf="@id/progressbar_carbs"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <!-- fiber -->
-        <TextView
-            android:id="@+id/textview_fiber"
-            android:text="@string/fiber"
-            android:textSize="16sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/textview_date"
-            app:layout_constraintStart_toStartOf="@id/progressbar_fiber"
-            app:layout_constraintEnd_toEndOf="@id/progressbar_fiber"/>
-
-        <com.mikhaellopez.circularprogressbar.CircularProgressBar
-            android:id="@+id/progressbar_fiber"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_margin="8dp"
-            app:layout_constraintTop_toBottomOf="@id/textview_fiber"
-            app:layout_constraintStart_toEndOf="@id/progressbar_carbs"
-            app:layout_constraintEnd_toStartOf="@id/progressbar_fat"
-
-            app:cpb_progress="54"
-            app:cpb_background_progressbar_color="?trackbarBackgroundColor"
-            app:cpb_background_progressbar_width="3dp"
-            app:cpb_progress_direction="to_left"
-            app:cpb_progressbar_color="?colorControlPurple"
-            app:cpb_progressbar_width="6dp"
-            app:cpb_round_border="true" />
-
-        <TextView
-            android:id="@+id/textview_fiber_gram"
-            tools:text="200.3 gm"
-            android:textSize="16sp"
-            android:textColor="?colorControlPurple"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/progressbar_fiber"
-            app:layout_constraintStart_toStartOf="@id/progressbar_fiber"
-            app:layout_constraintEnd_toEndOf="@id/progressbar_fiber"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-
-        <!-- fat -->
-        <TextView
-            android:id="@+id/textview_fat"
-            android:text="@string/fat"
-            android:textSize="16sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/textview_date"
-            app:layout_constraintStart_toStartOf="@id/progressbar_fat"
-            app:layout_constraintEnd_toEndOf="@id/progressbar_fat"/>
-
-        <com.mikhaellopez.circularprogressbar.CircularProgressBar
-            android:id="@+id/progressbar_fat"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_margin="8dp"
-            app:layout_constraintTop_toBottomOf="@id/textview_fat"
-            app:layout_constraintStart_toEndOf="@id/progressbar_fiber"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:animateLayoutChanges="true"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_nutrient_labels">
 
-            app:cpb_progress="105"
-            app:cpb_background_progressbar_color="?trackbarBackgroundColor"
-            app:cpb_background_progressbar_width="3dp"
-            app:cpb_progress_direction="to_left"
-            app:cpb_progressbar_color="?colorControlRed"
-            app:cpb_progressbar_width="6dp"
-            app:cpb_round_border="true" />
+            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                android:id="@+id/progressbar_protein"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
 
-        <TextView
-            android:id="@+id/textview_fat_gram"
-            tools:text="27.42 gm"
-            android:textSize="16sp"
-            android:textColor="?colorControlRed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/progressbar_fat"
-            app:layout_constraintStart_toStartOf="@id/progressbar_fat"
-            app:layout_constraintEnd_toEndOf="@id/progressbar_fat"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+                app:cpb_progress="75"
+                app:cpb_background_progressbar_color="?trackbarBackgroundColor"
+                app:cpb_background_progressbar_width="2dp"
+                app:cpb_progress_direction="to_left"
+                app:cpb_progressbar_color="?colorControlPurple"
+                app:cpb_progressbar_width="4dp"
+                app:cpb_round_border="true" />
+
+            <TextView
+                android:id="@+id/textview_protein_gram"
+                tools:text="54.3 gm"
+                android:textSize="16sp"
+                android:layout_margin="6dp"
+                android:textColor="?colorControlPurple"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                android:id="@+id/progressbar_carbs"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+
+                app:cpb_progress="75"
+                app:cpb_background_progressbar_color="?trackbarBackgroundColor"
+                app:cpb_background_progressbar_width="2dp"
+                app:cpb_progress_direction="to_left"
+                app:cpb_progressbar_color="?colorControlGreen"
+                app:cpb_progressbar_width="4dp"
+                app:cpb_round_border="true" />
+
+            <TextView
+                android:id="@+id/textview_carbs_gram"
+                tools:text="54.3 gm"
+                android:textSize="16sp"
+                android:layout_margin="6dp"
+                android:textColor="?colorControlGreen"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                android:id="@+id/progressbar_fat"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+
+                app:cpb_progress="75"
+                app:cpb_background_progressbar_color="?trackbarBackgroundColor"
+                app:cpb_background_progressbar_width="2dp"
+                app:cpb_progress_direction="to_left"
+                app:cpb_progressbar_color="?colorControlRed"
+                app:cpb_progressbar_width="4dp"
+                app:cpb_round_border="true" />
+
+            <TextView
+                android:id="@+id/textview_fat_gram"
+                tools:text="54.3 gm"
+                android:textSize="16sp"
+                android:layout_margin="6dp"
+                android:textColor="?colorControlRed"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

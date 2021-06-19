@@ -9,7 +9,9 @@ import com.bruhascended.db.food.types.MealType
 import com.bruhascended.db.food.types.NutrientType
 import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.repository.FoodEntryRepository
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.random.Random
 

@@ -40,6 +40,7 @@ class FoodJournalFragment: Fragment() {
             adapter = mAdaptor
         }
 
+        // TODO fix on item delete updates don't show
         val separatorMap = hashMapOf<Date, DateSeparatedItem>()
 
         val dateSeparated = viewModel.foodEntries
@@ -63,7 +64,7 @@ class FoodJournalFragment: Fragment() {
                                     before.item.entry.quantity *
                                             (before.item.food.weightInfo[before.item.entry.quantityType] ?: .0)
                                 before.item.food.nutrientInfo.forEach { (key, item) ->
-                                    totalNutrients[key] = item*weight/100.0 + (totalNutrients[key] ?: 0.0)
+                                    totalNutrients[key] = item*weight+ (totalNutrients[key] ?: 0.0)
                                 }
                             }
                         }

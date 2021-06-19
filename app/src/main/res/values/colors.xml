@@ -5,12 +5,14 @@
 
     <color name="translucent_black_700">#E01B1B1B</color>
     <color name="black_1000">#FF000000</color>
+    <color name="black_900">#FF191919</color>
     <color name="black_700">#1B1B1B</color>
     <color name="black_500">#3C3C3C</color>
     <color name="black_200">#575757</color>
 
     <color name="translucent_white_700">#E0F3F3F3</color>
     <color name="white_1000">#FFFFFFFF</color>
+    <color name="white_900">#F9F9F9</color>
     <color name="white_700">#FFF3F3F3</color>
     <color name="white_500">#CDCDCD</color>
     <color name="white_200">#AEAEAE</color>

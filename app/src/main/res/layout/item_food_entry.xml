@@ -10,13 +10,14 @@
         android:paddingStart="28dp"
         android:paddingEnd="28dp"
         android:paddingTop="18dp"
+        android:paddingBottom="18dp"
         android:animateLayoutChanges="true"
         android:background="?selectableItemBackground">
 
         <TextView
             android:id="@+id/textview_meal"
             tools:text="Breakfast"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:textColor="?android:textColorSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,7 +27,7 @@
         <TextView
             android:id="@+id/textview_calories"
             tools:text="200 kcal"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/textview_meal"
@@ -36,8 +37,7 @@
         <TextView
             android:id="@+id/textview_food_name"
             tools:text="Sandwich"
-            android:textSize="22sp"
-            android:layout_marginTop="10dp"
+            android:textSize="18sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/textview_meal"
@@ -46,7 +46,7 @@
         <TextView
             android:id="@+id/textview_quantity"
             tools:text="100 Grams"
-            android:textSize="22sp"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -82,7 +82,7 @@
                 tools:text="54.3 gm"
                 android:textSize="16sp"
                 android:layout_margin="6dp"
-                android:textColor="?colorControlBlue"
+                android:textColor="?colorControlPurple"
                 android:textAlignment="center"
                 android:layout_weight="1"
                 android:layout_width="0dp"
@@ -100,17 +100,6 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:id="@+id/textview_fiber_gram"
-                tools:text="54.3 gm"
-                android:textSize="16sp"
-                android:layout_margin="6dp"
-                android:textColor="?colorControlPurple"
-                android:textAlignment="center"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-
-            <TextView
                 android:id="@+id/textview_fat_gram"
                 tools:text="54.3 gm"
                 android:textSize="16sp"
@@ -122,18 +111,6 @@
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
-
-        <View
-            android:id="@+id/bottom_divider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="?android:textColorSecondary"
-            android:alpha="0.2"
-            android:layout_marginTop="18dp"
-            app:layout_constraintTop_toBottomOf="@id/layout_nutrients"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
