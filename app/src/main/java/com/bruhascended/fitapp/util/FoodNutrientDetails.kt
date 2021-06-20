@@ -13,9 +13,13 @@ data class FoodNutrientDetails(
     var mealType: MealType? = null
 ) {
     fun checkIfNull(): Boolean {
+        Energy ?: return false
         quantityType ?: return false
         quantity ?: return false
         mealType ?: return false
         return true
     }
+
+    fun getNutrientList(): MutableList<Double?> = mutableListOf(Carbs, Fat, Protein)
+
 }

@@ -8,8 +8,8 @@ import java.lang.IllegalArgumentException
 class FoodDetailsViewModelFactory(private val application: Application) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(FoodDetailsActivityViewModel::class.java))
-            return FoodDetailsActivityViewModel(application) as T
+        if (modelClass.isAssignableFrom(SharedActivityViewModel::class.java))
+            return SharedActivityViewModel(application) as T
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

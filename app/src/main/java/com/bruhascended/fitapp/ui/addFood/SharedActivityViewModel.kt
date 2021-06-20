@@ -16,9 +16,8 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashMap
 
-class FoodDetailsActivityViewModel(application: Application) : ViewModel() {
+class SharedActivityViewModel(application: Application) : ViewModel() {
     private val db by FoodEntryRepository.Companion.Delegate(application)
     private val weightInfo_map = EnumMap<QuantityType, Double>(QuantityType::class.java)
     private val nutrientInfo_map = EnumMap<NutrientType, Double>(NutrientType::class.java)
@@ -71,7 +70,7 @@ class FoodDetailsActivityViewModel(application: Application) : ViewModel() {
             val food = Food(
                 foodName,
                 foodHint.food.nutrients.Energy / 100.0,
-                QuantityType.Cup, // TODO THIS COLUMN TO BE REMOBVED FROM FOOD DB
+                QuantityType.Cup, // TODO THIS COLUMN TO BE REMOVED FROM FOOD DB
                 weightInfo_map,
                 nutrientInfo_map
             )
@@ -80,6 +79,36 @@ class FoodDetailsActivityViewModel(application: Application) : ViewModel() {
                 NutrientDetails.value?.quantity!!,
                 NutrientDetails.value?.quantityType!!,
                 NutrientDetails.value?.mealType!!,
+                0 // TODO DATE TO BE CORRECTED
+            )
+            db.writeEntry(food, entry)
+        }
+    }
+
+    fun insertDataOffline(foodName: String, foodDetails: FoodNutrientDetails) {
+        CoroutineScope(IO).launch {
+            weightInfo_map[foodDetails.quantityType] = 1.0
+            val nutritionList = foodDetails.getNutrientList()
+            for (value in NutrientType.values()) {
+                if (nutritionList[value.ordinal] != null) {
+                    nutrientInfo_map[value] =
+                        nutritionList[value.ordinal]?.div(foodDetails.quantity!!)
+                }
+            }
+
+            val food =
+                Food(
+                    foodName,
+                    foodDetails.Energy!!,
+                    QuantityType.Cup, // TODO THIS COLUMN TO BE REMOVED FROM FOOD DB
+                    weightInfo_map,
+                    nutrientInfo_map
+                )
+            val entry = Entry(
+                foodDetails.Energy!!,
+                foodDetails.quantity!!,
+                foodDetails.quantityType!!,
+                foodDetails.mealType!!,
                 0 // TODO DATE TO BE CORRECTED
             )
             db.writeEntry(food, entry)

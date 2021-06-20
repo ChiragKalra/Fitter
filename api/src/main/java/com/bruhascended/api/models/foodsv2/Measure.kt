@@ -4,5 +4,5 @@ import java.io.Serializable
 
 data class Measure(
     val label: String,
-    val weight: Double
+    val weight: Double?
 ): Serializable

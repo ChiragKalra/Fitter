@@ -16,7 +16,7 @@ class ExampleUnitTest {
     @Test
     fun fetchFood(){
         runBlocking {
-            val response = FoodClient.fdaApi.getFoodsv2("apple").body()
+            val response = FoodClient.fdaApi.getFoodsv2("banana").body()
         }
     }
 }

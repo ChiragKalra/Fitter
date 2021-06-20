@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.bruhascended.fitapp.ui.addFood.FoodDetailsActivityViewModel" />
+            type="com.bruhascended.fitapp.ui.addFood.SharedActivityViewModel" />
     </data>
 
     <ScrollView

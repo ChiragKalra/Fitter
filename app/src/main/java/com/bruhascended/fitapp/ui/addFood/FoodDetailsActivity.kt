@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +23,7 @@ import java.util.*
 
 class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private lateinit var binding: ActivityFoodDetailsBinding
-    private lateinit var viewModel: FoodDetailsActivityViewModel
+    private lateinit var viewModel: SharedActivityViewModel
     private val foodDetails = FoodNutrientDetails()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +34,7 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         // viewModel
         val viewModelFactory = FoodDetailsViewModelFactory(application)
         viewModel =
-            ViewModelProvider(this, viewModelFactory).get(FoodDetailsActivityViewModel::class.java)
+            ViewModelProvider(this, viewModelFactory).get(SharedActivityViewModel::class.java)
         binding.content.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
 
@@ -79,10 +80,13 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                foodDetails.quantity = s.toString().toDouble()
-                if (foodDetails.quantityType != null && foodDetails.quantity != null) viewModel.calculateNutrientData(
-                    foodDetails
-                )
+                if (!s.isNullOrEmpty()) {
+                    foodDetails.quantity = s.toString().toDouble()
+                    if (foodDetails.quantityType != null && foodDetails.quantity != null)
+                        viewModel.calculateNutrientData(foodDetails)
+                } else{
+                    foodDetails.quantity = null
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {

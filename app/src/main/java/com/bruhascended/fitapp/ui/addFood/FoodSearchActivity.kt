@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -110,5 +111,15 @@ class FoodSearchActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.add_newfoodv2_items, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.manually_add -> {
+                val intent = Intent(this, AddCustomFood::class.java)
+                resultContracts.launch(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
