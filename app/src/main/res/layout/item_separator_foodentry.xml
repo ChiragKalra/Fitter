@@ -7,14 +7,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="18dp"
-        android:paddingBottom="18dp"
+        android:paddingTop="12dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:elevation="6dp"
+        android:elevation="4dp"
         android:layout_marginTop="12dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="0dp"
         android:backgroundTint="?headerBackgroundColor"
         android:background="@drawable/bg_foodjournal_separator">
 
@@ -121,7 +121,7 @@
                 android:layout_height="24dp"
                 android:layout_marginStart="8dp"
 
-                app:cpb_progress="75"
+                app:cpb_progress="0"
                 app:cpb_background_progressbar_color="?trackbarBackgroundColor"
                 app:cpb_background_progressbar_width="2dp"
                 app:cpb_progress_direction="to_left"
@@ -131,6 +131,7 @@
 
             <TextView
                 android:id="@+id/textview_protein_gram"
+                android:text="@string/zero_gm"
                 tools:text="54.3 gm"
                 android:textSize="16sp"
                 android:layout_margin="6dp"
@@ -145,7 +146,7 @@
                 android:layout_height="24dp"
                 android:layout_marginStart="8dp"
 
-                app:cpb_progress="75"
+                app:cpb_progress="0"
                 app:cpb_background_progressbar_color="?trackbarBackgroundColor"
                 app:cpb_background_progressbar_width="2dp"
                 app:cpb_progress_direction="to_left"
@@ -155,6 +156,7 @@
 
             <TextView
                 android:id="@+id/textview_carbs_gram"
+                android:text="@string/zero_gm"
                 tools:text="54.3 gm"
                 android:textSize="16sp"
                 android:layout_margin="6dp"
@@ -169,7 +171,7 @@
                 android:layout_height="24dp"
                 android:layout_marginStart="8dp"
 
-                app:cpb_progress="75"
+                app:cpb_progress="0"
                 app:cpb_background_progressbar_color="?trackbarBackgroundColor"
                 app:cpb_background_progressbar_width="2dp"
                 app:cpb_progress_direction="to_left"
@@ -179,15 +181,27 @@
 
             <TextView
                 android:id="@+id/textview_fat_gram"
-                tools:text="54.3 gm"
-                android:textSize="16sp"
-                android:layout_margin="6dp"
-                android:textColor="?colorControlRed"
-                android:layout_weight="1"
+                android:text="@string/zero_gm"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:layout_weight="1"
+                android:textColor="?colorControlRed"
+                android:textSize="16sp"
+                tools:text="54.3 gm" />
 
         </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="?colorPrimary"
+            android:layout_marginTop="18dp"
+            android:alpha="0.5"
+            app:layout_constraintTop_toBottomOf="@id/layout_nutrients"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

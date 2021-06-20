@@ -124,5 +124,6 @@
     <string name="close_floating_action_buttons">Close Floating Action Buttons</string>
     <string name="toggle_flashlight_button">Toggle flashlight button</string>
     <string name="expand">expand</string>
+    <string name="zero_gm">0 gm</string>
 </resources>
 
