@@ -57,9 +57,11 @@ class FoodJournalFragment: Fragment() {
                                 separator = beforeDate,
                             )
                         }
+                        separatorMap[beforeDate]?.apply {
+                            totalCalories += before.item.entry.calories
+                        }
                         if (before.item.food.weightInfo.containsKey(before.item.entry.quantityType)) {
                             separatorMap[beforeDate]?.apply {
-                                totalCalories += before.item.entry.calories
                                 val weight =
                                     before.item.entry.quantity *
                                             (before.item.food.weightInfo[before.item.entry.quantityType] ?: .0)
