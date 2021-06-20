@@ -9,11 +9,10 @@
     </item>
     <item android:id="@android:id/background">
         <shape>
-            <solid
-                android:color="?backgroundColor"/>
+            <solid android:color="?backgroundColor"/>
             <corners
-                android:topLeftRadius="12dp"
-                android:topRightRadius="12dp"/>
+                android:bottomLeftRadius="12dp"
+                android:bottomRightRadius="12dp"/>
         </shape>
     </item>
 </ripple>
