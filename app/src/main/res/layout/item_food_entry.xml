@@ -15,9 +15,9 @@
         android:paddingTop="18dp"
         android:paddingBottom="18dp"
         android:animateLayoutChanges="true"
-        android:elevation="6dp"
+        android:elevation="4dp"
         android:backgroundTint="?headerBackgroundColor"
-        android:background="@drawable/bg_foodjournal_separator">
+        android:background="@drawable/bg_foodjournal_item">
 
         <TextView
             android:id="@+id/textview_meal"
