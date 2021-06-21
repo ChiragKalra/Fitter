@@ -44,9 +44,9 @@
     <string name="quantity_kg">%1$s kg</string>
 
     <plurals name="liter">
-        <item quantity="other">%d l</item>
+        <item quantity="other">%d L</item>
     </plurals>
-    <string name="quantity_liter">%1$s l</string>
+    <string name="quantity_liter">%1$s L</string>
 
     <plurals name="gallon">
         <item quantity="one">%d gallon</item>

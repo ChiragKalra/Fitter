@@ -107,6 +107,7 @@ class FoodJournalFragment: Fragment() {
                 }
             }
             viewModel.lastItemLiveSet.postValue(newIdSet)
+            binding.recyclerviewFoods.invalidateItemDecorations()
         }
 
         val dateSeparated = viewModel.foodEntries
