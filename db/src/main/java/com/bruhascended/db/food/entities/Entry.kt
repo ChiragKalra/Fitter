@@ -8,7 +8,7 @@ import java.util.*
 
 @Entity
 data class Entry (
-    val calories: Double,
+    val calories: Int,
     val quantity: Double,
     val quantityType: QuantityType,
     val mealType: MealType,

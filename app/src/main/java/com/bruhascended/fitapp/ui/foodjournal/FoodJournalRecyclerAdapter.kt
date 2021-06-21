@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.db.food.entities.FoodEntry
 import com.bruhascended.db.food.types.NutrientType
 import com.bruhascended.db.food.types.QuantityType
-import com.bruhascended.db.food.types.QuantityType.Companion.doubleToString
 import com.bruhascended.db.R.string.calorie_count
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemFoodEntryBinding
@@ -18,11 +17,13 @@ import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEnt
 import com.bruhascended.fitapp.util.*
 import java.util.*
 
+
 class FoodJournalRecyclerAdapter (
     private val mContext: Context
 ): PagingDataAdapter<DateSeparatedItem, FoodEntryItemHolder> (
     DateSeparatedItemComparator()
 ) {
+
     class FoodEntryItemHolder (
         root: View,
         val itemBinding: ItemFoodEntryBinding? = null,
@@ -68,7 +69,7 @@ class FoodJournalRecyclerAdapter (
 
         textviewCalories.text = mContext.getString(
             calorie_count,
-            doubleToString(item.totalCalories)
+            item.totalCalories.toString()
         )
         // TODO: Set Using User Preference
         progressbarCalories.apply {
@@ -98,7 +99,6 @@ class FoodJournalRecyclerAdapter (
         }
     }
 
-
     private fun ItemFoodEntryBinding.presentItem(
         foodEntry: FoodEntry,
         holder: FoodEntryItemHolder,
@@ -110,7 +110,7 @@ class FoodJournalRecyclerAdapter (
         textviewMeal.text = entry.mealType.getString(mContext)
         textviewCalories.text = mContext.getString(
             calorie_count,
-            doubleToString(entry.calories)
+            entry.calories.toString()
         )
         textviewFoodName.text = food.foodName
         textviewQuantity.text = entry.quantityType.toString(mContext, entry.quantity)
@@ -159,8 +159,6 @@ class FoodJournalRecyclerAdapter (
             it.bottomMargin = if (isLastItem) mContext.toPx(12).toInt() else 0
         }
     }
-
-
 
     override fun onBindViewHolder (holder: FoodEntryItemHolder, position: Int) {
         val item = getItem(position) ?: return

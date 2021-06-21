@@ -8,7 +8,7 @@ class DateSeparatedItem(
     val item: FoodEntry? = null,
     val separator: Date? = null
 ) {
-    var totalCalories = 0.0
+    var totalCalories = 0
     val totalNutrients = EnumMap<NutrientType, Double>(NutrientType::class.java)
 
     val isSeparator: Boolean

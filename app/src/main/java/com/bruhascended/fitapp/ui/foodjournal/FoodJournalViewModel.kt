@@ -13,6 +13,7 @@ class FoodJournalViewModel (mApp: Application) : AndroidViewModel(mApp) {
     private val foodEntryRepository by FoodEntryRepository.Companion.Delegate(mApp)
 
     val foodEntries = foodEntryRepository.loadConsumedFoodEntries()
+    val liveFoodEntries = foodEntryRepository.loadLiveFoodEntries()
 
     fun deleteEntry(foodEntry: FoodEntry) {
         CoroutineScope(Dispatchers.IO).launch {

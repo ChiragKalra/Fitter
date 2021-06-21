@@ -71,12 +71,12 @@ class FoodDetailsActivityViewModel(application: Application) : ViewModel() {
             val food = Food(
                 foodName,
                 foodHint.food.nutrients.Energy / 100.0,
-                QuantityType.Cup, // TODO THIS COLUMN TO BE REMOBVED FROM FOOD DB
+                QuantityType.Cup,
                 weightInfo_map,
                 nutrientInfo_map
             )
             val entry = Entry(
-                NutrientDetails.value?.Energy!!,
+                NutrientDetails.value?.Energy!!.toInt(),
                 NutrientDetails.value?.quantity!!,
                 NutrientDetails.value?.quantityType!!,
                 NutrientDetails.value?.mealType!!,
