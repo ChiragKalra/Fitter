@@ -56,4 +56,6 @@ class FoodEntryRepository (
             db.loadFoodEntry().allPaged()
         }.flow
     }
+
+    fun loadLiveFoodEntries(): LiveData<List<FoodEntry>> = db.loadFoodEntry().allLive()
 }

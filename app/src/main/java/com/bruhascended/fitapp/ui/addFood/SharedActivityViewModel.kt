@@ -91,7 +91,7 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
                 nutrientInfo_map
             )
             val entry = Entry(
-                NutrientDetails.value?.Energy!!,
+                NutrientDetails.value?.Energy!!.toInt(),
                 NutrientDetails.value?.quantity!!,
                 NutrientDetails.value?.quantityType!!,
                 NutrientDetails.value?.mealType!!,
@@ -121,7 +121,7 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
                     nutrientInfo_map
                 )
             val entry = Entry(
-                foodDetails.Energy!!,
+                foodDetails.Energy!!.toInt(),
                 foodDetails.quantity!!,
                 foodDetails.quantityType!!,
                 foodDetails.mealType!!,

@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
+
 
 class FoodJournalFragment: Fragment() {
 
@@ -25,7 +28,11 @@ class FoodJournalFragment: Fragment() {
     private lateinit var mAdaptor: FoodJournalRecyclerAdapter
 
     private fun setupRecyclerView() {
-        mAdaptor = FoodJournalRecyclerAdapter(requireContext()).apply {
+        mAdaptor = FoodJournalRecyclerAdapter(
+            requireContext(),
+            viewModel.lastItemLiveSet,
+            viewModel.separatorInfoMap,
+        ).apply {
             setOnItemClickListener {
                 ActionDialogPresenter(
                     requireContext(),
@@ -40,8 +47,41 @@ class FoodJournalFragment: Fragment() {
             adapter = mAdaptor
         }
 
-        // TODO fix on item delete updates don't show
-        val separatorMap = hashMapOf<Date, DateSeparatedItem>()
+        viewModel.liveFoodEntries.observe(viewLifecycleOwner) { all ->
+            val infoMap = HashMap<Date, FoodJournalViewModel.SeparatorInfo>()
+            all.forEach {
+                val date = it.entry.date
+                if (!infoMap.containsKey(date)) {
+                    infoMap[date] = FoodJournalViewModel.SeparatorInfo()
+                }
+                infoMap[date]?.apply {
+                    totalCalories += it.entry.calories
+                    val amountPerQuantity = it.food.weightInfo[it.entry.quantityType]
+                    if (amountPerQuantity != null) {
+                        val amount = it.entry.quantity * amountPerQuantity
+                        it.food.nutrientInfo.forEach { (key, value) ->
+                            totalNutrients[key] = (totalNutrients[key] ?: .0) + value * amount
+                        }
+                    }
+                }
+            }
+            viewModel.separatorInfoMap.postValue(infoMap)
+
+            val allArr = all.toTypedArray()
+            val newIdSet = HashSet<Long>().apply {
+                if (allArr.isNotEmpty()) {
+                    add(allArr.last().entry.entryId!!)
+                }
+                if (allArr.size > 1) {
+                    allArr.slice( 0 until all.size - 1).forEachIndexed { ind, foodEntry ->
+                        if (foodEntry.entry.date != allArr[ind+1].entry.date) {
+                            add(foodEntry.entry.entryId!!)
+                        }
+                    }
+                }
+            }
+            viewModel.lastItemLiveSet.postValue(newIdSet)
+        }
 
         val dateSeparated = viewModel.foodEntries
             .map { pagingData -> pagingData.map { DateSeparatedItem(item = it) } }
@@ -49,32 +89,12 @@ class FoodJournalFragment: Fragment() {
                 it.insertSeparators{ after, before ->
                     val afterDate = after?.item?.entry?.date
                     val beforeDate = before?.item?.entry?.date
-                    if (beforeDate == null) {
+                    if (beforeDate == null || (afterDate != null && afterDate <= beforeDate)) {
                         null
                     } else {
-                        if (!separatorMap.containsKey(beforeDate)) {
-                            separatorMap[beforeDate] = DateSeparatedItem(
-                                separator = beforeDate,
-                            )
-                        }
-                        separatorMap[beforeDate]?.apply {
-                            totalCalories += before.item.entry.calories
-                        }
-                        if (before.item.food.weightInfo.containsKey(before.item.entry.quantityType)) {
-                            separatorMap[beforeDate]?.apply {
-                                val weight =
-                                    before.item.entry.quantity *
-                                            (before.item.food.weightInfo[before.item.entry.quantityType] ?: .0)
-                                before.item.food.nutrientInfo.forEach { (key, item) ->
-                                    totalNutrients[key] = item*weight+ (totalNutrients[key] ?: 0.0)
-                                }
-                            }
-                        }
-                        if (afterDate == null || afterDate > beforeDate) {
-                            separatorMap[beforeDate]
-                        } else {
-                            null
-                        }
+                        DateSeparatedItem(
+                            separator = beforeDate,
+                        )
                     }
                 }
             }
