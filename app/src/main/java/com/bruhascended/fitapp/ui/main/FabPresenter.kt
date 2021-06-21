@@ -89,10 +89,10 @@ class FabPresenter(
                 cancelActionButton.animateRotation(135f).animateFadeIn(1f)
                 backgroundView.animateFadeIn(0.975f)
                 for (actionButton in actionButtons) {
-                    actionButton.animateFadeUpIn(mActivity.toPx(12))
+                    actionButton.animateFadeUpIn(mActivity.toPxFloat(12))
                 }
                 for (textView in actionDescriptions) {
-                    textView.animateFadeUpIn(mActivity.toPx(12))
+                    textView.animateFadeUpIn(mActivity.toPxFloat(12))
                 }
             }
             // on hide fab buttons
@@ -102,10 +102,10 @@ class FabPresenter(
                 cancelActionButton.animateRotation(0f).animateFadeOut()
                 backgroundView.animateFadeOut()
                 for (actionButton in actionButtons) {
-                    actionButton.animateFadeDownOut(mActivity.toPx(12))
+                    actionButton.animateFadeDownOut(mActivity.toPxFloat(12))
                 }
                 for (textView in actionDescriptions) {
-                    textView.animateFadeDownOut(mActivity.toPx(12))
+                    textView.animateFadeDownOut(mActivity.toPxFloat(12))
                 }
             }
             // hide FAB buttons on tap outside
