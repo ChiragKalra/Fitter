@@ -21,8 +21,8 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
     private val db by FoodEntryRepository.Companion.Delegate(application)
     private val weightInfo_map = EnumMap<QuantityType, Double>(QuantityType::class.java)
     private val nutrientInfo_map = EnumMap<NutrientType, Double>(NutrientType::class.java)
-    private lateinit var foodHint: Hint
     val foodName = MutableLiveData<String>()
+    var perEnergy: Double = 0.0
     val NutrientDetails = MutableLiveData<FoodNutrientDetails>()
     val typeArrayItems = MutableLiveData<List<QuantityType>>()
     val setDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
@@ -30,24 +30,38 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
     fun setData(hint: Hint) {
         CoroutineScope(IO).launch {
             foodName.postValue(hint.food.label)
+            perEnergy = hint.food.nutrients.Energy / 100.0
             for (measure in hint.measures) {
-                if (checkout(measure.label)) weightInfo_map[QuantityType.valueOf(measure.label)] =
-                    measure.weight
-            } // Creating weight Info hash map for food Db
+                if (checkout(measure.label)) weightInfo_map[measure.label?.let {
+                    QuantityType.valueOf(it)
+                }] = measure.weight
+            } // Creating weight Info map for food Db
 
             for (nutrient in NutrientType.values()) {
-                nutrientInfo_map[nutrient] =
-                    hint.food.nutrients.nutrientList[nutrient.ordinal] / 100.0
-            } // Creating nutrient Info hash map for food Db
+                hint.food.nutrients.nutrientList[nutrient.ordinal]?.div(100.0).let {
+                    if(it != null) nutrientInfo_map[nutrient] = it
+                }
+
+            } // Creating nutrient Info map for food Db
 
             // update the quantity type drop down
             typeArrayItems.postValue(weightInfo_map.keys.toList())
-
-            foodHint = hint
         }
     }
 
-    private fun checkout(label: String): Boolean {
+    fun setDataFromDb(food: Food) {
+        foodName.postValue(food.foodName)
+        perEnergy = food.calories
+        weightInfo_map.putAll(food.weightInfo) // Creating weight Info map for food Db
+        nutrientInfo_map.putAll(food.nutrientInfo) // Creating nutrient Info map for food Db
+
+        // update the quantity type drop down
+        typeArrayItems.postValue(weightInfo_map.keys.toList())
+
+
+    }
+
+    private fun checkout(label: String?): Boolean {
         for (value in QuantityType.values())
             if (value.toString() == label) return true
         return false
@@ -57,10 +71,10 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
         val factor =
             weightInfo_map[foodDetails.quantityType]?.let { foodDetails.quantity?.times(it) }
         foodDetails.apply {
-            Energy = factor?.times(foodHint.food.nutrients.Energy / 100.0)
-            Protein = factor?.times(foodHint.food.nutrients.Protein / 100.0)
-            Carbs = factor?.times(foodHint.food.nutrients.Carbs / 100.0)
-            Fat = factor?.times(foodHint.food.nutrients.Fat / 100.0)
+            Energy = factor?.times(perEnergy)
+            Protein = nutrientInfo_map[NutrientType.Protein]?.let { factor?.times(it) }
+            Carbs = nutrientInfo_map[NutrientType.Carbs]?.let { factor?.times(it) }
+            Fat = nutrientInfo_map[NutrientType.Fat]?.let { factor?.times(it) }
         }
         NutrientDetails.postValue(foodDetails)
     }
@@ -69,7 +83,7 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
         CoroutineScope(IO).launch {
             val food = Food(
                 foodName,
-                foodHint.food.nutrients.Energy / 100.0,
+                perEnergy,
                 QuantityType.Cup, // TODO THIS COLUMN TO BE REMOVED FROM FOOD DB
                 weightInfo_map,
                 nutrientInfo_map
@@ -85,7 +99,7 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
         }
     }
 
-    fun insertDataOffline(foodName: String, foodDetails: FoodNutrientDetails) {
+    fun insertCustomData(foodName: String, foodDetails: FoodNutrientDetails) {
         CoroutineScope(IO).launch {
             weightInfo_map[foodDetails.quantityType] = 1.0
             val nutritionList = foodDetails.getNutrientList()
@@ -114,4 +128,6 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
             db.writeEntry(food, entry)
         }
     }
+
+
 }

@@ -12,12 +12,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.bruhascended.api.models.foodsv2.Hint
+import com.bruhascended.db.food.entities.Food
 import com.bruhascended.db.food.types.MealType
 import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityFoodDetailsBinding
 import com.bruhascended.fitapp.util.CustomArrayAdapter
 import com.bruhascended.fitapp.util.FoodNutrientDetails
+import com.bruhascended.fitapp.util.MultiViewType
 import com.bruhascended.fitapp.util.setupToolbar
 import java.util.*
 
@@ -40,8 +42,10 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
 
         // setUp intent
         val intent = intent
-        val hint = intent.getSerializableExtra(FoodSearchActivity.KEY_FOOD_DATA) as Hint
-        viewModel.setData(hint)
+        val item = intent.getSerializableExtra(FoodSearchActivity.KEY_FOOD_DATA) as MultiViewType
+        if (item.resId == 0)
+            viewModel.setData(item.content as Hint)
+        else viewModel.setDataFromDb(item.content as Food)
 
         setUpMealDropDown()
         setUpDatePickerDialog()
@@ -84,7 +88,7 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
                     foodDetails.quantity = s.toString().toDouble()
                     if (foodDetails.quantityType != null && foodDetails.quantity != null)
                         viewModel.calculateNutrientData(foodDetails)
-                } else{
+                } else {
                     foodDetails.quantity = null
                 }
             }

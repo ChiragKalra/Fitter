@@ -11,7 +11,7 @@
         android:layout_width="40dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tell_branded"
+        app:layout_constraintEnd_toStartOf="@+id/brand_name"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +23,7 @@
         android:layout_marginStart="8dp"
         android:ellipsize="end"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/tell_branded"
+        app:layout_constraintBottom_toTopOf="@+id/brand_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -31,7 +31,7 @@
         tools:text="Banana" />
 
     <TextView
-        android:id="@+id/tell_branded"
+        android:id="@+id/brand_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

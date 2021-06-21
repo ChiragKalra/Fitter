@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.bruhascended.db.food.types.MealType
-import com.bruhascended.db.food.types.NutrientType
 import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityAddCustomFoodBinding
@@ -53,7 +52,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private fun submitData() {
         val foodName = binding.content.foodName.text.toString()
         if (foodDetails.checkIfNull() && foodName.isNotEmpty()) {
-            viewModel.insertDataOffline(foodName, foodDetails)
+            viewModel.insertCustomData(foodName, foodDetails)
             setResult(Activity.RESULT_OK)
             finish()
         } else Toast.makeText(this, "Fill all the Details", Toast.LENGTH_SHORT).show() // TODO

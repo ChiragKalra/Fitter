@@ -18,12 +18,12 @@ import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEnt
 import com.bruhascended.fitapp.util.*
 import java.util.*
 
-class FoodJournalRecyclerAdapter (
+class FoodJournalRecyclerAdapter(
     private val mContext: Context
-): PagingDataAdapter<DateSeparatedItem, FoodEntryItemHolder> (
+) : PagingDataAdapter<DateSeparatedItem, FoodEntryItemHolder>(
     DateSeparatedItemComparator()
 ) {
-    class FoodEntryItemHolder (
+    class FoodEntryItemHolder(
         root: View,
         val itemBinding: ItemFoodEntryBinding? = null,
         val separatorBinding: ItemSeparatorFoodentryBinding? = null,
@@ -33,15 +33,15 @@ class FoodJournalRecyclerAdapter (
 
     private var mOnItemClickListener: ((foodEntry: FoodEntry) -> Unit)? = null
 
-    fun setOnItemClickListener (listener: ((foodEntry: FoodEntry) -> Unit)?) {
+    fun setOnItemClickListener(listener: ((foodEntry: FoodEntry) -> Unit)?) {
         mOnItemClickListener = listener
     }
 
-    override fun getItemViewType (position: Int): Int {
+    override fun getItemViewType(position: Int): Int {
         return if (getItem(position)?.item != null) 0 else 1
     }
 
-    override fun onCreateViewHolder (parent: ViewGroup, viewType: Int): FoodEntryItemHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodEntryItemHolder {
         return if (viewType == 0) {
             val binding = ItemFoodEntryBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -122,7 +122,7 @@ class FoodJournalRecyclerAdapter (
                 NutrientType.Protein -> textviewProteinGram
                 NutrientType.Carbs -> textviewCarbsGram
                 NutrientType.Fat -> textviewFatGram
-            }.text = QuantityType.Gram.toString(mContext, value*weight)
+            }.text = QuantityType.Gram.toString(mContext, value * weight)
         }
 
         root.setOnClickListener {
@@ -161,8 +161,7 @@ class FoodJournalRecyclerAdapter (
     }
 
 
-
-    override fun onBindViewHolder (holder: FoodEntryItemHolder, position: Int) {
+    override fun onBindViewHolder(holder: FoodEntryItemHolder, position: Int) {
         val item = getItem(position) ?: return
         val foodEntry = item.item
         if (item.isSeparator) {
