@@ -5,7 +5,6 @@ import com.bruhascended.db.food.types.NutrientType
 import com.bruhascended.db.food.types.QuantityType
 import java.io.Serializable
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.math.abs
 
 @Entity
@@ -13,7 +12,6 @@ data class Food (
     @PrimaryKey
     val foodName: String,
     val calories: Double,
-    val perQuantityType: QuantityType,
     val weightInfo: EnumMap<QuantityType, Double> = EnumMap(QuantityType::class.java),
     val nutrientInfo: EnumMap<NutrientType, Double> = EnumMap(NutrientType::class.java),
 ): Serializable {
@@ -25,7 +23,6 @@ data class Food (
         other as Food
         if (foodName != other.foodName) return false
         if (calories != other.calories) return false
-        if (perQuantityType != other.perQuantityType) return false
         if (weightInfo != other.weightInfo) return false
         if (nutrientInfo != other.nutrientInfo) return false
         return true

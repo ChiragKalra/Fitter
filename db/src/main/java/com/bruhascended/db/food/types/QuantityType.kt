@@ -22,6 +22,7 @@ enum class QuantityType (
     Milliliter(quantity_ml, ml),
     Ounce(quantity_ounce, ounce),
     Serving(quantity_serving, serving),
+    Slice(quantity_slice, slice),
     Whole(quantity_whole, whole),
     Cup(quantity_cup, cup),
     Pound(quantity_pound, pound),

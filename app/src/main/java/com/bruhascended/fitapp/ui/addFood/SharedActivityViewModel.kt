@@ -14,9 +14,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 class SharedActivityViewModel(application: Application) : ViewModel() {
     private val db by FoodEntryRepository.Companion.Delegate(application)
@@ -26,7 +25,12 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
     var perEnergy: Double? = null
     val NutrientDetails = MutableLiveData<FoodNutrientDetails>()
     val typeArrayItems = MutableLiveData<List<QuantityType>>()
-    var millis = Calendar.getInstance().timeInMillis
+    var millis = Calendar.getInstance().apply {
+        set(Calendar.MILLISECOND, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.HOUR_OF_DAY, 0)
+    }.timeInMillis
     val setDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
 
     fun setData(hint: Hint) {
@@ -86,7 +90,6 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
             val food = Food(
                 foodName,
                 perEnergy!!,
-                QuantityType.Cup, // TODO THIS COLUMN TO BE REMOVED FROM FOOD DB
                 weightInfo_map,
                 nutrientInfo_map
             )
@@ -116,7 +119,6 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
                 Food(
                     foodName,
                     foodDetails.Energy!!,
-                    QuantityType.Cup, // TODO THIS COLUMN TO BE REMOVED FROM FOOD DB
                     weightInfo_map,
                     nutrientInfo_map
                 )

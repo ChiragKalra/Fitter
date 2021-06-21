@@ -40,8 +40,9 @@ class FoodEntryDbTest {
         val food = Food(
             foodName = "Apple",
             calories = 50.0,
-            perQuantityType = QuantityType.Whole,
-        )
+        ).apply {
+            weightInfo[QuantityType.Whole] = 1.0
+        }
 
         // insertion test
         db.foodManager().insert(food)
@@ -60,8 +61,10 @@ class FoodEntryDbTest {
         val food = Food(
             foodName = "Mango",
             calories = 100.0,
-            perQuantityType = QuantityType.Whole
-        )
+        ).apply {
+            weightInfo[QuantityType.Whole] = 1.0
+        }
+
         val foodEntry = FoodEntry(
             entry = Entry(
                 100,

@@ -52,6 +52,12 @@ class MainActivity : AppCompatActivity() {
         fabPresenter.setupFABs()
     }
 
+    override fun onBackPressed() {
+        if (fabPresenter.areMiniFabsVisible) fabPresenter.cancelMiniFabs()
+        else super.onBackPressed()
+    }
+
+
     //over flow menu ->  to add onclick later
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.overflow_menu_item, menu)

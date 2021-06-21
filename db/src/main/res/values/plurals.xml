@@ -70,5 +70,11 @@
     </plurals>
     <string name="quantity_pint">%1$s pints</string>
 
+    <plurals name="slice">
+        <item quantity="one">%d slice</item>
+        <item quantity="other">%d slices</item>
+    </plurals>
+    <string name="quantity_slice">%1$s slices</string>
+
     <string name="calorie_count">%1$s kcal</string>
 </resources>

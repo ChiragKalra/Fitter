@@ -3,6 +3,7 @@ package com.bruhascended.db.food.daos
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.*
+import com.bruhascended.db.food.entities.Food
 import com.bruhascended.db.food.entities.FoodEntry
 
 @Dao

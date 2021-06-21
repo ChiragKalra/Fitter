@@ -25,6 +25,8 @@ class FabPresenter(
         LogWeightActivity::class.java
     )
 
+    var areMiniFabsVisible = false
+
     // all FABs, their text descriptions
     private var actionButtons: Array<FloatingActionButton>
     private var actionDescriptions: Array<TextView>
@@ -45,6 +47,8 @@ class FabPresenter(
         setupIntents()
         setupEntryAndExit()
     }
+
+    fun cancelMiniFabs() = binding.fabsLayout.cancelActionButton.callOnClick()
 
     private fun hideMiniFabs() {
         actionButtons.forEach {
@@ -80,6 +84,7 @@ class FabPresenter(
         binding.fabsLayout.apply {
             // on show FAB buttons
             binding.addActionButton.setOnClickListener {
+                areMiniFabsVisible = true
                 binding.addActionButton.animateRotation(135f).animateFadeOut()
                 cancelActionButton.animateRotation(135f).animateFadeIn(1f)
                 backgroundView.animateFadeIn(0.975f)
@@ -92,6 +97,7 @@ class FabPresenter(
             }
             // on hide fab buttons
             cancelActionButton.setOnClickListener {
+                areMiniFabsVisible = false
                 binding.addActionButton.animateRotation(0f).animateFadeIn(1f)
                 cancelActionButton.animateRotation(0f).animateFadeOut()
                 backgroundView.animateFadeOut()
@@ -104,7 +110,7 @@ class FabPresenter(
             }
             // hide FAB buttons on tap outside
             backgroundView.setOnClickListener {
-                cancelActionButton.callOnClick()
+                cancelMiniFabs()
             }
         }
     }
