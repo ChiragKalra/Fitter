@@ -1,7 +1,6 @@
 package com.bruhascended.fitapp.ui.addFood
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bruhascended.api.models.foodsv2.Hint
@@ -15,6 +14,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class SharedActivityViewModel(application: Application) : ViewModel() {
@@ -22,9 +23,10 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
     private val weightInfo_map = EnumMap<QuantityType, Double>(QuantityType::class.java)
     private val nutrientInfo_map = EnumMap<NutrientType, Double>(NutrientType::class.java)
     val foodName = MutableLiveData<String>()
-    var perEnergy: Double = 0.0
+    var perEnergy: Double? = null
     val NutrientDetails = MutableLiveData<FoodNutrientDetails>()
     val typeArrayItems = MutableLiveData<List<QuantityType>>()
+    var millis = Calendar.getInstance().timeInMillis
     val setDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
 
     fun setData(hint: Hint) {
@@ -71,7 +73,7 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
         val factor =
             weightInfo_map[foodDetails.quantityType]?.let { foodDetails.quantity?.times(it) }
         foodDetails.apply {
-            Energy = factor?.times(perEnergy)
+            Energy = factor?.times(perEnergy!!)
             Protein = nutrientInfo_map[NutrientType.Protein]?.let { factor?.times(it) }
             Carbs = nutrientInfo_map[NutrientType.Carbs]?.let { factor?.times(it) }
             Fat = nutrientInfo_map[NutrientType.Fat]?.let { factor?.times(it) }
@@ -83,7 +85,7 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
         CoroutineScope(IO).launch {
             val food = Food(
                 foodName,
-                perEnergy,
+                perEnergy!!,
                 QuantityType.Cup, // TODO THIS COLUMN TO BE REMOVED FROM FOOD DB
                 weightInfo_map,
                 nutrientInfo_map
@@ -93,7 +95,7 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
                 NutrientDetails.value?.quantity!!,
                 NutrientDetails.value?.quantityType!!,
                 NutrientDetails.value?.mealType!!,
-                0 // TODO DATE TO BE CORRECTED
+                millis
             )
             db.writeEntry(food, entry)
         }
@@ -123,7 +125,7 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
                 foodDetails.quantity!!,
                 foodDetails.quantityType!!,
                 foodDetails.mealType!!,
-                0 // TODO DATE TO BE CORRECTED
+                millis
             )
             db.writeEntry(food, entry)
         }

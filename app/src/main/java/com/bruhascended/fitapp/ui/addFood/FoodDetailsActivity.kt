@@ -5,7 +5,6 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -141,5 +140,8 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
                 year
             )
         )
+        val cal = Calendar.getInstance()
+        cal.set(year,month,dayOfMonth)
+        viewModel.millis = cal.timeInMillis
     }
 }
