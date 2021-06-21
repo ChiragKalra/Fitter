@@ -64,7 +64,7 @@ class FoodEntryDbTest {
         )
         val foodEntry = FoodEntry(
             entry = Entry(
-                100.0,
+                100,
                 1.0,
                 QuantityType.Whole,
                 MealType.Breakfast,

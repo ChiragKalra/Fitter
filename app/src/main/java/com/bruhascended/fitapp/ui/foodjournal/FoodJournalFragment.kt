@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
 
@@ -25,10 +26,13 @@ class FoodJournalFragment: Fragment() {
 
     private lateinit var binding: FragmentJournalFoodBinding
     private lateinit var mAdaptor: FoodJournalRecyclerAdapter
-    private val mSeparatorMap = hashMapOf<Date, DateSeparatedItem>()
 
     private fun setupRecyclerView() {
-        mAdaptor = FoodJournalRecyclerAdapter(requireContext()).apply {
+        mAdaptor = FoodJournalRecyclerAdapter(
+            requireContext(),
+            viewModel.lastItemLiveSet,
+            viewModel.separatorInfoMap,
+        ).apply {
             setOnItemClickListener {
                 ActionDialogPresenter(
                     requireContext(),
@@ -43,26 +47,14 @@ class FoodJournalFragment: Fragment() {
             adapter = mAdaptor
         }
 
-        val resetDays = HashSet<Date>()
         viewModel.liveFoodEntries.observe(viewLifecycleOwner) { all ->
-            resetDays.forEach {
-                mSeparatorMap[it]?.apply {
-                    totalCalories = 0
-                    totalNutrients.keys.forEach { nutrient ->
-                        totalNutrients[nutrient] = .0
-                    }
-                }
-            }
-            resetDays.clear()
+            val infoMap = HashMap<Date, FoodJournalViewModel.SeparatorInfo>()
             all.forEach {
                 val date = it.entry.date
-                resetDays.add(date)
-                if (!mSeparatorMap.containsKey(date)) {
-                    mSeparatorMap[date] = DateSeparatedItem(
-                        separator = date,
-                    )
+                if (!infoMap.containsKey(date)) {
+                    infoMap[date] = FoodJournalViewModel.SeparatorInfo()
                 }
-                mSeparatorMap[date]?.apply {
+                infoMap[date]?.apply {
                     totalCalories += it.entry.calories
                     val amountPerQuantity = it.food.weightInfo[it.entry.quantityType]
                     if (amountPerQuantity != null) {
@@ -73,7 +65,20 @@ class FoodJournalFragment: Fragment() {
                     }
                 }
             }
-            mAdaptor.notifyDataSetChanged()
+            viewModel.separatorInfoMap.postValue(infoMap)
+
+            val allArr = all.toTypedArray()
+            val newIdSet = HashSet<Long>().apply {
+                add(allArr.last().entry.entryId!!)
+                if (allArr.size > 1) {
+                    allArr.slice( 0 until all.size - 1).forEachIndexed { ind, foodEntry ->
+                        if (foodEntry.entry.date != allArr[ind+1].entry.date) {
+                            add(foodEntry.entry.entryId!!)
+                        }
+                    }
+                }
+            }
+            viewModel.lastItemLiveSet.postValue(newIdSet)
         }
 
         val dateSeparated = viewModel.foodEntries
@@ -82,19 +87,12 @@ class FoodJournalFragment: Fragment() {
                 it.insertSeparators{ after, before ->
                     val afterDate = after?.item?.entry?.date
                     val beforeDate = before?.item?.entry?.date
-                    if (beforeDate == null) {
+                    if (beforeDate == null || (afterDate != null && afterDate <= beforeDate)) {
                         null
                     } else {
-                        if (!mSeparatorMap.containsKey(beforeDate)) {
-                            mSeparatorMap[beforeDate] = DateSeparatedItem(
-                                separator = beforeDate,
-                            )
-                        }
-                        if (afterDate == null || afterDate > beforeDate) {
-                            mSeparatorMap[beforeDate]
-                        } else {
-                            null
-                        }
+                        DateSeparatedItem(
+                            separator = beforeDate,
+                        )
                     }
                 }
             }
