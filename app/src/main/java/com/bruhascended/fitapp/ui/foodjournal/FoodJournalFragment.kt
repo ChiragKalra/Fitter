@@ -69,7 +69,9 @@ class FoodJournalFragment: Fragment() {
 
             val allArr = all.toTypedArray()
             val newIdSet = HashSet<Long>().apply {
-                add(allArr.last().entry.entryId!!)
+                if (allArr.isNotEmpty()) {
+                    add(allArr.last().entry.entryId!!)
+                }
                 if (allArr.size > 1) {
                     allArr.slice( 0 until all.size - 1).forEachIndexed { ind, foodEntry ->
                         if (foodEntry.entry.date != allArr[ind+1].entry.date) {
