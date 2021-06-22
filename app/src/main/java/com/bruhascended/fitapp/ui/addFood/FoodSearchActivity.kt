@@ -78,7 +78,7 @@ class FoodSearchActivity : AppCompatActivity() {
 
     private fun setUpRecyclerview() {
         binding.recyclerviewFoods.apply {
-            layoutManager = LinearLayoutManager(this@FoodSearchActivity)
+            layoutManager = LinearLayoutManager(context)
             FoodsAdapter = FoodSearchAdapter {
                 onFoodItemClicked(it)
             }
@@ -90,10 +90,6 @@ class FoodSearchActivity : AppCompatActivity() {
         val intent = Intent(this, FoodDetailsActivity::class.java)
         intent.putExtra(KEY_FOOD_DATA, item)
         resultContracts.launch(intent)
-    }
-
-    private fun onHistoryFoodItemClicked(food: Food) {
-
     }
 
     private fun setUpSearch() {

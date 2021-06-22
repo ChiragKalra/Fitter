@@ -12,10 +12,8 @@ import com.bruhascended.db.food.entities.Food
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemFoodsHistoryListBinding
 import com.bruhascended.fitapp.databinding.ItemFoodsListBinding
-import com.bruhascended.fitapp.util.FoodHistoryItem
 import com.bruhascended.fitapp.util.MultiViewType
 import com.bumptech.glide.Glide
-import java.lang.IllegalArgumentException
 
 class FoodSearchAdapter(
     val itemClicked: (item: MultiViewType) -> Unit,
@@ -35,12 +33,23 @@ class FoodSearchAdapter(
         }
     ) {
 
+
     override fun getItemViewType(position: Int): Int {
         return getItem(position).resId
     }
 
-    inner class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    inner class FoodHistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    inner class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        init {
+            itemView.setOnClickListener { itemClicked(getItem(absoluteAdapterPosition)) }
+        }
+    }
+
+    inner class FoodHistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        init {
+            itemView.setOnClickListener { itemClicked(getItem(absoluteAdapterPosition)) }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -75,16 +84,12 @@ class FoodSearchAdapter(
                         .circleCrop()
                         .placeholder(R.drawable.ic_food_placeholder)
                         .into(imageView)
-
-
-                    root.setOnClickListener { itemClicked(getItem(position)) }
                 }
             }
             is FoodHistoryViewHolder -> {
                 ItemFoodsHistoryListBinding.bind(holder.itemView).apply {
                     val history = getItem(position).content as Food
                     foodName.text = history.foodName
-                    root.setOnClickListener { itemClicked(getItem(position)) }
                 }
             }
         }

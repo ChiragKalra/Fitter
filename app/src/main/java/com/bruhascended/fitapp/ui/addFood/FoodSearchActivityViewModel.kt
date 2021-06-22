@@ -18,7 +18,7 @@ class FoodSearchActivityViewModel(application: Application) : ViewModel() {
     private val db by FoodEntryRepository.Companion.Delegate(application)
     var error = MutableLiveData<String?>()
     val food_hints_list = MutableLiveData<List<Hint?>>()
-    val food_history_list = MutableLiveData<List<Food>>()
+    val food_history_list = MutableLiveData<MutableList<Food>>()
 
     init {
         searchConsumedFood("%%")
