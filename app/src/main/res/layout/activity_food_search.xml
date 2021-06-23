@@ -23,9 +23,10 @@
                 android:id="@+id/search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="64dp"
                 android:layoutDirection="rtl"
                 app:iconifiedByDefault="false"
-                app:queryHint="Tell us what u ate??" />
+                app:queryHint="Search for a food" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -41,6 +42,6 @@
             android:layout_height="match_parent"
             android:scaleX="0.1"
             android:scaleY="0.1"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

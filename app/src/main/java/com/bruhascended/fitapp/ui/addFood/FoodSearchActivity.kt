@@ -20,6 +20,7 @@ import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.db.food.entities.Food
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityFoodSearchBinding
+import com.bruhascended.fitapp.ui.capturefood.PredictionPresenter
 import com.bruhascended.fitapp.util.MultiViewType
 import com.bruhascended.fitapp.util.setupToolbar
 
@@ -39,10 +40,17 @@ class FoodSearchActivity : AppCompatActivity() {
         setupToolbar(binding.toolbar, home = true)
 
         // viewModel
-        val viewModelFactory = FoodSearchViewModelFactory(application)
         viewModel =
-            ViewModelProvider(this, viewModelFactory).get(FoodSearchActivityViewModel::class.java)
+            ViewModelProvider(this).get(FoodSearchActivityViewModel::class.java)
         binding.setLifecycleOwner { lifecycle }
+
+        //setUp intent
+        val intent = intent
+        intent.getStringExtra(PredictionPresenter.KEY_FOOD_LABEL)?.let {
+            onSearchCustomise(it)
+            binding.searchBar.setQuery(it,false)
+        }
+
 
         setUpResultContract()
         setUpRecyclerview()

@@ -1,8 +1,8 @@
 package com.bruhascended.fitapp.ui.addFood
 
 import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.db.food.entities.Entry
 import com.bruhascended.db.food.entities.Food
@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class SharedActivityViewModel(application: Application) : ViewModel() {
+class SharedActivityViewModel(application: Application) : AndroidViewModel(application) {
     private val db by FoodEntryRepository.Companion.Delegate(application)
     private val weightInfo_map = EnumMap<QuantityType, Double>(QuantityType::class.java)
     private val nutrientInfo_map = EnumMap<NutrientType, Double>(NutrientType::class.java)
@@ -45,7 +45,7 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
 
             for (nutrient in NutrientType.values()) {
                 hint.food.nutrients.nutrientList[nutrient.ordinal]?.div(100.0).let {
-                    if(it != null) nutrientInfo_map[nutrient] = it
+                    if (it != null) nutrientInfo_map[nutrient] = it
                 }
 
             } // Creating nutrient Info map for food Db
@@ -132,6 +132,4 @@ class SharedActivityViewModel(application: Application) : ViewModel() {
             db.writeEntry(food, entry)
         }
     }
-
-
 }

@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/manually_add"
-        android:icon="@drawable/ic_add"
+        android:icon="@drawable/ic_create"
         android:title="Add Manually"
         app:showAsAction="ifRoom" />
 

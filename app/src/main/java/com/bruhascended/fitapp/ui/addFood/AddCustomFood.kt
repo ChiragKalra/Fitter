@@ -30,9 +30,8 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         setupToolbar(binding.toolbar, home = true)
 
         // viewModel
-        val viewModelFactory = FoodDetailsViewModelFactory(application)
         viewModel =
-            ViewModelProvider(this, viewModelFactory).get(SharedActivityViewModel::class.java)
+            ViewModelProvider(this).get(SharedActivityViewModel::class.java)
         binding.content.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
 

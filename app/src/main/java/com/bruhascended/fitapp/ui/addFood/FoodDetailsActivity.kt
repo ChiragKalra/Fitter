@@ -33,9 +33,8 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         setupToolbar(binding.toolbar, home = true)
 
         // viewModel
-        val viewModelFactory = FoodDetailsViewModelFactory(application)
         viewModel =
-            ViewModelProvider(this, viewModelFactory).get(SharedActivityViewModel::class.java)
+            ViewModelProvider(this).get(SharedActivityViewModel::class.java)
         binding.content.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
 
@@ -141,7 +140,7 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             )
         )
         val cal = Calendar.getInstance()
-        cal.set(year,month,dayOfMonth)
+        cal.set(year, month, dayOfMonth)
         viewModel.millis = cal.timeInMillis
     }
 }

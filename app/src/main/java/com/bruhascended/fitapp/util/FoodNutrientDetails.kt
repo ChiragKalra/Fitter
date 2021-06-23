@@ -20,6 +20,13 @@ data class FoodNutrientDetails(
         return true
     }
 
+    fun checkIfNutrientsNull(): Boolean {
+        Carbs ?: return false
+        Fat ?: return false
+        Protein ?: return false
+        return true
+    }
+
     fun getNutrientList(): MutableList<Double?> = mutableListOf(Carbs, Fat, Protein)
 
 }
