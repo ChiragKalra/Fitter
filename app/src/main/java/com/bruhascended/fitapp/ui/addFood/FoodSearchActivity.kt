@@ -101,6 +101,7 @@ class FoodSearchActivity : AppCompatActivity() {
     }
 
     private fun setUpSearch() {
+        binding.searchBar.requestFocus()
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String?): Boolean {

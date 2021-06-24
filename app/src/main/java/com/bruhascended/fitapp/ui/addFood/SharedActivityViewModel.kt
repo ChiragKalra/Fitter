@@ -35,25 +35,23 @@ class SharedActivityViewModel(application: Application) : AndroidViewModel(appli
     val setDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
 
     fun setData(hint: Hint) {
-        CoroutineScope(IO).launch {
-            foodName.postValue(hint.food.label)
-            perEnergy = hint.food.nutrients.Energy / 100.0
-            for (measure in hint.measures) {
-                if (checkout(measure.label)) weightInfo_map[measure.label?.let {
-                    QuantityType.valueOf(it)
-                }] = measure.weight
-            } // Creating weight Info map for food Db
+        foodName.postValue(hint.food.label)
+        perEnergy = hint.food.nutrients.Energy / 100.0
+        for (measure in hint.measures) {
+            if (checkout(measure.label)) weightInfo_map[measure.label?.let {
+                QuantityType.valueOf(it)
+            }] = measure.weight
+        } // Creating weight Info map for food Db
 
-            for (nutrient in NutrientType.values()) {
-                hint.food.nutrients.nutrientList[nutrient.ordinal]?.div(100.0).let {
-                    if (it != null) nutrientInfo_map[nutrient] = it
-                }
+        for (nutrient in NutrientType.values()) {
+            hint.food.nutrients.nutrientList[nutrient.ordinal]?.div(100.0).let {
+                if (it != null) nutrientInfo_map[nutrient] = it
+            }
 
-            } // Creating nutrient Info map for food Db
+        } // Creating nutrient Info map for food Db
 
-            // update the quantity type drop down
-            typeArrayItems.postValue(weightInfo_map.keys.toList())
-        }
+        // update the quantity type drop down
+        typeArrayItems.postValue(weightInfo_map.keys.toList())
     }
 
     fun setDataFromDb(food: Food) {
@@ -83,8 +81,13 @@ class SharedActivityViewModel(application: Application) : AndroidViewModel(appli
             Carbs = nutrientInfo_map[NutrientType.Carbs]?.let { factor?.times(it) }
             Fat = nutrientInfo_map[NutrientType.Fat]?.let { factor?.times(it) }
         }
-        NutrientDetails.postValue(foodDetails)
-        Log.d("yoy","$foodDetails")
+        foodDetails.apply {
+            Energy = Energy?.let { String.format("%.2f", it).toDouble() }
+            Protein = Protein?.let { String.format("%.2f", it).toDouble() }
+            Carbs = Carbs?.let { String.format("%.2f", it).toDouble() }
+            Fat = Fat?.let { String.format("%.2f", foodDetails.Fat).toDouble() }
+        }
+        NutrientDetails.value = foodDetails
     }
 
     fun insertData(foodName: String) {

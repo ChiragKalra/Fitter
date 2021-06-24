@@ -28,7 +28,7 @@ import java.util.*
 class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private lateinit var binding: ActivityFoodDetailsBinding
     private lateinit var viewModel: SharedActivityViewModel
-    private val foodDetails = FoodNutrientDetails()
+    private var foodDetails = FoodNutrientDetails()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,13 +62,20 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
 
         // setUp live data observer for quantity type drop down
         viewModel.typeArrayItems.observe({ lifecycle }) { it ->
+            val amountArray = it.map { it.toString() }.toTypedArray()
             binding.content.amountDropdown.setAdapter(
                 CustomArrayAdapter(
                     this,
                     R.layout.view_dropdown_mealtype,
-                    it.map { it.toString() }.toTypedArray()
+                    amountArray
                 )
             )
+            // TODO setUp default quantity type
+            if (foodEntry == null) {
+                foodDetails.quantityType = QuantityType.valueOf(amountArray[0])
+                viewModel.calculateNutrientData(foodDetails)
+                binding.content.amountDropdown.setText(amountArray[0])
+            }
         }
 
         // setUp submit FAB click listener
@@ -77,13 +84,34 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         }
     }
 
-    private fun setCopyToNow(foodEntry: FoodEntry) {
-        viewModel.setDataFromDb(foodEntry.food)
-        foodDetails.apply {
-            quantity = foodEntry.entry.quantity
-            quantityType = foodEntry.entry.quantityType
+    override fun onStart() {
+        super.onStart()
+        viewModel.NutrientDetails.let {
+            if (it.value != null) {
+                foodDetails = it.value!!
+            }
         }
-        viewModel.calculateNutrientData(foodDetails)
+        if (foodDetails.quantity == null) {
+            foodDetails.quantity = 1.0 // TODO default quantity value
+            viewModel.calculateNutrientData(foodDetails)
+        }
+    }
+
+    private fun setCopyToNow(foodEntry: FoodEntry) {
+        if(viewModel.NutrientDetails.value == null){
+            viewModel.setDataFromDb(foodEntry.food)
+            foodDetails.apply {
+                quantityType = foodEntry.entry.quantityType
+                quantity = foodEntry.entry.quantity
+                mealType = foodEntry.entry.mealType
+            }
+            viewModel.calculateNutrientData(foodDetails)
+            binding.content.apply {
+                quantity.setText(foodEntry.entry.quantity.toString())
+                amountDropdown.setText(foodEntry.entry.quantityType.toString())
+                mealType.setText(foodEntry.entry.mealType.toString())
+            }
+        }
     }
 
     private fun submitData() {
@@ -100,12 +128,12 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!s.isNullOrEmpty()) {
+                if (!s.isNullOrEmpty() && s.toString() != ".") {
                     foodDetails.quantity = s.toString().toDouble()
-                    if (foodDetails.quantityType != null && foodDetails.quantity != null)
-                        viewModel.calculateNutrientData(foodDetails)
+                    viewModel.calculateNutrientData(foodDetails)
                 } else {
-                    foodDetails.quantity = null
+                    foodDetails.quantity = 1.0 // TODO default value
+                    viewModel.calculateNutrientData(foodDetails)
                 }
             }
 
@@ -118,6 +146,7 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
     private fun setUpMealTypeDropDownItemListener() {
         binding.content.mealType.setOnItemClickListener { parent, view, position, id ->
             foodDetails.mealType = MealType.valueOf(parent.getItemAtPosition(position).toString())
+            viewModel.calculateNutrientData(foodDetails)
         }
     }
 
@@ -125,7 +154,7 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         binding.content.amountDropdown.setOnItemClickListener { parent, view, position, id ->
             foodDetails.quantityType =
                 QuantityType.valueOf(parent.getItemAtPosition(position).toString())
-            if (foodDetails.quantity != null) viewModel.calculateNutrientData(foodDetails)
+            viewModel.calculateNutrientData(foodDetails)
         }
     }
 

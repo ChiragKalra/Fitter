@@ -47,6 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Quantity"
+                app:expandedHintEnabled="false"
                 app:boxStrokeWidth="2dp"
                 app:layout_constraintEnd_toStartOf="@+id/amount_dropdown_layout"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -54,6 +55,8 @@
                 app:layout_constraintTop_toBottomOf="@id/food_layout">
 
                 <EditText
+                    android:hint="1.0"
+                    android:textColorHint="@color/grey"
                     android:id="@+id/quantity"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
@@ -128,34 +131,27 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/textview_energy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="64dp"
-                android:text="Energy"
-                android:textSize="16sp"
+                android:text="@{viewModel.nutrientDetails.energy.toString()}"
+                android:textColorHint="@color/grey"
+                android:textSize="44sp"
+                android:hint="--"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/date_picker_layout" />
 
             <TextView
-                android:id="@+id/textview_energy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="--"
-                android:text="@{String.format(&quot;%.2f&quot;,viewModel.nutrientDetails.energy)}"
-                android:textColorHint="@color/grey"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="@+id/textView5"
-                app:layout_constraintStart_toStartOf="@+id/textView5"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
-            <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Protein"
+                android:text="Protein(g)"
                 android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="?colorControlPurple"
                 app:layout_constraintEnd_toStartOf="@+id/textView4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/textView4" />
@@ -165,7 +161,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="Carbs"
+                android:text="Carbs(g)"
+                android:textStyle="bold"
+                android:textColor="?colorControlGreen"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -175,7 +173,9 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fat"
+                android:text="Fat(g)"
+                android:textStyle="bold"
+                android:textColor="?colorControlRed"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textView4"
@@ -185,37 +185,52 @@
                 android:id="@+id/textview_protein"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="--"
-                android:text="@{String.format(&quot;%.2f&quot;,viewModel.nutrientDetails.protein)}"
+                android:layout_marginTop="4dp"
+                android:text="@{viewModel.nutrientDetails.protein.toString()}"
                 android:textColorHint="@color/grey"
-                android:textSize="14sp"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="@+id/textView3"
                 app:layout_constraintStart_toStartOf="@+id/textView3"
-                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+                app:layout_constraintTop_toBottomOf="@+id/textView3"
+                tools:text="15.05g" />
 
             <TextView
                 android:id="@+id/textview_carbs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="--"
-                android:text="@{String.format(&quot;%.2f&quot;,viewModel.nutrientDetails.carbs)}"
+                android:layout_marginTop="4dp"
+                android:text="@{viewModel.nutrientDetails.carbs.toString()}"
                 android:textColorHint="@color/grey"
-                android:textSize="14sp"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="@+id/textView4"
                 app:layout_constraintStart_toStartOf="@+id/textView4"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/textView4"
+                tools:text="15.05g" />
 
             <TextView
                 android:id="@+id/textview_fat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="--"
-                android:text="@{String.format(&quot;%.2f&quot;,viewModel.nutrientDetails.fat)}"
+                android:layout_marginTop="4dp"
+                android:text="@{viewModel.nutrientDetails.fat.toString()}"
                 android:textColorHint="@color/grey"
-                android:textSize="14sp"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="@+id/textView2"
                 app:layout_constraintStart_toStartOf="@+id/textView2"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                app:layout_constraintTop_toBottomOf="@+id/textView2"
+                tools:text="15.05g" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp"
+                android:text="kcal"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/textview_energy"
+                app:layout_constraintStart_toEndOf="@+id/textview_energy" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
