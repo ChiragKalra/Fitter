@@ -1,6 +1,7 @@
 package com.bruhascended.fitapp.ui.addFood
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.bruhascended.api.models.foodsv2.Hint
@@ -83,6 +84,7 @@ class SharedActivityViewModel(application: Application) : AndroidViewModel(appli
             Fat = nutrientInfo_map[NutrientType.Fat]?.let { factor?.times(it) }
         }
         NutrientDetails.postValue(foodDetails)
+        Log.d("yoy","$foodDetails")
     }
 
     fun insertData(foodName: String) {

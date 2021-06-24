@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,10 +13,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.db.food.entities.Food
+import com.bruhascended.db.food.entities.FoodEntry
 import com.bruhascended.db.food.types.MealType
 import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityFoodDetailsBinding
+import com.bruhascended.fitapp.ui.foodjournal.ActionDialogPresenter
 import com.bruhascended.fitapp.util.CustomArrayAdapter
 import com.bruhascended.fitapp.util.FoodNutrientDetails
 import com.bruhascended.fitapp.util.MultiViewType
@@ -39,11 +42,17 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         binding.setLifecycleOwner { lifecycle }
 
         // setUp intent
-        val intent = intent
-        val item = intent.getSerializableExtra(FoodSearchActivity.KEY_FOOD_DATA) as MultiViewType
-        if (item.resId == 0)
-            viewModel.setData(item.content as Hint)
-        else viewModel.setDataFromDb(item.content as Food)
+        val itemIntent = intent
+        val item =
+            itemIntent.getSerializableExtra(FoodSearchActivity.KEY_FOOD_DATA) as MultiViewType?
+        val foodEntry =
+            itemIntent.getSerializableExtra(ActionDialogPresenter.KEY_FOOD_ENTRY) as FoodEntry?
+        if (foodEntry != null) setCopyToNow(foodEntry)
+        if (item != null) {
+            if (item.resId == 0)
+                viewModel.setData(item.content as Hint)
+            else viewModel.setDataFromDb(item.content as Food)
+        }
 
         setUpMealDropDown()
         setUpDatePickerDialog()
@@ -66,6 +75,15 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         binding.submit.setOnClickListener {
             submitData()
         }
+    }
+
+    private fun setCopyToNow(foodEntry: FoodEntry) {
+        viewModel.setDataFromDb(foodEntry.food)
+        foodDetails.apply {
+            quantity = foodEntry.entry.quantity
+            quantityType = foodEntry.entry.quantityType
+        }
+        viewModel.calculateNutrientData(foodDetails)
     }
 
     private fun submitData() {
