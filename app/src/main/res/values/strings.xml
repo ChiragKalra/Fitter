@@ -125,5 +125,8 @@
     <string name="toggle_flashlight_button">Toggle flashlight button</string>
     <string name="expand">expand</string>
     <string name="zero_gm">0 gm</string>
+    <string name="food_search">Food Search</string>
+    <string name="food_details">Food Details</string>
+    <string name="custom_food">Add Custom Food</string>
 </resources>
 

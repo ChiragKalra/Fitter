@@ -12,14 +12,14 @@ import com.bruhascended.db.food.entities.FoodEntry
 import kotlinx.coroutines.flow.Flow
 import kotlin.reflect.KProperty
 
-class FoodEntryRepository (
+class FoodEntryRepository(
     mApp: Application
 ) {
 
     companion object {
         private var repository: FoodEntryRepository? = null
 
-        class Delegate (
+        class Delegate(
             private val app: Application
         ) {
             operator fun getValue(thisRef: Any?, property: KProperty<*>): FoodEntryRepository {
@@ -34,15 +34,15 @@ class FoodEntryRepository (
 
     private val db = FoodEntryDatabaseFactory(mApp).build()
 
-    fun searchConsumedFood (query: String): LiveData<List<Food>> {
+    fun searchConsumedFood(query: String): LiveData<List<Food>> {
         return db.foodManager().searchLive(query)
     }
 
-    suspend fun writeEntry (foodEntry: FoodEntry) = db.insertEntry(foodEntry)
+    suspend fun writeEntry(foodEntry: FoodEntry) = db.insertEntry(foodEntry)
 
-    suspend fun writeEntry (food: Food, entry: Entry) = db.insertEntry(food, entry)
+    suspend fun writeEntry(food: Food, entry: Entry) = db.insertEntry(food, entry)
 
-    fun deleteEntry (foodEntry: FoodEntry) = db.deleteEntry(foodEntry)
+    fun deleteEntry(foodEntry: FoodEntry) = db.deleteEntry(foodEntry)
 
     fun loadConsumedFoodEntries(): Flow<PagingData<FoodEntry>> {
         return Pager(
@@ -56,6 +56,8 @@ class FoodEntryRepository (
             db.loadFoodEntry().allPaged()
         }.flow
     }
+
+    fun loadCount(n: Int): LiveData<List<Food>> = db.foodManager().topNLive(n)
 
     fun loadLiveFoodEntries(): LiveData<List<FoodEntry>> = db.loadFoodEntry().allLive()
 }

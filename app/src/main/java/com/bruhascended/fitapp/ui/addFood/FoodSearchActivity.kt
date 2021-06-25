@@ -3,6 +3,7 @@ package com.bruhascended.fitapp.ui.addFood
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -48,7 +49,7 @@ class FoodSearchActivity : AppCompatActivity() {
         val intent = intent
         intent.getStringExtra(PredictionPresenter.KEY_FOOD_LABEL)?.let {
             onSearchCustomise(it)
-            binding.searchBar.setQuery(it,false)
+            binding.searchBar.setQuery(it, false)
         }
 
 
@@ -62,13 +63,6 @@ class FoodSearchActivity : AppCompatActivity() {
             for (hint in it)
                 food_hints_list.add(MultiViewType(0, hint))
             updateList(food_hints_list)
-        }
-        viewModel.food_history_list.observe({ lifecycle }) {
-            val food_history_list = mutableListOf<MultiViewType>()
-            for (food in it) {
-                food_history_list.add(MultiViewType(1, food))
-            }
-            updateList(food_history_list)
         }
 
         //setUp errorHandler observer
@@ -105,8 +99,24 @@ class FoodSearchActivity : AppCompatActivity() {
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (!newText.isNullOrEmpty()) viewModel.searchConsumedFood("%$newText%")
-                else viewModel.searchConsumedFood("%%")
+                if (!newText.isNullOrEmpty()) {
+                    viewModel.searchConsumedFood("%$newText%").observe({ lifecycle }) {
+                        val food_history_list = mutableListOf<MultiViewType>()
+                        for (food in it) {
+                            food_history_list.add(MultiViewType(1, food))
+                        }
+                        updateList(food_history_list)
+                    }
+                } else{
+                    viewModel.loadCount(5).observe({lifecycle}){
+                        Log.d("debug","$it")
+                        val food_history_list = mutableListOf<MultiViewType>()
+                        for (food in it) {
+                            food_history_list.add(MultiViewType(1, food))
+                        }
+                        updateList(food_history_list)
+                    }
+                }
                 return false
             }
 
