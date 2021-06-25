@@ -2,6 +2,7 @@ package com.bruhascended.fitapp.ui.addFood
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.bruhascended.api.models.foodsv2.Hint
@@ -16,8 +17,6 @@ class FoodSearchActivityViewModel(application: Application) : AndroidViewModel(a
     private val db by FoodEntryRepository.Companion.Delegate(application)
     var error = MutableLiveData<String?>()
     val food_hints_list = MutableLiveData<List<Hint?>>()
-    val food_history_list = MutableLiveData<MutableList<Food>>()
-
 
     fun getFoodsv2(query: String) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -30,12 +29,9 @@ class FoodSearchActivityViewModel(application: Application) : AndroidViewModel(a
         }
     }
 
-    fun searchConsumedFood(query: String) {
-        db.searchConsumedFood(query)
-            .observeForever {
-                food_history_list.postValue(it.toMutableList())
-            }
-    }
+    fun searchConsumedFood(query: String): LiveData<List<Food>> = db.searchConsumedFood(query)
+
+    fun loadCount(n: Int): LiveData<List<Food>> = db.loadCount(n)
 
     private fun processData(hints: List<Hint>?) {
         food_hints_list.postValue(hints)

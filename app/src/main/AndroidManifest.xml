@@ -21,18 +21,28 @@
         tools:ignore="LockedOrientationActivity">
         <activity
             android:name=".ui.addFood.AddCustomFood"
-            android:parentActivityName=".ui.addFood.FoodSearchActivity" />
+            android:label="@string/custom_food"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bruhascended.fitapp.ui.addFood.FoodSearchActivity" />
+        </activity>
         <activity
             android:name=".ui.addFood.FoodDetailsActivity"
-            android:parentActivityName=".ui.addfood.FoodSearchActivity" />
+            android:label="@string/food_details"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bruhascended.fitapp.ui.addFood.FoodSearchActivity" />
+        </activity>
         <activity
             android:name=".ui.addFood.FoodSearchActivity"
-            android:parentActivityName=".ui.main.MainActivity" />
-        <activity
-            android:name=".ui.addfood.FoodSearchActivity"
-            android:parentActivityName=".ui.addfood.AddFoodActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:label="@string/food_search"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bruhascended.fitapp.ui.main.MainActivity" />
+        </activity>
         <activity
             android:name=".ui.logweight.LogWeightActivity"
             android:label="@string/log_weight"
@@ -44,14 +54,6 @@
         <activity
             android:name=".ui.addworkout.AddWorkoutActivity"
             android:label="@string/add_new_workout"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.bruhascended.fitapp.ui.main.MainActivity" />
-        </activity>
-        <activity
-            android:name=".ui.addfood.AddFoodActivity"
-            android:label="@string/add_new_food_entry"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
