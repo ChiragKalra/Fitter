@@ -3,6 +3,7 @@ package com.bruhascended.fitapp.ui.addFood
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -107,7 +108,8 @@ class FoodSearchActivity : AppCompatActivity() {
                         updateList(food_history_list)
                     }
                 } else{
-                    viewModel.loadCount(10).observe({lifecycle}){
+                    viewModel.loadCount(5).observe({lifecycle}){
+                        Log.d("debug","$it")
                         val food_history_list = mutableListOf<MultiViewType>()
                         for (food in it) {
                             food_history_list.add(MultiViewType(1, food))
