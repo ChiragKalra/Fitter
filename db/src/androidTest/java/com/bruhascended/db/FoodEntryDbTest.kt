@@ -87,4 +87,44 @@ class FoodEntryDbTest {
         val afterDelete = db.loadFoodEntry().singleById(entryId)
         assertEquals(null, afterDelete)
     }
+
+    @Test
+    @Throws(Exception::class)
+    fun foodTopNTest() {
+        val foods = arrayListOf(
+            Food(
+                foodName = "Kiwi",
+                calories = 100.0,
+            ).apply {
+                weightInfo[QuantityType.Whole] = 1.0
+            },
+            Food(
+                foodName = "Apple",
+                calories = 100.0,
+            ).apply {
+                weightInfo[QuantityType.Whole] = 1.0
+            },
+            Food(
+                foodName = "Mango",
+                calories = 100.0,
+            ).apply {
+                weightInfo[QuantityType.Whole] = 1.0
+            },
+            Food(
+                foodName = "Pineapple",
+                calories = 100.0,
+            ).apply {
+                weightInfo[QuantityType.Whole] = 1.0
+            },
+        )
+
+        foods.forEach {
+            db.foodManager().insert(it)
+        }
+
+        // topN test
+        val returnedSet = db.foodManager().topNSync(4).toSet()
+        val insertedSet = foods.toSet()
+        assertEquals(insertedSet, returnedSet)
+    }
 }

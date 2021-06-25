@@ -34,7 +34,7 @@ class FoodEntryRepository (
 
     private val db = FoodEntryDatabaseFactory(mApp).build()
 
-    fun searchConsumedFood (query: String): LiveData<MutableList<Food>> {
+    fun searchConsumedFood (query: String): LiveData<List<Food>> {
         return db.foodManager().searchLive(query)
     }
 

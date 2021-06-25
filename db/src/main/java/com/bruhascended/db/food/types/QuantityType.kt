@@ -18,19 +18,19 @@ enum class QuantityType (
     @PluralsRes
     val pluralsRes: Int
 ) {
-    Gram(quantity_gram, gram),
-    Milliliter(quantity_ml, ml),
-    Ounce(quantity_ounce, ounce),
+    Whole(quantity_whole, whole),
     Serving(quantity_serving, serving),
     Slice(quantity_slice, slice),
-    Whole(quantity_whole, whole),
     Cup(quantity_cup, cup),
-    Pound(quantity_pound, pound),
+    Can(quantity_can, can),
+    Gram(quantity_gram, gram),
+    Milliliter(quantity_ml, ml),
     Kilogram(quantity_kg, kg),
     Liter(quantity_liter, liter),
     Gallon(quantity_gallon, gallon),
     Tablespoon(quantity_tablespoon, tablespoon),
     Teaspoon(quantity_teaspoon, teaspoon),
+    Pound(quantity_pound, pound),
     Pint(quantity_pint, pint);
 
     companion object {

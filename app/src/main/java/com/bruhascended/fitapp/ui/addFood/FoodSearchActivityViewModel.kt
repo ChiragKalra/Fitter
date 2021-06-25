@@ -1,16 +1,13 @@
 package com.bruhascended.fitapp.ui.addFood
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.db.food.entities.Food
 import com.bruhascended.fitapp.repository.FdaApi
 import com.bruhascended.fitapp.repository.FoodEntryRepository
-import com.bruhascended.fitapp.util.FoodHistoryItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,9 +32,9 @@ class FoodSearchActivityViewModel(application: Application) : AndroidViewModel(a
 
     fun searchConsumedFood(query: String) {
         db.searchConsumedFood(query)
-            .observeForever(Observer {
-                food_history_list.postValue(it)
-            })
+            .observeForever {
+                food_history_list.postValue(it.toMutableList())
+            }
     }
 
     private fun processData(hints: List<Hint>?) {

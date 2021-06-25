@@ -32,6 +32,12 @@
     </plurals>
     <string name="quantity_cup">%1$s cups</string>
 
+    <plurals name="can">
+        <item quantity="one">%d can</item>
+        <item quantity="other">%d cans</item>
+    </plurals>
+    <string name="quantity_can">%1$s cans</string>
+
     <plurals name="pound">
         <item quantity="one">%d pound</item>
         <item quantity="other">%d pounds</item>
