@@ -64,6 +64,7 @@ class FoodSearchActivity : AppCompatActivity() {
                 food_hints_list.add(MultiViewType(0, hint))
             updateList(food_hints_list)
         }
+        binding.searchBar.setQuery("",false)
 
         //setUp errorHandler observer
         viewModel.error.observe({ lifecycle }) {
