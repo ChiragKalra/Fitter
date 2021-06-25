@@ -57,7 +57,7 @@ interface FoodDao {
         FROM food LEFT JOIN crossreference 
         ON food.foodName = crossreference.foodName
         GROUP BY food.foodName
-        ORDER BY entry_count
+        ORDER BY entry_count ASC
         LIMIT :n
     """)
     fun topNSync (n: Int): List<Food>
@@ -67,7 +67,7 @@ interface FoodDao {
         FROM food LEFT JOIN crossreference 
         ON food.foodName = crossreference.foodName
         GROUP BY food.foodName
-        ORDER BY entry_count
+        ORDER BY entry_count ASC
         LIMIT :n
     """)
     fun topNLive (n: Int): LiveData<List<Food>>
@@ -77,7 +77,7 @@ interface FoodDao {
         FROM food LEFT JOIN crossreference 
         ON food.foodName = crossreference.foodName
         GROUP BY food.foodName
-        ORDER BY entry_count
+        ORDER BY entry_count ASC
         LIMIT :n
     """)
     fun topNPaged (n: Int): PagingSource<Int, Food>
