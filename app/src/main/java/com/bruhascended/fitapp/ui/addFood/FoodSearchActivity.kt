@@ -18,12 +18,21 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bruhascended.api.models.foodsv2.Hint
+import com.bruhascended.db.food.entities.Entry
 import com.bruhascended.db.food.entities.Food
+import com.bruhascended.db.food.types.MealType
+import com.bruhascended.db.food.types.NutrientType
+import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityFoodSearchBinding
+import com.bruhascended.fitapp.repository.FoodEntryRepository
 import com.bruhascended.fitapp.ui.capturefood.PredictionPresenter
 import com.bruhascended.fitapp.util.MultiViewType
 import com.bruhascended.fitapp.util.setupToolbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import java.util.*
 
 class FoodSearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFoodSearchBinding
@@ -70,6 +79,10 @@ class FoodSearchActivity : AppCompatActivity() {
         viewModel.error.observe({ lifecycle }) {
             handleError()
         }
+
+        binding.searchLayoutPlaceholder.setOnClickListener {
+            onSearchCustomise(binding.searchBar.query.toString())
+        }
     }
 
     private fun setUpResultContract() {
@@ -108,6 +121,8 @@ class FoodSearchActivity : AppCompatActivity() {
                         }
                         updateList(food_history_list)
                     }
+                    binding.searchPlaceholder.text = "Search: $newText"
+                    binding.searchLayoutPlaceholder.visibility = View.VISIBLE
                 } else{
                     viewModel.loadCount(5).observe({lifecycle}){
                         Log.d("debug","$it")
@@ -117,6 +132,8 @@ class FoodSearchActivity : AppCompatActivity() {
                         }
                         updateList(food_history_list)
                     }
+                    binding.searchPlaceholder.text = "Search: $newText"
+                    binding.searchLayoutPlaceholder.visibility = View.GONE
                 }
                 return false
             }
@@ -131,6 +148,7 @@ class FoodSearchActivity : AppCompatActivity() {
 
     private fun onSearchCustomise(query: String) {
         viewModel.getFoodsv2(query)
+        binding.searchLayoutPlaceholder.visibility = View.GONE
         binding.searchBar.clearFocus()
         binding.progressBar.isVisible = true
     }

@@ -105,14 +105,17 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="@string/protein"
+                android:layout_marginBottom="64dp"
+                android:hint="Protein(g)"
                 app:boxStrokeWidth="2dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/textInputLayout2"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/energy_layout">
+                app:layout_constraintTop_toBottomOf="@+id/textview_optional">
 
                 <EditText
                     android:id="@+id/textview_protein"
@@ -120,19 +123,22 @@
                     android:layout_height="60dp"
                     android:inputType="numberDecimal"
                     android:textSize="16sp" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout2"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="@string/carbs"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:hint="Carbs(g)"
                 app:boxStrokeWidth="2dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+                app:layout_constraintEnd_toStartOf="@+id/textInputLayout3"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textInputLayout"
+                app:layout_constraintTop_toTopOf="@+id/textInputLayout">
 
                 <EditText
                     android:id="@+id/textview_carbs"
@@ -145,14 +151,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout3"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="@string/fat"
+                android:hint="Fat(g)"
                 app:boxStrokeWidth="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textInputLayout2"
+                app:layout_constraintTop_toTopOf="@+id/textInputLayout2">
 
                 <EditText
                     android:id="@+id/textview_fat"
@@ -173,7 +179,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/meal_type_layout"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
+                app:layout_constraintTop_toBottomOf="@+id/energy_layout">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/date_picker"
@@ -205,6 +211,41 @@
                     android:paddingLeft="16dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/textview_optional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="171dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="167dp"
+                android:text="optional"
+                android:textColor="@color/grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/date_picker_layout" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="8dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toStartOf="@+id/textview_optional"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textview_optional" />
+
+            <View
+                android:id="@+id/divider4"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="10dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textview_optional"
+                app:layout_constraintTop_toTopOf="@+id/textview_optional" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

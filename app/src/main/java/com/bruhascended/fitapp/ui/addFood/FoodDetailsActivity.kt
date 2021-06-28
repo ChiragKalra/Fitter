@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MenuItem
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -35,13 +36,11 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         binding = DataBindingUtil.setContentView(this, R.layout.activity_food_details)
         setupToolbar(binding.toolbar, home = true)
 
-        // viewModel
         viewModel =
             ViewModelProvider(this).get(SharedActivityViewModel::class.java)
         binding.content.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
 
-        // setUp intent
         val itemIntent = intent
         val item =
             itemIntent.getSerializableExtra(FoodSearchActivity.KEY_FOOD_DATA) as MultiViewType?
@@ -60,7 +59,6 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         setUpMealTypeDropDownItemListener()
         setUpTextChangeListener()
 
-        // setUp live data observer for quantity type drop down
         viewModel.typeArrayItems.observe({ lifecycle }) { it ->
             val amountArray = it.map { it.toString() }.toTypedArray()
             binding.content.amountDropdown.setAdapter(
@@ -70,46 +68,20 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
                     amountArray
                 )
             )
-            // TODO setUp default quantity type
-            if (foodEntry == null) {
-                foodDetails.quantityType = QuantityType.valueOf(amountArray[0])
-                viewModel.calculateNutrientData(foodDetails)
-                binding.content.amountDropdown.setText(amountArray[0])
-            }
         }
 
-        // setUp submit FAB click listener
         binding.submit.setOnClickListener {
             submitData()
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.NutrientDetails.let {
-            if (it.value != null) {
-                foodDetails = it.value!!
-            }
-        }
-        if (foodDetails.quantity == null) {
-            foodDetails.quantity = 1.0 // TODO default quantity value
-            viewModel.calculateNutrientData(foodDetails)
-        }
-    }
-
     private fun setCopyToNow(foodEntry: FoodEntry) {
-        if(viewModel.NutrientDetails.value == null){
+        if (viewModel.NutrientDetails.value == null) {
             viewModel.setDataFromDb(foodEntry.food)
             foodDetails.apply {
                 quantityType = foodEntry.entry.quantityType
                 quantity = foodEntry.entry.quantity
                 mealType = foodEntry.entry.mealType
-            }
-            viewModel.calculateNutrientData(foodDetails)
-            binding.content.apply {
-                quantity.setText(foodEntry.entry.quantity.toString())
-                amountDropdown.setText(foodEntry.entry.quantityType.toString())
-                mealType.setText(foodEntry.entry.mealType.toString())
             }
         }
     }
@@ -119,7 +91,8 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             viewModel.insertData(binding.content.foodName.text.toString())
             setResult(Activity.RESULT_OK)
             finish()
-        } else Toast.makeText(this, "Fill all the Details", Toast.LENGTH_SHORT).show() //TODO
+        } else Toast.makeText(this, "Fill all the Details", Toast.LENGTH_SHORT).show()
+        //TODO show a alert dialog
     }
 
     private fun setUpTextChangeListener() {
@@ -130,9 +103,6 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!s.isNullOrEmpty() && s.toString() != ".") {
                     foodDetails.quantity = s.toString().toDouble()
-                    viewModel.calculateNutrientData(foodDetails)
-                } else {
-                    foodDetails.quantity = 1.0 // TODO default value
                     viewModel.calculateNutrientData(foodDetails)
                 }
             }
@@ -189,5 +159,13 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         val cal = Calendar.getInstance()
         cal.set(year, month, dayOfMonth)
         viewModel.millis = cal.timeInMillis
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        android.R.id.home -> {
+            onBackPressed()
+            true
+        }
+        else -> false
     }
 }

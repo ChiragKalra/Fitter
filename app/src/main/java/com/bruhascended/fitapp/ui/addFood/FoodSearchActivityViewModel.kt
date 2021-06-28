@@ -1,6 +1,7 @@
 package com.bruhascended.fitapp.ui.addFood
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,6 +25,7 @@ class FoodSearchActivityViewModel(application: Application) : AndroidViewModel(a
                 val response = FdaApi.fetchFoodsv2(query)
                 if (response.isSuccessful) processData(response.body()?.hints)
             } catch (e: Exception) {
+                Log.d("catch","${e.cause}")
                 error.postValue(e.message)
             }
         }
@@ -31,7 +33,9 @@ class FoodSearchActivityViewModel(application: Application) : AndroidViewModel(a
 
     fun searchConsumedFood(query: String): LiveData<List<Food>> = db.searchConsumedFood(query)
 
-    fun loadCount(n: Int): LiveData<List<Food>> = db.loadCount(n)
+    fun loadCount(n: Int): LiveData<List<Food>>{
+        return db.loadCount(n)
+    }
 
     private fun processData(hints: List<Hint>?) {
         food_hints_list.postValue(hints)

@@ -82,7 +82,7 @@ class FoodSearchAdapter(
                         .with(imageView.context)
                         .load(hint.food.image)
                         .circleCrop()
-                        .placeholder(R.drawable.ic_food_placeholder)
+                        .placeholder(R.drawable.ic_restaurant_menu)
                         .into(imageView)
                 }
             }

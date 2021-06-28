@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.MenuItem
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
@@ -35,6 +37,8 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         binding.content.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
 
+        Log.d("eyo","${binding.content.foodName}")
+
         setUpMealDropDown()
         setUpQuantityTypeDropDown()
         setUpQuantityTypeDropDownItemListener()
@@ -46,10 +50,12 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         binding.submit.setOnClickListener {
             submitData()
         }
+
     }
 
     private fun submitData() {
         val foodName = binding.content.foodName.text.toString()
+        Log.d("eyo","$foodDetails")
         if (foodDetails.checkIfNull() && foodName.isNotEmpty()) {
             viewModel.insertCustomData(foodName, foodDetails)
             setResult(Activity.RESULT_OK)
@@ -179,4 +185,11 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         )
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId){
+        android.R.id.home -> {
+            onBackPressed()
+            true
+        }
+        else -> false
+    }
 }

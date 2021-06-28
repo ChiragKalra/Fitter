@@ -10,7 +10,8 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -23,18 +24,50 @@
                 android:id="@+id/search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="64dp"
                 android:layoutDirection="rtl"
                 app:iconifiedByDefault="false"
                 app:queryHint="Search for a food" />
+
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview_foods"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="4dp"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+            android:animateLayoutChanges="true"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <LinearLayout
+                android:id="@+id/search_layout_placeholder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/bg_foodjournal_item"
+                android:backgroundTint="?headerBackgroundColor"
+                android:focusable="true"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:visibility="gone"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_search" />
+
+                <TextView
+                    android:id="@+id/search_placeholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_foods"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/search_layout_placeholder"
+                android:padding="4dp" />
+        </RelativeLayout>
 
         <ProgressBar
             android:id="@+id/progress_bar"

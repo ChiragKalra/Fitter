@@ -51,7 +51,7 @@ class SharedActivityViewModel(application: Application) : AndroidViewModel(appli
         } // Creating nutrient Info map for food Db
 
         // update the quantity type drop down
-        typeArrayItems.postValue(weightInfo_map.keys.toList())
+        typeArrayItems.value = weightInfo_map.keys.toList()
     }
 
     fun setDataFromDb(food: Food) {
@@ -123,7 +123,7 @@ class SharedActivityViewModel(application: Application) : AndroidViewModel(appli
             val food =
                 Food(
                     foodName,
-                    foodDetails.Energy!!,
+                    foodDetails.Energy!!/ foodDetails.quantity!!,
                     weightInfo_map,
                     nutrientInfo_map
                 )
