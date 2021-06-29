@@ -53,7 +53,7 @@
                 android:focusable="true"
                 android:orientation="horizontal"
                 android:padding="16dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
                 <ImageView
