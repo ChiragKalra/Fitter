@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FoodSearchActivityViewModel(application: Application) : AndroidViewModel(application) {
-    private val db by FoodEntryRepository.Companion.Delegate(application)
+    private val db by FoodEntryRepository.Delegate(application)
     var error = MutableLiveData<String?>()
     val food_hints_list = MutableLiveData<List<Hint?>>()
 
