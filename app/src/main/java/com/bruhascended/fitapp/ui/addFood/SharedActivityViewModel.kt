@@ -1,7 +1,6 @@
 package com.bruhascended.fitapp.ui.addFood
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.bruhascended.api.models.foodsv2.Hint
@@ -70,7 +69,7 @@ class SharedActivityViewModel(application: Application) : AndroidViewModel(appli
 
     }
 
-    private fun checkout(label: String?): Boolean {
+    fun checkout(label: String?): Boolean {
         for (value in QuantityType.values())
             if (value.toString() == label) return true
         return false

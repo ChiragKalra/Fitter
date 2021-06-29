@@ -1,13 +1,11 @@
 package com.bruhascended.fitapp.ui.addFood
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.format.DateFormat
-import android.util.Log
 import android.view.MenuItem
 import android.widget.DatePicker
 import android.widget.Toast
@@ -26,7 +24,6 @@ import com.bruhascended.fitapp.util.CustomArrayAdapter
 import com.bruhascended.fitapp.util.FoodNutrientDetails
 import com.bruhascended.fitapp.util.MultiViewType
 import com.bruhascended.fitapp.util.setupToolbar
-import java.text.SimpleDateFormat
 import java.util.*
 
 class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
@@ -85,8 +82,13 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
                     foodDetails.quantity = 1.0
                     if (item.resId == 0) {
                         val content = item.content as Hint
-                        foodDetails.quantityType =
-                            QuantityType.valueOf(content.measures[0].label.toString())
+                        for (measure in content.measures) {
+                            if (viewModel.checkout(measure.label)) {
+                                foodDetails.quantityType =
+                                    QuantityType.valueOf(measure.label.toString())
+                                break
+                            }
+                        }
                     } else {
                         val content = item.content as Food
                         val quantityTypeArr = content.weightInfo.keys.toList()
@@ -139,7 +141,7 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(!freshStart){
+                if (!freshStart) {
                     if (!s.isNullOrEmpty() && s.toString() != ".") {
                         foodDetails.quantity = s.toString().toDouble()
                         viewModel.calculateNutrientData(foodDetails)
