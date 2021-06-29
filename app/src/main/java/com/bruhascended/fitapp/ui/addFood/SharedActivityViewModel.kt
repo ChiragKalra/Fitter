@@ -19,7 +19,7 @@ import java.util.*
 
 
 class SharedActivityViewModel(application: Application) : AndroidViewModel(application) {
-    private val db by FoodEntryRepository.Companion.Delegate(application)
+    private val db by FoodEntryRepository.Delegate(application)
     private val weightInfo_map = EnumMap<QuantityType, Double>(QuantityType::class.java)
     private val nutrientInfo_map = EnumMap<NutrientType, Double>(NutrientType::class.java)
     val foodName = MutableLiveData<String>()

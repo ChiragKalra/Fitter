@@ -30,7 +30,7 @@ class FoodJournalViewModel (mApp: Application) : AndroidViewModel(mApp) {
         }
     }
 
-    private val foodEntryRepository by FoodEntryRepository.Companion.Delegate(mApp)
+    private val foodEntryRepository by FoodEntryRepository.Delegate(mApp)
 
     val lastItemLiveSet = MutableLiveData<HashSet<Long>>()
     val separatorInfoMap = MutableLiveData<HashMap<Date, SeparatorInfo>>()

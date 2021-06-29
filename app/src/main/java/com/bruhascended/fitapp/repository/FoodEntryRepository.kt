@@ -18,16 +18,16 @@ class FoodEntryRepository(
 
     companion object {
         private var repository: FoodEntryRepository? = null
+    }
 
-        class Delegate(
-            private val app: Application
-        ) {
-            operator fun getValue(thisRef: Any?, property: KProperty<*>): FoodEntryRepository {
-                if (repository == null) {
-                    repository = FoodEntryRepository(app)
-                }
-                return repository!!
+    class Delegate(
+        private val app: Application
+    ) {
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): FoodEntryRepository {
+            if (repository == null) {
+                repository = FoodEntryRepository(app)
             }
+            return repository!!
         }
     }
 

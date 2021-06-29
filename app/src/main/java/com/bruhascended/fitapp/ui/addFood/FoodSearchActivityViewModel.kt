@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 class FoodSearchActivityViewModel(application: Application) : AndroidViewModel(application) {
     var loadHistory: LiveData<List<Food>>
-    private val db by FoodEntryRepository.Companion.Delegate(application)
+    private val db by FoodEntryRepository.Delegate(application)
     var searchtext = MutableLiveData<String?>()
     var error = MutableLiveData<String?>()
     val food_hints_list = MutableLiveData<List<Hint?>>()
