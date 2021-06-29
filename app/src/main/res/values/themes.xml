@@ -1,15 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style
-        name="AppTheme.ParentTheme"
-        parent="Theme.MaterialComponents.DayNight">
+
+    <style name="AppTheme.ParentTheme" parent="Theme.MaterialComponents.DayNight">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
     </style>
 
-    <style
-        name="FloatHint"
-        arent="android:Widget.TextView">
+    <style name="FloatHint" arent="android:Widget.TextView">
         <item name="android:gravity">center</item>
         <item name="android:minHeight">50dp</item>
         <item name="android:minWidth">75dp</item>
@@ -20,7 +17,7 @@
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
-    <style name="AppTheme" parent="AppTheme.LightTheme"/>
+    <style name="AppTheme" parent="AppTheme.LightTheme" />
 
     <!-- light theme -->
     <style name="AppTheme.LightTheme" parent="AppTheme.ParentTheme">
@@ -31,7 +28,9 @@
 
         <!-- Background Colors -->
         <item name="backgroundColor">@color/white_700</item>
+        <item name="headerBackgroundColor">@color/white_900</item>
         <item name="translucentBackgroundColor">@color/translucent_white_700</item>
+        <item name="trackbarBackgroundColor">@color/white_200</item>
         <item name="colorOnPrimary">?backgroundColor</item>
         <item name="android:windowBackground">?backgroundColor</item>
         <item name="android:navigationBarColor">?backgroundColor</item>
@@ -46,7 +45,13 @@
         <item name="headingTextColor">@color/blue_700</item>
         <item name="android:textColor">@color/black_700</item>
         <item name="android:textColorSecondary">@color/black_500</item>
-        <item name="android:textColorHint">@color/grey</item>
+        <item name="android:textColorHint">@color/blue_500</item>
+
+        <!-- Element Colors -->
+        <item name="colorControlPurple">@color/purple_700</item>
+        <item name="colorControlGreen">@color/green_700</item>
+        <item name="colorControlBlue">@color/blue_700</item>
+        <item name="colorControlRed">@color/red_700</item>
 
         <!-- Widget Themes -->
         <item name="newFabStyle">@style/LightTheme.NewFabTheme</item>
@@ -58,36 +63,28 @@
         <item name="editTextStyle">@style/LightTheme.EditTextTheme</item>
     </style>
 
-    <style
-        name="LightTheme.NewFabTheme"
-        parent="">
+    <style name="LightTheme.NewFabTheme" parent="">
         <item name="fabCustomSize">@dimen/fab_size</item>
         <item name="colorSecondary">@color/white_700</item>
         <item name="colorOnSecondary">@color/blue_500</item>
         <item name="colorOnSurface">@color/blue_500</item>
     </style>
 
-    <style
-        name="LightTheme.CloseFabTheme"
-        parent="@style/Widget.MaterialComponents.FloatingActionButton">
+    <style name="LightTheme.CloseFabTheme" parent="@style/Widget.MaterialComponents.FloatingActionButton">
         <item name="fabCustomSize">@dimen/fab_size</item>
         <item name="colorSecondary">@color/white_700</item>
         <item name="colorOnSecondary">@color/red_500</item>
         <item name="colorOnSurface">@color/red_500</item>
     </style>
 
-    <style
-        name="LightTheme.MiniFabTheme"
-        parent="@style/Widget.MaterialComponents.FloatingActionButton">
+    <style name="LightTheme.MiniFabTheme" parent="@style/Widget.MaterialComponents.FloatingActionButton">
         <item name="fabCustomSize">@dimen/mini_fab_size</item>
         <item name="colorSecondary">@color/white_700</item>
         <item name="colorOnSecondary">@color/blue_500</item>
         <item name="colorOnSurface">@color/blue_500</item>
     </style>
 
-    <style
-        name="LightTheme.AlertDialog"
-        parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+    <style name="LightTheme.AlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="colorPrimary">@color/blue_700</item>
         <item name="colorOnSurface">@color/black_700</item>
         <item name="android:background">@color/white_700</item>
@@ -99,8 +96,8 @@
         <item name="android:colorAccent">@color/blue_700</item>
         <item name="colorControlNormal">@color/blue_200</item>
         <item name="colorControlActivated">@color/blue_500</item>
-        <item name="android:textColorHint">@color/purple_500</item>
-        <item name="android:textColorPrimary">@color/purple_500</item>
+        <item name="android:textColorHint">@color/blue_500</item>
+        <item name="android:textColorPrimary">@color/blue_700</item>
     </style>
 
     <style name="LightTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -134,7 +131,9 @@
 
         <!-- Background Colors -->
         <item name="backgroundColor">@color/black_700</item>
+        <item name="headerBackgroundColor">@color/black_900</item>
         <item name="translucentBackgroundColor">@color/translucent_black_700</item>
+        <item name="trackbarBackgroundColor">@color/black_200</item>
         <item name="colorOnPrimary">?backgroundColor</item>
         <item name="android:windowBackground">?backgroundColor</item>
         <item name="android:navigationBarColor">?backgroundColor</item>
@@ -148,7 +147,13 @@
         <item name="headingTextColor">@color/blue_700</item>
         <item name="android:textColor">@color/white_700</item>
         <item name="android:textColorSecondary">@color/white_500</item>
-        <item name="android:textColorHint">@color/purple_200</item>
+        <item name="android:textColorHint">@color/grey</item>
+
+        <!-- Element Colors -->
+        <item name="colorControlPurple">@color/purple_200</item>
+        <item name="colorControlGreen">@color/green_200</item>
+        <item name="colorControlBlue">@color/blue_200</item>
+        <item name="colorControlRed">@color/red_200</item>
 
         <!-- Widget Themes -->
         <item name="newFabStyle">@style/DarkTheme.NewFabTheme</item>
@@ -160,36 +165,28 @@
         <item name="editTextStyle">@style/DarkTheme.EditTextTheme</item>
     </style>
 
-    <style
-        name="DarkTheme.NewFabTheme"
-        parent="">
+    <style name="DarkTheme.NewFabTheme" parent="">
         <item name="fabCustomSize">@dimen/fab_size</item>
         <item name="colorSecondary">@color/black_500</item>
         <item name="colorOnSecondary">@color/blue_500</item>
         <item name="colorOnSurface">@color/blue_500</item>
     </style>
 
-    <style
-        name="DarkTheme.CloseFabTheme"
-        parent="@style/Widget.MaterialComponents.FloatingActionButton">
+    <style name="DarkTheme.CloseFabTheme" parent="@style/Widget.MaterialComponents.FloatingActionButton">
         <item name="fabCustomSize">@dimen/fab_size</item>
         <item name="colorSecondary">@color/black_500</item>
         <item name="colorOnSecondary">@color/red_500</item>
         <item name="colorOnSurface">@color/red_500</item>
     </style>
 
-    <style
-        name="DarkTheme.MiniFabTheme"
-        parent="@style/Widget.MaterialComponents.FloatingActionButton">
+    <style name="DarkTheme.MiniFabTheme" parent="@style/Widget.MaterialComponents.FloatingActionButton">
         <item name="fabCustomSize">@dimen/mini_fab_size</item>
         <item name="colorSecondary">@color/black_500</item>
         <item name="colorOnSecondary">@color/blue_500</item>
         <item name="colorOnSurface">@color/blue_500</item>
     </style>
 
-    <style
-        name="DarkTheme.AlertDialog"
-        parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+    <style name="DarkTheme.AlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="colorPrimary">@color/blue_700</item>
         <item name="colorOnSurface">@color/white_700</item>
         <item name="android:background">@color/white_700</item>
@@ -201,8 +198,8 @@
         <item name="android:colorAccent">@color/blue_700</item>
         <item name="colorControlNormal">@color/blue_200</item>
         <item name="colorControlActivated">@color/blue_500</item>
-        <item name="android:textColorHint">@color/purple_500</item>
-        <item name="android:textColorPrimary">@color/purple_500</item>
+        <item name="android:textColorHint">@color/blue_500</item>
+        <item name="android:textColorPrimary">@color/blue_200</item>
     </style>
 
     <style name="DarkTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -226,4 +223,8 @@
         <item name="colorSurface">@color/white_700</item>
     </style>
 
+    <style name="roundImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

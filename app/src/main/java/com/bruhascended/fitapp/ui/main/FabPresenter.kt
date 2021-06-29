@@ -4,26 +4,28 @@ import android.app.Activity
 import android.content.Intent
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.bruhascended.fitapp.ui.addfood.AddFoodActivity
+import com.bruhascended.fitapp.databinding.ActivityMainBinding
+import com.bruhascended.fitapp.ui.addFood.FoodSearchActivity
 import com.bruhascended.fitapp.ui.addworkout.AddWorkoutActivity
 import com.bruhascended.fitapp.ui.capturefood.CaptureFoodActivity
-import com.bruhascended.fitapp.databinding.ActivityMainBinding
 import com.bruhascended.fitapp.ui.logweight.LogWeightActivity
 import com.bruhascended.fitapp.util.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class FabPresenter (
+class FabPresenter(
     private val mActivity: Activity,
     private val binding: ActivityMainBinding
 ) {
 
     // onClick destinations
-    private val actionDestinations = arrayOf (
+    private val actionDestinations = arrayOf(
         CaptureFoodActivity::class.java,
-        AddFoodActivity::class.java,
+        FoodSearchActivity::class.java,
         AddWorkoutActivity::class.java,
         LogWeightActivity::class.java
     )
+
+    var areMiniFabsVisible = false
 
     // all FABs, their text descriptions
     private var actionButtons: Array<FloatingActionButton>
@@ -31,10 +33,10 @@ class FabPresenter (
 
     init {
         binding.fabsLayout.apply {
-            actionButtons = arrayOf (
+            actionButtons = arrayOf(
                 captureFoodButton, addFoodButton, addWorkoutButton, addWeightButton
             )
-            actionDescriptions = arrayOf (
+            actionDescriptions = arrayOf(
                 textCapture, textFood, textWorkout, textWeight
             )
         }
@@ -45,6 +47,8 @@ class FabPresenter (
         setupIntents()
         setupEntryAndExit()
     }
+
+    fun cancelMiniFabs() = binding.fabsLayout.cancelActionButton.callOnClick()
 
     private fun hideMiniFabs() {
         actionButtons.forEach {
@@ -66,7 +70,7 @@ class FabPresenter (
         binding.fabsLayout.root.isVisible = true
     }
 
-    private fun setupIntents () {
+    private fun setupIntents() {
         // attach destination intents to FABs
         for (i in 0..3) {
             actionButtons[i].setOnClickListener {
@@ -76,35 +80,37 @@ class FabPresenter (
         }
     }
 
-    private fun setupEntryAndExit () {
+    private fun setupEntryAndExit() {
         binding.fabsLayout.apply {
             // on show FAB buttons
             binding.addActionButton.setOnClickListener {
+                areMiniFabsVisible = true
                 binding.addActionButton.animateRotation(135f).animateFadeOut()
                 cancelActionButton.animateRotation(135f).animateFadeIn(1f)
                 backgroundView.animateFadeIn(0.975f)
                 for (actionButton in actionButtons) {
-                    actionButton.animateFadeUpIn(mActivity.toPx(12))
+                    actionButton.animateFadeUpIn(mActivity.toPxFloat(12))
                 }
                 for (textView in actionDescriptions) {
-                    textView.animateFadeUpIn(mActivity.toPx(12))
+                    textView.animateFadeUpIn(mActivity.toPxFloat(12))
                 }
             }
             // on hide fab buttons
             cancelActionButton.setOnClickListener {
+                areMiniFabsVisible = false
                 binding.addActionButton.animateRotation(0f).animateFadeIn(1f)
                 cancelActionButton.animateRotation(0f).animateFadeOut()
                 backgroundView.animateFadeOut()
                 for (actionButton in actionButtons) {
-                    actionButton.animateFadeDownOut(mActivity.toPx(12))
+                    actionButton.animateFadeDownOut(mActivity.toPxFloat(12))
                 }
                 for (textView in actionDescriptions) {
-                    textView.animateFadeDownOut(mActivity.toPx(12))
+                    textView.animateFadeDownOut(mActivity.toPxFloat(12))
                 }
             }
             // hide FAB buttons on tap outside
             backgroundView.setOnClickListener {
-                cancelActionButton.callOnClick()
+                cancelMiniFabs()
             }
         }
     }

@@ -28,12 +28,59 @@ interface FoodDao {
     @Query("SELECT COUNT(foodName) FROM food")
     fun getLiveCount(): LiveData<Int>
 
-    @Query("SELECT * FROM food WHERE LOWER(foodName) LIKE :key OR LOWER(foodName) LIKE :altKey ORDER BY foodName ASC")
+    @Query("""
+        SELECT * FROM food 
+        WHERE LOWER(foodName) 
+        LIKE :key OR LOWER(foodName) LIKE :altKey 
+        ORDER BY foodName ASC
+    """)
     fun searchPaged (key: String, altKey: String = "% $key"): PagingSource<Int, Food>
 
-    @Query("SELECT * FROM food WHERE LOWER(foodName) LIKE :key OR LOWER(foodName) LIKE :altKey ORDER BY foodName ASC")
+    @Query("""
+        SELECT * FROM food 
+        WHERE LOWER(foodName) 
+        LIKE :key OR LOWER(foodName) LIKE :altKey 
+        ORDER BY foodName ASC
+    """)
     fun searchLive (key: String, altKey: String = "% $key"): LiveData<List<Food>>
 
-    @Query("SELECT * FROM food WHERE LOWER(foodName) LIKE :key OR LOWER(foodName) LIKE :altKey ORDER BY foodName ASC")
+    @Query("""
+        SELECT * FROM food 
+        WHERE LOWER(foodName) 
+        LIKE :key OR LOWER(foodName) LIKE :altKey 
+        ORDER BY foodName ASC
+    """)
     fun searchSync (key: String, altKey: String = "% $key"): List<Food>
+
+    @Query("""
+        SELECT food.*, COUNT(entryId) AS entry_count
+        FROM food LEFT JOIN crossreference 
+        ON food.foodName = crossreference.foodName
+        GROUP BY food.foodName
+        ORDER BY entry_count DESC
+        LIMIT :n
+    """)
+    fun topNSync (n: Int): List<Food>
+
+    @Query("""
+        SELECT food.*, COUNT(entryId) AS entry_count
+        FROM food LEFT JOIN crossreference 
+        ON food.foodName = crossreference.foodName
+        GROUP BY food.foodName
+        ORDER BY entry_count DESC
+        LIMIT :n
+    """)
+    fun topNLive (n: Int): LiveData<List<Food>>
+
+    @Query("""
+        SELECT food.*, COUNT(entryId) AS entry_count
+        FROM food LEFT JOIN crossreference 
+        ON food.foodName = crossreference.foodName
+        GROUP BY food.foodName
+        ORDER BY entry_count DESC
+        LIMIT :n
+    """)
+    fun topNPaged (n: Int): PagingSource<Int, Food>
+
+
 }

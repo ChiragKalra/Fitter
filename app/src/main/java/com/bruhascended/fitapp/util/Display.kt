@@ -9,6 +9,10 @@ fun Context.toDP (px: Float): Int {
     return (px / resources.displayMetrics.density).toInt()
 }
 
-fun Context.toPx (dp: Int): Float {
+fun Context.toPx (dp: Int): Int {
+    return (resources.displayMetrics.density * dp).toInt()
+}
+
+fun Context.toPxFloat (dp: Int): Float {
     return resources.displayMetrics.density * dp
 }

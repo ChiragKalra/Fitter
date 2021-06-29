@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="ounce">
+        <item quantity="other">%d oz</item>
+    </plurals>
+    <string name="quantity_ounce">%1$s oz</string>
+
+    <plurals name="gram">
+        <item quantity="other">%d g</item>
+    </plurals>
+    <string name="quantity_gram">%1$s g</string>
+
+    <plurals name="ml">
+        <item quantity="other">%d ml</item>
+    </plurals>
+    <string name="quantity_ml">%1$s ml</string>
+
+    <plurals name="whole">
+        <item quantity="other">%d whole</item>
+    </plurals>
+    <string name="quantity_whole">%1$s whole</string>
+
+    <plurals name="serving">
+        <item quantity="one">%d serving</item>
+        <item quantity="other">%d servings</item>
+    </plurals>
+    <string name="quantity_serving">%1$s servings</string>
+
+    <plurals name="cup">
+        <item quantity="one">%d cup</item>
+        <item quantity="other">%d cups</item>
+    </plurals>
+    <string name="quantity_cup">%1$s cups</string>
+
+    <plurals name="can">
+        <item quantity="one">%d can</item>
+        <item quantity="other">%d cans</item>
+    </plurals>
+    <string name="quantity_can">%1$s cans</string>
+
+    <plurals name="pound">
+        <item quantity="one">%d pound</item>
+        <item quantity="other">%d pounds</item>
+    </plurals>
+    <string name="quantity_pound">%1$s pounds</string>
+
+    <plurals name="kg">
+        <item quantity="other">%d kg</item>
+    </plurals>
+    <string name="quantity_kg">%1$s kg</string>
+
+    <plurals name="liter">
+        <item quantity="other">%d L</item>
+    </plurals>
+    <string name="quantity_liter">%1$s L</string>
+
+    <plurals name="gallon">
+        <item quantity="one">%d gallon</item>
+        <item quantity="other">%d gallons</item>
+    </plurals>
+    <string name="quantity_gallon">%1$s gallons</string>
+
+    <plurals name="tablespoon">
+        <item quantity="other">%d tbsp</item>
+    </plurals>
+    <string name="quantity_tablespoon">%1$s tbsp</string>
+
+    <plurals name="teaspoon">
+        <item quantity="other">%d tsp</item>
+    </plurals>
+    <string name="quantity_teaspoon">%1$s tsp</string>
+
+    <plurals name="pint">
+        <item quantity="one">%d pint</item>
+        <item quantity="other">%d pints</item>
+    </plurals>
+    <string name="quantity_pint">%1$s pints</string>
+
+    <plurals name="slice">
+        <item quantity="one">%d slice</item>
+        <item quantity="other">%d slices</item>
+    </plurals>
+    <string name="quantity_slice">%1$s slices</string>
+
+    <string name="calorie_count">%1$s kcal</string>
+</resources>

@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.fitapp.R
-import com.bruhascended.fitapp.ui.addfood.FoodSearchActivity
+import com.bruhascended.fitapp.ui.addFood.FoodSearchActivity
 
 class PredictionPresenter(
     private val context: Context,

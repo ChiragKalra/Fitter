@@ -6,14 +6,31 @@ import android.content.res.ColorStateList
 import android.view.View
 import android.widget.ImageView
 import androidx.core.widget.ImageViewCompat
+import com.google.android.material.progressindicator.LinearProgressIndicator
 
 
 enum class AnimationDuration (
         val ms: Long
 ) {
+    VERY_LONG(900),
     LONG(700),
     MEDIUM(500),
     SHORT(350)
+}
+
+fun LinearProgressIndicator.animateProgressTo (
+        dest: Int, steps: Int = 64, duration: AnimationDuration = AnimationDuration.SHORT
+): View {
+    max = 5 * steps
+    progress = 0
+    ValueAnimator.ofInt(0, dest*steps).apply {
+        addUpdateListener {
+            progress = it.animatedValue as Int
+        }
+        setDuration(duration.ms)
+        start()
+    }
+    return this
 }
 
 fun ImageView.animateTintColor (
@@ -30,12 +47,38 @@ fun ImageView.animateTintColor (
     return this
 }
 
+fun View.animateHeightTo (
+    height: Int, duration: AnimationDuration = AnimationDuration.SHORT
+) {
+    val valueAnimator = ValueAnimator.ofInt(measuredHeight, height)
+    valueAnimator.duration = duration.ms
+    valueAnimator.addUpdateListener {
+        val animatedValue = valueAnimator.animatedValue as Int
+        layoutParams = layoutParams.also {
+            it.height = animatedValue
+        }
+    }
+    valueAnimator.start()
+}
+
 fun View.animateRotation (
         degrees: Float, duration: AnimationDuration = AnimationDuration.SHORT
 ): View {
     animate()
         .setDuration(duration.ms)
         .rotation(degrees)
+        .setListener(null)
+        .start()
+    return this
+}
+
+
+fun View.animateScaleY (
+        scale: Float, duration: AnimationDuration = AnimationDuration.SHORT
+): View {
+    animate()
+        .setDuration(duration.ms)
+        .scaleY(scale)
         .setListener(null)
         .start()
     return this

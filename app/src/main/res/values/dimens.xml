@@ -3,4 +3,5 @@
     <dimen name="app_bar_height">120dp</dimen>
     <dimen name="fab_size">56dp</dimen>
     <dimen name="mini_fab_size">40dp</dimen>
+    <dimen name="footer_height">96dp</dimen>
 </resources>

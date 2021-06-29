@@ -1,38 +1,20 @@
 package com.bruhascended.db.food.entities
 
 import androidx.room.*
-import com.bruhascended.db.food.QuantityType
+import com.bruhascended.db.food.types.NutrientType
+import com.bruhascended.db.food.types.QuantityType
 import java.io.Serializable
+import java.util.*
 import kotlin.math.abs
 
 @Entity
 data class Food (
     @PrimaryKey
     val foodName: String,
-    val description: String? = null,
-    val healthRating: Int = 0,
-    val calorieInfoArray: Array<Float> = Array(QuantityType.values().size) { -1f }
+    val calories: Double,
+    val weightInfo: EnumMap<QuantityType, Double> = EnumMap(QuantityType::class.java),
+    val nutrientInfo: EnumMap<NutrientType, Double> = EnumMap(NutrientType::class.java),
 ): Serializable {
-
-    fun setCalorieInfo (quantityType: QuantityType, value: Float) {
-        calorieInfoArray[quantityType.ordinal] = value
-    }
-
-    fun setCalorieInfo (pairs: HashMap<QuantityType, Float>) {
-        pairs.forEach { (q, v) ->
-            calorieInfoArray[q.ordinal] = v
-        }
-    }
-
-    fun getCalorieInfo(): HashMap<QuantityType, Float> {
-        return HashMap<QuantityType, Float>().apply {
-            calorieInfoArray.forEachIndexed { i, v ->
-                if (v != -1f) {
-                    put(QuantityType.values()[i], v)
-                }
-            }
-        }
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -40,9 +22,9 @@ data class Food (
 
         other as Food
         if (foodName != other.foodName) return false
-        if (description != other.description) return false
-        if (healthRating != other.healthRating) return false
-        if (!calorieInfoArray.contentEquals(other.calorieInfoArray)) return false
+        if (calories != other.calories) return false
+        if (weightInfo != other.weightInfo) return false
+        if (nutrientInfo != other.nutrientInfo) return false
         return true
     }
 

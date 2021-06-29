@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="transparent">#0000</color>
+    <color name="grey">#808080</color>
 
     <color name="translucent_black_700">#E01B1B1B</color>
     <color name="black_1000">#FF000000</color>
+    <color name="black_900">#171717</color>
     <color name="black_700">#1B1B1B</color>
-    <color name="black_500">#2B2B2B</color>
+    <color name="black_500">#3C3C3C</color>
     <color name="black_200">#575757</color>
 
     <color name="translucent_white_700">#E0F3F3F3</color>
     <color name="white_1000">#FFFFFFFF</color>
+    <color name="white_900">#F9F9F9</color>
     <color name="white_700">#FFF3F3F3</color>
     <color name="white_500">#CDCDCD</color>
-    <color name="white_200">#979797</color>
+    <color name="white_200">#AEAEAE</color>
 
-    <color name="purple_700">#FF3700B3</color>
-    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#8132B3</color>
+    <color name="purple_500">#8B00EE</color>
     <color name="purple_200">#FFBB86FC</color>
 
-    <color name="blue_700">#245BB5</color>
+    <color name="blue_700">#1459CC</color>
     <color name="blue_500">#4285F4</color>
-    <color name="blue_200">#8BB1F1</color>
+    <color name="blue_200">#9BB4DD</color>
 
+    <color name="red_700">#9E4141</color>
     <color name="red_500">#F44</color>
     <color name="red_200">#FF7474</color>
-    <color name="grey">#808080</color>
+
+    <color name="green_700">#2E7332</color>
+    <color name="green_500">#18A118</color>
+    <color name="green_200">#8DCA8D</color>
+
 </resources>
