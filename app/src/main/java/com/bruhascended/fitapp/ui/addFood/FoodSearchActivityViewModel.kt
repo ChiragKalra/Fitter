@@ -15,9 +15,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FoodSearchActivityViewModel(application: Application) : AndroidViewModel(application) {
+    var loadHistory: LiveData<List<Food>>
     private val db by FoodEntryRepository.Companion.Delegate(application)
+    var searchtext = MutableLiveData<String?>()
     var error = MutableLiveData<String?>()
     val food_hints_list = MutableLiveData<List<Hint?>>()
+
+    init {
+        loadHistory = db.loadCount(10)
+    }
 
     fun getFoodsv2(query: String) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -25,17 +31,12 @@ class FoodSearchActivityViewModel(application: Application) : AndroidViewModel(a
                 val response = FdaApi.fetchFoodsv2(query)
                 if (response.isSuccessful) processData(response.body()?.hints)
             } catch (e: Exception) {
-                Log.d("catch","${e.cause}")
                 error.postValue(e.message)
             }
         }
     }
 
     fun searchConsumedFood(query: String): LiveData<List<Food>> = db.searchConsumedFood(query)
-
-    fun loadCount(n: Int): LiveData<List<Food>>{
-        return db.loadCount(n)
-    }
 
     private fun processData(hints: List<Hint>?) {
         food_hints_list.postValue(hints)

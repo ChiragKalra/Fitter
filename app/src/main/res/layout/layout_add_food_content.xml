@@ -35,6 +35,10 @@
                     android:id="@+id/food_name"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     android:inputType="text"
                     android:text="@{viewModel.foodName}"
                     android:textSize="16sp" />
@@ -47,20 +51,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Quantity"
-                app:expandedHintEnabled="false"
                 app:boxStrokeWidth="2dp"
+                app:expandedHintEnabled="false"
                 app:layout_constraintEnd_toStartOf="@+id/amount_dropdown_layout"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/food_layout">
 
                 <EditText
-                    android:hint="1.0"
-                    android:textColorHint="@color/grey"
                     android:id="@+id/quantity"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:hint="1.0"
                     android:inputType="numberDecimal"
+                    android:textColorHint="@color/grey"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -135,10 +139,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="64dp"
+                android:hint="--"
                 android:text="@{viewModel.nutrientDetails.energy.toString()}"
                 android:textColorHint="@color/grey"
                 android:textSize="44sp"
-                android:hint="--"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -149,9 +153,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Protein(g)"
+                android:textColor="?colorControlPurple"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="?colorControlPurple"
                 app:layout_constraintEnd_toStartOf="@+id/textView4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/textView4" />
@@ -162,9 +166,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:text="Carbs(g)"
-                android:textStyle="bold"
                 android:textColor="?colorControlGreen"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textview_energy" />
@@ -174,9 +178,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Fat(g)"
-                android:textStyle="bold"
                 android:textColor="?colorControlRed"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textView4"
                 app:layout_constraintTop_toTopOf="@+id/textView4" />

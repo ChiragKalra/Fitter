@@ -39,6 +39,7 @@ class FoodSearchActivity : AppCompatActivity() {
     private lateinit var FoodsAdapter: FoodSearchAdapter
     private lateinit var viewModel: FoodSearchActivityViewModel
     private lateinit var resultContracts: ActivityResultLauncher<Intent>
+    private var loadCountList = mutableListOf<MultiViewType>()
 
     companion object {
         const val KEY_FOOD_DATA = "FOOD_DATA"
@@ -49,35 +50,36 @@ class FoodSearchActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_food_search)
         setupToolbar(binding.toolbar, home = true)
 
-        // viewModel
         viewModel =
             ViewModelProvider(this).get(FoodSearchActivityViewModel::class.java)
+        binding.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
-
-        //setUp intent
-        val intent = intent
-        intent.getStringExtra(PredictionPresenter.KEY_FOOD_LABEL)?.let {
-            onSearchCustomise(it)
-            binding.searchBar.setQuery(it, false)
-        }
-
 
         setUpResultContract()
         setUpRecyclerview()
         setUpSearch()
 
-        //setUp LiveData Observer for recyclerView list items
-        viewModel.food_hints_list.observe({ lifecycle }) {
-            val food_hints_list = mutableListOf<MultiViewType>()
-            for (hint in it)
-                food_hints_list.add(MultiViewType(0, hint))
-            updateList(food_hints_list)
+        val intent = intent
+        intent.getStringExtra(PredictionPresenter.KEY_FOOD_LABEL)?.let {
+            binding.searchBar.setQuery(it, false)
+            onSearchCustomise(it)
         }
-        binding.searchBar.setQuery("",false)
 
-        //setUp errorHandler observer
-        viewModel.error.observe({ lifecycle }) {
-            handleError()
+        viewModel.apply {
+            food_hints_list.observe({ lifecycle }) {
+                val food_hints_list = mutableListOf<MultiViewType>()
+                for (hint in it)
+                    food_hints_list.add(MultiViewType(0, hint))
+                updateList(food_hints_list)
+                binding.searchingLayout.visibility = View.GONE
+            }
+            loadHistory.observe({ lifecycle }) {
+                for (food in it) loadCountList.add(MultiViewType(1, food))
+                updateList(loadCountList)
+            }
+            error.observe({ lifecycle }) {
+                handleError()
+            }
         }
 
         binding.searchLayoutPlaceholder.setOnClickListener {
@@ -121,20 +123,12 @@ class FoodSearchActivity : AppCompatActivity() {
                         }
                         updateList(food_history_list)
                     }
-                    binding.searchPlaceholder.text = "Search: $newText"
                     binding.searchLayoutPlaceholder.visibility = View.VISIBLE
-                } else{
-                    viewModel.loadCount(5).observe({lifecycle}){
-                        Log.d("debug","$it")
-                        val food_history_list = mutableListOf<MultiViewType>()
-                        for (food in it) {
-                            food_history_list.add(MultiViewType(1, food))
-                        }
-                        updateList(food_history_list)
-                    }
-                    binding.searchPlaceholder.text = "Search: $newText"
+                } else {
+                    updateList(loadCountList)
                     binding.searchLayoutPlaceholder.visibility = View.GONE
                 }
+                viewModel.searchtext.postValue(newText)
                 return false
             }
 
@@ -142,24 +136,22 @@ class FoodSearchActivity : AppCompatActivity() {
                 onSearchCustomise(query)
                 return false
             }
-
         })
     }
 
     private fun onSearchCustomise(query: String) {
         viewModel.getFoodsv2(query)
-        binding.searchLayoutPlaceholder.visibility = View.GONE
         binding.searchBar.clearFocus()
-        binding.progressBar.isVisible = true
+        binding.searchLayoutPlaceholder.visibility = View.GONE
+        binding.searchingLayout.visibility = View.VISIBLE
     }
 
     private fun updateList(list: MutableList<MultiViewType>) {
         FoodsAdapter.submitList(list)
-        binding.progressBar.visibility = View.GONE
     }
 
     private fun handleError() {
-        binding.progressBar.visibility = View.GONE
+        binding.searchingLayout.visibility = View.GONE
         Toast.makeText(this, viewModel.getError(), Toast.LENGTH_SHORT).show()
     }
 

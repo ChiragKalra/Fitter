@@ -25,6 +25,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private lateinit var binding: ActivityAddCustomFoodBinding
     private lateinit var viewModel: SharedActivityViewModel
     private var foodDetails = FoodNutrientDetails()
+    private var freshStart: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,8 +51,26 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         }
 
         viewModel.NutrientDetails.value.let {
-            if(it != null) foodDetails = it
+            if (it != null) foodDetails = it
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable("foodDetails", foodDetails)
+        outState.putLong("time", viewModel.millis)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        val savedFoodDetails = savedInstanceState.get("foodDetails") as FoodNutrientDetails
+        val time = savedInstanceState.get("time") as Long
+        foodDetails.apply {
+            quantityType = savedFoodDetails.quantityType
+            mealType = savedFoodDetails.mealType
+        }
+        viewModel.millis = time
+        viewModel.updateNutrientDetails(foodDetails)
     }
 
     private fun submitData() {
@@ -196,7 +215,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         viewModel.millis = cal.timeInMillis
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId){
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         android.R.id.home -> {
             onBackPressed()
             true

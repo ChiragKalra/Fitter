@@ -1,10 +1,12 @@
 package com.bruhascended.fitapp.ui.addFood
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.format.DateFormat
 import android.util.Log
 import android.view.MenuItem
 import android.widget.DatePicker
@@ -24,21 +26,17 @@ import com.bruhascended.fitapp.util.CustomArrayAdapter
 import com.bruhascended.fitapp.util.FoodNutrientDetails
 import com.bruhascended.fitapp.util.MultiViewType
 import com.bruhascended.fitapp.util.setupToolbar
+import java.text.SimpleDateFormat
 import java.util.*
 
 class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private lateinit var binding: ActivityFoodDetailsBinding
     private lateinit var viewModel: SharedActivityViewModel
     private var foodDetails = FoodNutrientDetails()
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable("yo",)
-    }
+    private var freshStart: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.getSerializable("yo")
         binding = DataBindingUtil.setContentView(this, R.layout.activity_food_details)
         setupToolbar(binding.toolbar, home = true)
 
@@ -52,7 +50,6 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             itemIntent.getSerializableExtra(FoodSearchActivity.KEY_FOOD_DATA) as MultiViewType?
         val foodEntry =
             itemIntent.getSerializableExtra(ActionDialogPresenter.KEY_FOOD_ENTRY) as FoodEntry?
-        //if (foodEntry != null) setCopyToNow(foodEntry)
         if (item != null) {
             if (item.resId == 0)
                 viewModel.setData(item.content as Hint)
@@ -95,7 +92,6 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
                         val quantityTypeArr = content.weightInfo.keys.toList()
                         foodDetails.quantityType = quantityTypeArr[0]
                     }
-                    binding.content.amountDropdown.setText(foodDetails.quantityType.toString())
                 }
                 if (foodEntry != null) {
                     setCopyToNow(foodEntry)
@@ -103,7 +99,18 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
                 viewModel.calculateNutrientData(foodDetails)
             }
         } // TODO customise default values
+    }
 
+    override fun onResume() {
+        super.onResume()
+        freshStart = false
+        foodDetails.let {
+            binding.content.quantity.setText(it.quantity.toString())
+            if (it.mealType != null) binding.content.mealType.setText(it.mealType.toString())
+            else binding.content.mealType.setText("")
+        }
+        binding.content.amountDropdown.setText(foodDetails.quantityType.toString())
+        binding.content.datePicker.setText(DateFormat.format("dd/MM/yyyy", viewModel.millis))
     }
 
     private fun setCopyToNow(foodEntry: FoodEntry) {
@@ -113,11 +120,6 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
                 quantityType = foodEntry.entry.quantityType
                 quantity = foodEntry.entry.quantity
                 mealType = foodEntry.entry.mealType
-            }
-            binding.content.apply {
-                mealType.setText(foodDetails.mealType.toString())
-                quantity.setText(foodDetails.quantity.toString())
-                amountDropdown.setText(foodDetails.quantityType.toString())
             }
         }
     }
@@ -137,12 +139,14 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!s.isNullOrEmpty() && s.toString() != ".") {
-                    foodDetails.quantity = s.toString().toDouble()
-                    viewModel.calculateNutrientData(foodDetails)
-                } else {
-                    foodDetails.quantity = 1.0 // TODO default quantity
-                    viewModel.calculateNutrientData(foodDetails)
+                if(!freshStart){
+                    if (!s.isNullOrEmpty() && s.toString() != ".") {
+                        foodDetails.quantity = s.toString().toDouble()
+                        viewModel.calculateNutrientData(foodDetails)
+                    } else {
+                        foodDetails.quantity = 1.0 // TODO default quantity
+                        viewModel.calculateNutrientData(foodDetails)
+                    }
                 }
             }
 

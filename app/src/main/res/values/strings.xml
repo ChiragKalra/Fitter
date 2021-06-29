@@ -128,5 +128,6 @@
     <string name="food_search">Food Search</string>
     <string name="food_details">Food Details</string>
     <string name="custom_food">Add Custom Food</string>
+    <string name="search_result_placeholder">Search:</string>
 </resources>
 

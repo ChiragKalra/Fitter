@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.bruhascended.fitapp.ui.addFood.FoodSearchActivityViewModel" />
+    </data>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,8 +32,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layoutDirection="rtl"
-                app:iconifiedByDefault="false"
-                app:queryHint="Search for a food" />
+                app:defaultQueryHint="Search for a food"
+                app:iconifiedByDefault="false" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -46,7 +53,7 @@
                 android:focusable="true"
                 android:orientation="horizontal"
                 android:padding="16dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
                 <ImageView
@@ -55,26 +62,30 @@
                     android:src="@drawable/ic_search" />
 
                 <TextView
+                    android:layout_marginStart="8dp"
                     android:id="@+id/search_placeholder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@{viewModel.searchtext}"
                     android:textSize="16sp" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/searching_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/search_layout_placeholder"
+                android:padding="16dp"
+                android:text="Searching.."
+                android:textSize="16sp"
+                android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerview_foods"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/search_layout_placeholder"
+                android:layout_below="@id/searching_layout"
                 android:padding="4dp" />
         </RelativeLayout>
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleX="0.1"
-            android:scaleY="0.1"
-            android:visibility="gone" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

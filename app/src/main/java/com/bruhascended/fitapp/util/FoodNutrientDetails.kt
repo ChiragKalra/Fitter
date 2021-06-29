@@ -2,6 +2,7 @@ package com.bruhascended.fitapp.util
 
 import com.bruhascended.db.food.types.MealType
 import com.bruhascended.db.food.types.QuantityType
+import java.io.Serializable
 
 data class FoodNutrientDetails(
     var Energy: Double? = null,
@@ -11,7 +12,7 @@ data class FoodNutrientDetails(
     var quantityType: QuantityType? = null,
     var quantity: Double? = null,
     var mealType: MealType? = null
-) {
+): Serializable {
     fun checkIfNull(): Boolean {
         Energy ?: return false
         quantityType ?: return false
