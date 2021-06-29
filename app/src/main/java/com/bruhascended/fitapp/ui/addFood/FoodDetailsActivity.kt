@@ -31,8 +31,14 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
     private lateinit var viewModel: SharedActivityViewModel
     private var foodDetails = FoodNutrientDetails()
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable("yo",)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        savedInstanceState?.getSerializable("yo")
         binding = DataBindingUtil.setContentView(this, R.layout.activity_food_details)
         setupToolbar(binding.toolbar, home = true)
 
@@ -46,7 +52,7 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             itemIntent.getSerializableExtra(FoodSearchActivity.KEY_FOOD_DATA) as MultiViewType?
         val foodEntry =
             itemIntent.getSerializableExtra(ActionDialogPresenter.KEY_FOOD_ENTRY) as FoodEntry?
-        if (foodEntry != null) setCopyToNow(foodEntry)
+        //if (foodEntry != null) setCopyToNow(foodEntry)
         if (item != null) {
             if (item.resId == 0)
                 viewModel.setData(item.content as Hint)
@@ -73,6 +79,31 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         binding.submit.setOnClickListener {
             submitData()
         }
+
+
+        viewModel.NutrientDetails.value.let {
+            if (it != null) foodDetails = it
+            else {
+                if (item != null) {
+                    foodDetails.quantity = 1.0
+                    if (item.resId == 0) {
+                        val content = item.content as Hint
+                        foodDetails.quantityType =
+                            QuantityType.valueOf(content.measures[0].label.toString())
+                    } else {
+                        val content = item.content as Food
+                        val quantityTypeArr = content.weightInfo.keys.toList()
+                        foodDetails.quantityType = quantityTypeArr[0]
+                    }
+                    binding.content.amountDropdown.setText(foodDetails.quantityType.toString())
+                }
+                if (foodEntry != null) {
+                    setCopyToNow(foodEntry)
+                }
+                viewModel.calculateNutrientData(foodDetails)
+            }
+        } // TODO customise default values
+
     }
 
     private fun setCopyToNow(foodEntry: FoodEntry) {
@@ -82,6 +113,11 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
                 quantityType = foodEntry.entry.quantityType
                 quantity = foodEntry.entry.quantity
                 mealType = foodEntry.entry.mealType
+            }
+            binding.content.apply {
+                mealType.setText(foodDetails.mealType.toString())
+                quantity.setText(foodDetails.quantity.toString())
+                amountDropdown.setText(foodDetails.quantityType.toString())
             }
         }
     }
@@ -103,6 +139,9 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!s.isNullOrEmpty() && s.toString() != ".") {
                     foodDetails.quantity = s.toString().toDouble()
+                    viewModel.calculateNutrientData(foodDetails)
+                } else {
+                    foodDetails.quantity = 1.0 // TODO default quantity
                     viewModel.calculateNutrientData(foodDetails)
                 }
             }

@@ -34,6 +34,10 @@ class SharedActivityViewModel(application: Application) : AndroidViewModel(appli
     }.timeInMillis
     val setDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
 
+    fun updateNutrientDetails(foodDetails: FoodNutrientDetails){
+        NutrientDetails.value = foodDetails
+    }
+
     fun setData(hint: Hint) {
         foodName.postValue(hint.food.label)
         perEnergy = hint.food.nutrients.Energy / 100.0

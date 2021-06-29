@@ -37,8 +37,6 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         binding.content.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
 
-        Log.d("eyo","${binding.content.foodName}")
-
         setUpMealDropDown()
         setUpQuantityTypeDropDown()
         setUpQuantityTypeDropDownItemListener()
@@ -51,11 +49,13 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             submitData()
         }
 
+        viewModel.NutrientDetails.value.let {
+            if(it != null) foodDetails = it
+        }
     }
 
     private fun submitData() {
         val foodName = binding.content.foodName.text.toString()
-        Log.d("eyo","$foodDetails")
         if (foodDetails.checkIfNull() && foodName.isNotEmpty()) {
             viewModel.insertCustomData(foodName, foodDetails)
             setResult(Activity.RESULT_OK)
@@ -66,6 +66,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private fun setUpMealTypeDropDownItemListener() {
         binding.content.mealType.setOnItemClickListener { parent, view, position, id ->
             foodDetails.mealType = MealType.valueOf(parent.getItemAtPosition(position).toString())
+            viewModel.updateNutrientDetails(foodDetails)
         }
     }
 
@@ -74,6 +75,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         binding.content.amountDropdown.setOnItemClickListener { parent, view, position, id ->
             foodDetails.quantityType =
                 QuantityType.valueOf(parent.getItemAtPosition(position).toString())
+            viewModel.updateNutrientDetails(foodDetails)
         }
     }
 
@@ -104,6 +106,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 if (!s.isNullOrEmpty()) {
                     foodDetails.quantity = s.toString().toDouble()
                 } else foodDetails.quantity = null
+                viewModel.updateNutrientDetails(foodDetails)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -118,6 +121,8 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 if (!s.isNullOrEmpty()) {
                     foodDetails.Energy = s.toString().toDouble()
                 } else foodDetails.Energy = null
+                viewModel.updateNutrientDetails(foodDetails)
+
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -131,6 +136,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 if (!s.isNullOrEmpty()) {
                     foodDetails.Protein = s.toString().toDouble()
                 } else foodDetails.Protein = null
+                viewModel.updateNutrientDetails(foodDetails)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -144,6 +150,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 if (!s.isNullOrEmpty()) {
                     foodDetails.Carbs = s.toString().toDouble()
                 } else foodDetails.Carbs = null
+                viewModel.updateNutrientDetails(foodDetails)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -157,6 +164,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 if (!s.isNullOrEmpty()) {
                     foodDetails.Fat = s.toString().toDouble()
                 } else foodDetails.Fat = null
+                viewModel.updateNutrientDetails(foodDetails)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -183,6 +191,9 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 year
             )
         )
+        val cal = Calendar.getInstance()
+        cal.set(year, month, dayOfMonth)
+        viewModel.millis = cal.timeInMillis
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId){
