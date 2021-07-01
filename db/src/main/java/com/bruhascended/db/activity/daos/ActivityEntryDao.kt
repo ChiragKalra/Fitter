@@ -14,10 +14,10 @@ interface ActivityEntryDao {
     fun delete (activity_entry: ActivityEntry)
 
     @Query("SELECT * FROM activity_entry WHERE id LIKE :id")
-    fun findById (id: String): ActivityEntry?
+    fun findById (id: Long): ActivityEntry?
 
-    @Query("SELECT * FROM activity_entry ORDER BY startTime DESC")
-    fun loadLive (id: String): LiveData<ActivityEntry?>
+    @Query("SELECT * FROM activity_entry WHERE id LIKE :id")
+    fun loadLive (id: Long): LiveData<ActivityEntry?>
 
     @Query("SELECT * FROM activity_entry ORDER BY startTime DESC")
     fun loadAllPaged(): PagingSource<Int, ActivityEntry>
