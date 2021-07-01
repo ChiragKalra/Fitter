@@ -4,7 +4,8 @@ import android.content.Context
 import org.junit.runner.RunWith
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.core.app.ApplicationProvider
-import com.bruhascended.db.food.*
+import com.bruhascended.db.food.FoodEntryDatabase
+import com.bruhascended.db.food.FoodEntryDatabaseFactory
 import com.bruhascended.db.food.entities.Entry
 import com.bruhascended.db.food.entities.Food
 import com.bruhascended.db.food.entities.FoodEntry
