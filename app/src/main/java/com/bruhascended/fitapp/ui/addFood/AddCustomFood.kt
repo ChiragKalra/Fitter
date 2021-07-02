@@ -210,8 +210,13 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 year
             )
         )
-        val cal = Calendar.getInstance()
-        cal.set(year, month, dayOfMonth)
+        val cal = Calendar.getInstance().apply {
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(year, month, dayOfMonth)
+        }
         viewModel.millis = cal.timeInMillis
     }
 
