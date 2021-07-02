@@ -24,6 +24,7 @@ For any queries contact me at chiragkalra5274@gmail.com.
 
 ## Owners
 Chirag Kalra: https://github.com/ChiragKalra
+
 Gurjyot Singh: https://github.com/thandiLegRi
 
 ## License
