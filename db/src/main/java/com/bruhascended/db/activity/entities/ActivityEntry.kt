@@ -11,12 +11,14 @@ data class ActivityEntry (
     val calories: Int,
     val startTime: Long,
     val duration: Long? = null,
-    val description: String? = null,
-    val distance: Int? = null,
+    val distance: Double? = null,
     val steps: Int? = null,
     @PrimaryKey(autoGenerate = true)
     var id: Long = -1,
 ): Serializable {
+
+    val hasExtraInfo: Boolean
+    get() = duration != null || distance != null || steps != null
 
     val date: Date
     get() = Calendar.getInstance().also {
@@ -28,7 +30,7 @@ data class ActivityEntry (
         }.time
 
     val endTime: Long
-    get() = startTime + endTime
+    get() = startTime + (duration ?: 0)
 
 
     override fun equals(other: Any?): Boolean {
@@ -42,7 +44,6 @@ data class ActivityEntry (
         if (steps != other.steps) return false
         if (duration != other.duration) return false
         if (distance != other.distance) return false
-        if (description != other.description) return false
         return true
     }
 

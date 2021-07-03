@@ -114,6 +114,9 @@
     <string name="today">Today</string>
     <string name="default_online_quantity">100</string>
     <string name="default_online_type">Gram(g)</string>
+    <string name="move_min">min</string>
+    <string name="km">km</string>
+    <string name="steps">steps</string>
 
     <!-- Long Descriptions -->
     <string name="no_food_item_detected">No Food Item Detected</string>
@@ -129,5 +132,6 @@
     <string name="food_details">Food Details</string>
     <string name="custom_food">Add Custom Food</string>
     <string name="search_result_placeholder">Search:</string>
+    <string name="activity_icon">Activity Icon</string>
 </resources>
 

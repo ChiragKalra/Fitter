@@ -82,5 +82,10 @@
     </plurals>
     <string name="quantity_slice">%1$s slices</string>
 
+    <!-- other non-food quantities -->
     <string name="calorie_count">%1$s kcal</string>
+    <string name="move_min_count">%1$s min</string>
+    <string name="distance_km_count">%1$s km</string>
+    <string name="distance_mi_count">%1$s mi</string>
+    <string name="steps_count">%1$s steps</string>
 </resources>
