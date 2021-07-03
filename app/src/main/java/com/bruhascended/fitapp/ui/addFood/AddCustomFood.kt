@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.DatePicker
 import android.widget.TextView
@@ -52,12 +51,14 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             checkData()
         }
     }
-
+    /* we are only saving millis(DatePicker time) as millis
+    will be lost, although the date text retains but we won't
+    be converting the DatePicker text to millis, instead we will
+    be syncing millis with DatePicker text*/
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putLong(TIME, millis)
     }
-
 
     private fun setUpDefaultValues() {
         millis = Calendar.getInstance().apply {
@@ -76,19 +77,21 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
     private fun populateViewsList() {
         viewsLIst.apply {
-            add(binding.content.foodName)
-            add(binding.content.textviewEnergy)
-            add(binding.content.quantity)
-            add(binding.content.amountDropdown)
-            add(binding.content.mealType)
+            add(binding.content.foodName) // 0
+            add(binding.content.textviewEnergy)  // 1
+            add(binding.content.quantity) // 2
+            add(binding.content.amountDropdown)  // 3
+            add(binding.content.mealType) // 4
         }
         nutritionViewsList.apply {
-            add(binding.content.textviewCarbs)
-            add(binding.content.textviewFat)
-            add(binding.content.textviewProtein)
+            add(binding.content.textviewCarbs) // 0
+            add(binding.content.textviewFat)  // 1
+            add(binding.content.textviewProtein) // 2
         }
     }
 
+    /* This function is the entry point for checking views and ensures
+    views values are not null before calling submitData() */
     private fun checkData() {
         if (checkViews()) {
             if (checkNutrientViews())
@@ -111,6 +114,9 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         return true
     }
 
+    /* This function helps insert data to db and this function is safe
+    and is only called after checking all the views, that whether they
+    are null or not */
     private fun submitData() {
         val db by FoodEntryRepository.Delegate(application)
         val weightInfoMap = EnumMap<QuantityType, Double>(QuantityType::class.java)
