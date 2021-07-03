@@ -42,13 +42,13 @@ class ActivityEntryDbTest {
         )
 
         // insertion test
-        val id = db.entryManager().insert(activity)
-        val byId = db.entryManager().findById(activity.id)
+        activity.id = db.entryManager().insert(activity)
+        val byId = db.entryManager().findById(activity.id!!)
         assertEquals(activity, byId)
 
         // deletion test
         db.entryManager().delete(activity)
-        val afterDelete = db.entryManager().findById(id)
+        val afterDelete = db.entryManager().findById(activity.id!!)
         assertEquals(afterDelete, null)
     }
 
