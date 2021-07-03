@@ -49,23 +49,4 @@ class ActivityJournalViewModel (mApp: Application) : AndroidViewModel(mApp) {
             repository.deleteEntry(activityEntry)
         }
     }
-
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            repeat(20) {
-                repository.writeEntry(
-                    ActivityEntry(
-                        ActivityType.values()[Random.nextInt(0, 10)],
-                        153,
-                        Calendar.getInstance().apply {
-                            add(Calendar.DAY_OF_MONTH, -Random.nextInt(0, 10))
-                        }.timeInMillis,
-                        Random.nextInt(5, 100) * 60000L,
-                        5.0,
-                        Random.nextInt(0, 1000),
-                    )
-                )
-            }
-        }
-    }
 }
