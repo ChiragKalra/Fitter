@@ -15,6 +15,29 @@
     <string name="protein">Protein</string>
 
     <!-- Activities -->
+    <string name="walking">Walking</string>
+    <string name="fitness_walking">Fitness Walking</string>
     <string name="running">Running</string>
+    <string name="jogging">Jogging</string>
+    <string name="cycling">Cycling</string>
+    <string name="crossfit">Cross-Fit</string>
+    <string name="weightlifting">Weightlifting</string>
+    <string name="swimming">Swimming</string>
+    <string name="aerobics">Aerobics</string>
+    <string name="dancing">Dancing</string>
+    <string name="zumba">Zumba</string>
+    <string name="boxing">Boxing</string>
+    <string name="kickboxing">Kickboxing</string>
+    <string name="mixed_martial_arts">Mixed Martial Arts</string>
+    <string name="rugby">Rugby</string>
+    <string name="football">Football</string>
+    <string name="hockey">Hockey</string>
+    <string name="golf">Golf</string>
+    <string name="high_intensity_interval_training">High Intensity Interval Training</string>
+    <string name="interval_training">Interval Training</string>
+    <string name="yoga">Yoga</string>
+    <string name="pilates">Pilates</string>
+    <string name="meditation">Meditation</string>
+    <string name="other">Other</string>
 
 </resources>
