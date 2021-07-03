@@ -35,7 +35,7 @@ class ActivityJournalRecyclerAdapter (
         val itemBinding: ItemActivityEntryBinding? = null,
         val separatorBinding: ItemSeparatorActivityentryBinding? = null,
     ) : RecyclerView.ViewHolder(root) {
-        var layoutNutrientsWrapHeight = root.context.toPx(36).toInt()
+        var layoutNutrientsWrapHeight = root.context.toPx(36)
         var lastItemObserver: Observer<HashSet<Long>>? = null
         var separatorInfoObserver:
                 Observer<HashMap<Date, ActivityJournalViewModel.SeparatorInfo>>? = null
@@ -51,7 +51,7 @@ class ActivityJournalRecyclerAdapter (
         return if (getItem(position)?.item != null) 0 else 1
     }
 
-    fun doubleToString(d: Double): String {
+    private fun doubleToString(d: Double): String {
         return DecimalFormat(
             "0",
             DecimalFormatSymbols.getInstance(Locale.getDefault())
@@ -103,19 +103,46 @@ class ActivityJournalRecyclerAdapter (
             }
 
             separatorInfo.also { info ->
+                val timeInMins = info.totalDuration / (1000*60)
                 textviewMoveMin.text = mContext.getString(
                     move_min_count,
-                    (info.totalDuration / (1000*60)).toString()
+                    timeInMins.toString()
                 )
-                textviewDistanceKm.text = mContext.getString(
+                progressbarMoveMin.apply {
+                    // TODO: Set Using User Preference
+                    progressMax = 60f
+                    progress = 0f
+                    setProgressWithAnimation(timeInMins.toFloat(), AnimationDuration.VERY_LONG.ms)
+                }
+
+                textviewDistance.text = mContext.getString(
                     // TODO Mile / KM setting check
                     if (true) distance_km_count else distance_mi_count,
                     doubleToString(info.totalDistance)
                 )
+                progressbarDistance.apply {
+                    // TODO: Set Using User Preference
+                    progressMax = 1f
+                    progress = 0f
+                    setProgressWithAnimation(
+                        info.totalDistance.toFloat(),
+                        AnimationDuration.VERY_LONG.ms
+                    )
+                }
+
                 textviewSteps.text = mContext.getString(
                     steps_count,
                     info.totalSteps.toString()
                 )
+                progressbarSteps.apply {
+                    // TODO: Set Using User Preference
+                    progressMax = 5000f
+                    progress = 0f
+                    setProgressWithAnimation(
+                        info.totalSteps.toFloat(),
+                        AnimationDuration.VERY_LONG.ms
+                    )
+                }
             }
         }
 

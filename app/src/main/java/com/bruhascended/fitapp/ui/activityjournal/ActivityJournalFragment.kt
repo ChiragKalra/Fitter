@@ -87,12 +87,12 @@ class ActivityJournalFragment: Fragment() {
             val allArr = all.toTypedArray()
             val newIdSet = HashSet<Long>().apply {
                 if (allArr.isNotEmpty()) {
-                    add(allArr.last().id)
+                    add(allArr.last().id!!)
                 }
                 if (allArr.size > 1) {
                     allArr.slice( 0 until all.size - 1).forEachIndexed { ind, activityEntry ->
                         if (activityEntry.date != allArr[ind+1].date) {
-                            add(activityEntry.id)
+                            add(activityEntry.id!!)
                         }
                     }
                 }

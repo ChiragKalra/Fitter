@@ -60,19 +60,6 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <!-- Move Min -->
-        <TextView
-            android:id="@+id/textview_move_min_label"
-            android:text="@string/move_min"
-            android:textSize="16sp"
-            android:textAlignment="center"
-            android:layout_width="84dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            app:layout_constraintBottom_toTopOf="@id/textview_move_min"
-            app:layout_constraintTop_toBottomOf="@id/textview_date"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/textview_distance_label"/>
-
         <com.mikhaellopez.circularprogressbar.CircularProgressBar
             android:id="@+id/progressbar_move_min"
             android:layout_width="24dp"
@@ -87,39 +74,28 @@
             app:cpb_progressbar_color="?colorControlPurple"
             app:cpb_progressbar_width="4dp"
             app:cpb_round_border="true"
+
             app:layout_constraintTop_toTopOf="@id/textview_move_min"
-            app:layout_constraintStart_toStartOf="@id/textview_move_min_label"
             app:layout_constraintEnd_toStartOf="@id/textview_move_min"
             app:layout_constraintBottom_toBottomOf="@id/textview_move_min"/>
 
         <TextView
             android:id="@+id/textview_move_min"
-            android:text="@string/zero_gm"
             tools:text="54.3"
             android:textSize="16sp"
             android:textColor="?colorControlPurple"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
             android:layout_marginBottom="18dp"
+            android:layout_marginStart="10dp"
+
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_move_min_label"
-            app:layout_constraintStart_toEndOf="@id/progressbar_move_min"
-            app:layout_constraintEnd_toEndOf="@id/textview_move_min_label" />
+            app:layout_constraintTop_toBottomOf="@+id/textview_date"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/textview_distance" />
 
-        <!-- Km -->
-        <TextView
-            android:id="@+id/textview_distance_label"
-            android:text="@string/km"
-            android:textSize="16sp"
-            android:layout_width="84dp"
-            android:textAlignment="center"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            app:layout_constraintBottom_toTopOf="@id/textview_distance_km"
-            app:layout_constraintTop_toBottomOf="@id/textview_date"
-            app:layout_constraintStart_toEndOf="@id/textview_move_min_label"
-            app:layout_constraintEnd_toStartOf="@id/textview_steps_label"/>
-
+        <!-- Distance -->
         <com.mikhaellopez.circularprogressbar.CircularProgressBar
             android:id="@+id/progressbar_distance"
             android:layout_width="24dp"
@@ -134,40 +110,29 @@
             app:cpb_progressbar_color="?colorControlGreen"
             app:cpb_progressbar_width="4dp"
             app:cpb_round_border="true"
-            app:layout_constraintTop_toTopOf="@id/textview_distance_km"
-            app:layout_constraintStart_toStartOf="@id/textview_distance_label"
-            app:layout_constraintEnd_toStartOf="@id/textview_distance_km"
-            app:layout_constraintBottom_toBottomOf="@id/textview_distance_km"/>
+
+            app:layout_constraintTop_toTopOf="@id/textview_distance"
+            app:layout_constraintEnd_toStartOf="@id/textview_distance"
+            app:layout_constraintBottom_toBottomOf="@id/textview_distance"/>
 
         <TextView
-            android:id="@+id/textview_distance_km"
+            android:id="@+id/textview_distance"
             android:text="@string/zero_gm"
             tools:text="7.8"
             android:textSize="16sp"
             android:textColor="?colorControlGreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
             android:layout_marginBottom="18dp"
+
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_distance_label"
-            app:layout_constraintStart_toEndOf="@id/progressbar_distance"
-            app:layout_constraintEnd_toEndOf="@id/textview_distance_label"/>
+            app:layout_constraintTop_toBottomOf="@+id/textview_date"
+            app:layout_constraintStart_toEndOf="@id/textview_move_min"
+            app:layout_constraintEnd_toStartOf="@id/textview_steps"/>
 
 
         <!-- Steps -->
-        <TextView
-            android:id="@+id/textview_steps_label"
-            android:text="@string/steps"
-            android:textSize="16sp"
-            android:textAlignment="center"
-            android:layout_width="84dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            app:layout_constraintBottom_toTopOf="@id/textview_steps"
-            app:layout_constraintTop_toBottomOf="@id/textview_date"
-            app:layout_constraintStart_toEndOf="@id/textview_distance_label"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
         <com.mikhaellopez.circularprogressbar.CircularProgressBar
             android:id="@+id/progressbar_steps"
             android:layout_width="24dp"
@@ -183,7 +148,6 @@
             app:cpb_progressbar_width="4dp"
             app:cpb_round_border="true"
 
-            app:layout_constraintStart_toStartOf="@id/textview_steps_label"
             app:layout_constraintTop_toTopOf="@id/textview_steps"
             app:layout_constraintEnd_toStartOf="@id/textview_steps"
             app:layout_constraintBottom_toBottomOf="@id/textview_steps"/>
@@ -196,11 +160,14 @@
             android:textColor="?colorControlRed"
             android:textSize="16sp"
             tools:text="1234"
+            android:layout_marginTop="18dp"
             android:layout_marginBottom="18dp"
+            android:layout_marginEnd="10dp"
+
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_steps_label"
-            app:layout_constraintStart_toEndOf="@id/progressbar_steps"
-            app:layout_constraintEnd_toEndOf="@id/textview_steps_label"/>
+            app:layout_constraintTop_toBottomOf="@+id/textview_date"
+            app:layout_constraintStart_toEndOf="@id/textview_distance"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <View
             android:layout_width="0dp"

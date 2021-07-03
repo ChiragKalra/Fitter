@@ -83,7 +83,7 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:animateLayoutChanges="true"
-            app:layout_constraintStart_toEndOf="@id/icon_activity"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textview_activity_name">
 

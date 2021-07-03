@@ -4,11 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.bruhascended.db.activity.entities.ActivityEntry
+import com.bruhascended.db.activity.types.ActivityType
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.random.Random
 
 class ActivityJournalViewModel (mApp: Application) : AndroidViewModel(mApp) {
 
@@ -45,6 +47,25 @@ class ActivityJournalViewModel (mApp: Application) : AndroidViewModel(mApp) {
     fun deleteEntry(activityEntry: ActivityEntry) {
         CoroutineScope(Dispatchers.IO).launch {
             repository.deleteEntry(activityEntry)
+        }
+    }
+
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            repeat(20) {
+                repository.writeEntry(
+                    ActivityEntry(
+                        ActivityType.values()[Random.nextInt(0, 10)],
+                        153,
+                        Calendar.getInstance().apply {
+                            add(Calendar.DAY_OF_MONTH, -Random.nextInt(0, 10))
+                        }.timeInMillis,
+                        Random.nextInt(5, 100) * 60000L,
+                        5.0,
+                        Random.nextInt(0, 1000),
+                    )
+                )
+            }
         }
     }
 }

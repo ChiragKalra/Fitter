@@ -14,7 +14,7 @@ data class ActivityEntry (
     val distance: Double? = null,
     val steps: Int? = null,
     @PrimaryKey(autoGenerate = true)
-    var id: Long = -1,
+    var id: Long? = null,
 ): Serializable {
 
     val hasExtraInfo: Boolean
