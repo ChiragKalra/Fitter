@@ -129,5 +129,10 @@
     <string name="food_details">Food Details</string>
     <string name="custom_food">Add Custom Food</string>
     <string name="search_result_placeholder">Search:</string>
+    <string name="alert_dialog_text">You haven\'t filled all the nutritional details</string>
+    <string name="back">back</string>
+    <string name="continue_text">continue</string>
+    <string name="fill_details_dialog_text">Please fill all the details</string>
+    <string name="ok">ok</string>
 </resources>
 
