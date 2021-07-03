@@ -51,6 +51,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             checkData()
         }
     }
+
     /* we are only saving millis(DatePicker time) as millis
     will be lost, although the date text retains but we won't
     be converting the DatePicker text to millis, instead we will
@@ -140,7 +141,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             viewsLIst[1].text.toString().toInt(),
             viewsLIst[2].text.toString().toDouble(),
             QuantityType.valueOf(viewsLIst[3].text.toString()),
-            MealType.valueOf(viewsLIst[4].text.toString()),
+            MealType.getEnum(viewsLIst[4].text.toString(), this),
             millis
         )
         CoroutineScope(IO).launch { db.writeEntry(food, entry) }
