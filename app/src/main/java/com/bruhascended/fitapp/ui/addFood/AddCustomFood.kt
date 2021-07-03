@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.DatePicker
 import android.widget.TextView
@@ -126,8 +127,10 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         weightInfoMap[QuantityType.valueOf(viewsLIst[3].text.toString())] = 1.0
         for (value in NutrientType.values()) {
             nutritionViewsList.let {
-                if (!it[value.ordinal].text.isNullOrEmpty())
-                    nutrientInfoMap[value] = it[value.ordinal].text.toString().toDouble()
+                if (!it[value.ordinal].text.isNullOrEmpty()) {
+                    nutrientInfoMap[value] = it[value.ordinal].text.toString().toDouble() /
+                            viewsLIst[2].text.toString().toDouble()
+                }
             }
         }
         val food = Food(
@@ -144,6 +147,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             MealType.getEnum(viewsLIst[4].text.toString(), this),
             millis
         )
+        Log.d("eyo", "$food")
         CoroutineScope(IO).launch { db.writeEntry(food, entry) }
         setResult(Activity.RESULT_OK)
         finish()
