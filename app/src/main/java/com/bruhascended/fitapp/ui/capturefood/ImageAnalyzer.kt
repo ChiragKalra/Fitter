@@ -63,9 +63,8 @@ class ImageAnalyzer (
             if (bm != null) {
                 val dim = min(bm.width, bm.height)
                 bm = Bitmap.createBitmap(bm, 0, 0, dim, dim)
-                val predictions = streamClassifier.fetchResults(bm).apply {
-                    sliceArray(0 until min(size, 4))
-                }
+                var predictions = streamClassifier.fetchResults(bm)
+                predictions = predictions.sliceArray(0 until min(predictions.size, 4))
                 if (executionCount % streamClassifier.getUpdatePeriod() == 0L) {
                     predictionsListener(predictions)
                 }

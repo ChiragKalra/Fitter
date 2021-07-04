@@ -17,7 +17,7 @@ class ImageStreamClassifier(
         const val EXP_AVG_EXPONENT = 6
         const val EXP_AVG_BETA_UPPER_BOUND = 0.95
         const val EXP_AVG_BETA_LOWER_BOUND = 0.70
-        const val SCORE_LOWER_BOUND = 0.75
+        const val SCORE_LOWER_BOUND = .50
     }
 
     private var classifier: ImageClassifier = ImageClassifier(context)

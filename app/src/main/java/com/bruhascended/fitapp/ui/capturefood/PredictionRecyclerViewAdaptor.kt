@@ -18,6 +18,12 @@ class PredictionRecyclerViewAdaptor(
         val nameButton: Button = root.findViewById(R.id.predictionName)
     }
 
+    private fun String.formatText(): String {
+        var ret = lowercase()
+        ret = "" + ret[0].uppercase() + ret.slice(1..lastIndex)
+        return ret.replace('-',' ').replace('_', ' ')
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PredictionViewHolder {
         return PredictionViewHolder(
             LayoutInflater.from(parent.context).inflate(
@@ -31,7 +37,7 @@ class PredictionRecyclerViewAdaptor(
     override fun getItemCount() = predictions.size
 
     override fun onBindViewHolder(holder: PredictionViewHolder, position: Int) {
-        holder.nameButton.text =  predictions[position]
+        holder.nameButton.text =  predictions[position].formatText()
         holder.nameButton.setOnClickListener {
             listener?.invoke(predictions[position])
         }
