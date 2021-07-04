@@ -2,7 +2,6 @@ package com.bruhascended.classifier.foodimage
 
 import android.content.Context
 import android.graphics.Bitmap
-import com.bruhascended.classifier.ml.AiyVisionClassifierFoodV1
 import com.bruhascended.classifier.ml.MobilenetV3LargeFoodClassifier
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.gpu.CompatibilityList
@@ -27,7 +26,6 @@ class ImageClassifier (
     val outputCount: Int
     get() = if (useIndian) outputCountIndian else outputCountAmerican
 
-    private var americanModel: AiyVisionClassifierFoodV1
     private var indianModel: MobilenetV3LargeFoodClassifier
 
     private var imageProcessorAmerican: ImageProcessor
@@ -38,17 +36,11 @@ class ImageClassifier (
         val device = if (compatList.isDelegateSupportedOnThisDevice)
             Model.Device.GPU else Model.Device.CPU
 
-        val optionsGpu = Model.Options.Builder()
-            .setNumThreads(6)
-            .setDevice(device)
-            .build()
-
         val optionsCpu = Model.Options.Builder()
             .setNumThreads(6)
             .setDevice(Model.Device.CPU)
             .build()
 
-        americanModel = AiyVisionClassifierFoodV1.newInstance(context, optionsGpu)
         indianModel = MobilenetV3LargeFoodClassifier.newInstance(context, optionsCpu)
 
         imageProcessorAmerican = ImageProcessor.Builder()
@@ -74,23 +66,14 @@ class ImageClassifier (
     }
 
     fun fetchResults(bitmap: Bitmap): Array<Category> {
-        return if (useIndian) {
-            val tensorImage = imageProcessorIndian.process(
-                TensorImage(DataType.FLOAT32).apply { load(bitmap) }
-            )
-            indianModel.process(tensorImage).probabilityAsCategoryList.toTypedArray()
-        } else {
-            val tensorImage = imageProcessorAmerican.process(
-                TensorImage(DataType.UINT8).apply { load(bitmap) }
-            )
-            americanModel.process(tensorImage).probabilityAsCategoryList.toTypedArray()
-        }
-
+        val tensorImage = imageProcessorIndian.process(
+            TensorImage(DataType.FLOAT32).apply { load(bitmap) }
+        )
+        return indianModel.process(tensorImage).probabilityAsCategoryList.toTypedArray()
     }
 
     fun close() {
         // Releases model resources if no longer used.
         indianModel.close()
-        americanModel.close()
     }
 }
