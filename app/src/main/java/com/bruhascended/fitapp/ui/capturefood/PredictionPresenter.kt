@@ -14,6 +14,12 @@ class PredictionPresenter(
 ) {
     companion object {
         const val KEY_FOOD_LABEL = "FOOD_LABEL"
+
+        fun String.cleanedLabel(): String {
+            var ret = lowercase()
+            ret = "" + ret[0].uppercase() + ret.slice(1..lastIndex)
+            return ret.replace('-',' ').replace('_', ' ')
+        }
     }
 
     private val noResArr = arrayOf(context.getString(R.string.no_food_item_detected))
@@ -26,15 +32,18 @@ class PredictionPresenter(
     fun populate (predictions: Array<String>) {
         recyclerView.post {
             if (predictions.isEmpty()) {
-                recyclerView.adapter = PredictionRecyclerViewAdaptor(noResArr) {}
+                recyclerView.adapter = PredictionRecyclerViewAdaptor(noResArr) 
             } else {
-                recyclerView.adapter = PredictionRecyclerViewAdaptor(predictions) {
-                    context.startActivity(
-                        Intent(context, FoodSearchActivity::class.java).apply {
-                            putExtra(KEY_FOOD_LABEL, it)
-                        }
-                    )
-                    (context as AppCompatActivity).finish()
+                recyclerView.adapter = PredictionRecyclerViewAdaptor(predictions).apply {
+                    setOnClickListener {
+                        setOnClickListener { }
+                        context.startActivity(
+                            Intent(context, FoodSearchActivity::class.java).apply {
+                                putExtra(KEY_FOOD_LABEL, it.cleanedLabel())
+                            }
+                        )
+                        (context as AppCompatActivity).finish()
+                    }
                 }
             }
         }

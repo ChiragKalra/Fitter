@@ -17,7 +17,7 @@ class ImageStreamClassifier(
         const val EXP_AVG_EXPONENT = 6
         const val EXP_AVG_BETA_UPPER_BOUND = 0.95
         const val EXP_AVG_BETA_LOWER_BOUND = 0.70
-        const val SCORE_LOWER_BOUND = .50
+        const val SCORE_LOWER_BOUND = .15
     }
 
     private var classifier: ImageClassifier = ImageClassifier(context)
@@ -60,7 +60,7 @@ class ImageStreamClassifier(
         }
 
         val filteredCategories = categories.filter {
-            it.score > SCORE_LOWER_BOUND.pow(EXP_AVG_EXPONENT)
+            it.score > SCORE_LOWER_BOUND
         }.toTypedArray()
 
         return Array(filteredCategories.size) {
