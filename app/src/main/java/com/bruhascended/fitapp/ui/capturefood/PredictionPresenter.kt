@@ -1,15 +1,13 @@
 package com.bruhascended.fitapp.ui.capturefood
 
-import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.ui.addFood.FoodSearchActivity
 
 class PredictionPresenter(
-    private val context: Context,
+    private val cameraActivity: CameraActivity,
     private val recyclerView: RecyclerView
 ) {
     companion object {
@@ -22,10 +20,10 @@ class PredictionPresenter(
         }
     }
 
-    private val noResArr = arrayOf(context.getString(R.string.no_food_item_detected))
+    private val noResArr = arrayOf(cameraActivity.getString(R.string.no_food_item_detected))
 
     init {
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = LinearLayoutManager(cameraActivity)
         populate(emptyArray())
     }
 
@@ -37,12 +35,13 @@ class PredictionPresenter(
                 recyclerView.adapter = PredictionRecyclerViewAdaptor(predictions).apply {
                     setOnClickListener {
                         setOnClickListener { }
-                        context.startActivity(
-                            Intent(context, FoodSearchActivity::class.java).apply {
+                        cameraActivity.toggleFlashlight(false)
+                        cameraActivity.startActivity(
+                            Intent(cameraActivity, FoodSearchActivity::class.java).apply {
                                 putExtra(KEY_FOOD_LABEL, it.cleanedLabel())
                             }
                         )
-                        (context as AppCompatActivity).finish()
+                        cameraActivity.finish()
                     }
                 }
             }

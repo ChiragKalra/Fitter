@@ -44,7 +44,7 @@ abstract class CameraActivity: AppCompatActivity() {
     protected val liveFlashlightState
         get() = camera.cameraInfo.torchState
 
-    protected fun toggleFlashlight (state: Boolean? = null): Boolean {
+    fun toggleFlashlight (state: Boolean? = null): Boolean {
         return if (camera.cameraInfo.hasFlashUnit()) {
             val newState = state ?: !torchState
             camera.cameraControl.enableTorch(newState)
