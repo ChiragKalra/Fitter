@@ -18,9 +18,6 @@ import com.bruhascended.fitapp.databinding.FragmentJournalFoodBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 
 class FoodJournalFragment: Fragment() {
@@ -29,6 +26,10 @@ class FoodJournalFragment: Fragment() {
 
     private lateinit var binding: FragmentJournalFoodBinding
     private lateinit var mAdaptor: FoodJournalRecyclerAdapter
+
+    private val footerHeight: Int
+    get() = requireContext().resources
+            .getDimension(R.dimen.footer_height).toInt()
 
     class FooterDecoration(private val footerHeight: Int) : RecyclerView.ItemDecoration() {
         override fun getItemOffsets(
@@ -50,8 +51,8 @@ class FoodJournalFragment: Fragment() {
     private fun setupRecyclerView() {
         mAdaptor = FoodJournalRecyclerAdapter(
             requireContext(),
-            viewModel.lastItemLiveSet,
-            viewModel.separatorInfoMap,
+            viewModel.lastItemIds,
+            viewModel.separatorInfo,
         ).apply {
             setOnItemClickListener {
                 ActionDialogPresenter(
@@ -65,63 +66,19 @@ class FoodJournalFragment: Fragment() {
         binding.recyclerviewFoods.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdaptor
-            addItemDecoration(
-                FooterDecoration(
-                    requireContext().resources
-                        .getDimension(R.dimen.footer_height).toInt()
-                )
-            )
-        }
-
-        viewModel.liveFoodEntries.observe(viewLifecycleOwner) { all ->
-            val infoMap = HashMap<Date, FoodJournalViewModel.SeparatorInfo>()
-            all.forEach {
-                val date = it.entry.date
-                if (!infoMap.containsKey(date)) {
-                    infoMap[date] = FoodJournalViewModel.SeparatorInfo()
-                }
-                infoMap[date]?.apply {
-                    totalCalories += it.entry.calories
-                    val amountPerQuantity = it.food.weightInfo[it.entry.quantityType]
-                    if (amountPerQuantity != null) {
-                        val amount = it.entry.quantity * amountPerQuantity
-                        it.food.nutrientInfo.forEach { (key, value) ->
-                            totalNutrients[key] = (totalNutrients[key] ?: .0) + value * amount
-                        }
-                    }
-                }
-            }
-            viewModel.separatorInfoMap.postValue(infoMap)
-
-            val allArr = all.toTypedArray()
-            val newIdSet = HashSet<Long>().apply {
-                if (allArr.isNotEmpty()) {
-                    add(allArr.last().entry.entryId!!)
-                }
-                if (allArr.size > 1) {
-                    allArr.slice( 0 until all.size - 1).forEachIndexed { ind, foodEntry ->
-                        if (foodEntry.entry.date != allArr[ind+1].entry.date) {
-                            add(foodEntry.entry.entryId!!)
-                        }
-                    }
-                }
-            }
-            viewModel.lastItemLiveSet.postValue(newIdSet)
-            binding.recyclerviewFoods.invalidateItemDecorations()
+            addItemDecoration(FooterDecoration(footerHeight))
         }
 
         val dateSeparated = viewModel.foodEntries
             .map { pagingData -> pagingData.map { DateSeparatedItem(item = it) } }
-            .map {
-                it.insertSeparators{ after, before ->
+            .map { pagingData ->
+                pagingData.insertSeparators { after, before ->
                     val afterDate = after?.item?.entry?.date
                     val beforeDate = before?.item?.entry?.date
                     if (beforeDate == null || (afterDate != null && afterDate <= beforeDate)) {
                         null
                     } else {
-                        DateSeparatedItem(
-                            separator = beforeDate,
-                        )
+                        DateSeparatedItem(separator = beforeDate)
                     }
                 }
             }

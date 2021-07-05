@@ -15,6 +15,7 @@ import com.bruhascended.db.R.string.calorie_count
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemFoodEntryBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorFoodentryBinding
+import com.bruhascended.fitapp.repository.FoodEntryRepository
 import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEntryItemHolder
 import com.bruhascended.fitapp.util.*
 import java.util.Date
@@ -26,9 +27,9 @@ class FoodJournalRecyclerAdapter (
     private val mContext: Context,
     private val lastItemLiveSet: MutableLiveData<HashSet<Long>>,
     private val separatorInfoLiveMap:
-        MutableLiveData<HashMap<Date, FoodJournalViewModel.SeparatorInfo>>
+        MutableLiveData<HashMap<Date, FoodEntryRepository.SeparatorInfo>>
 ): PagingDataAdapter<DateSeparatedItem, FoodEntryItemHolder> (
-    DateSeparatedItemComparator()
+    DateSeparatedItem.Comparator()
 ) {
 
     class FoodEntryItemHolder (
@@ -36,10 +37,10 @@ class FoodJournalRecyclerAdapter (
         val itemBinding: ItemFoodEntryBinding? = null,
         val separatorBinding: ItemSeparatorFoodentryBinding? = null,
     ) : RecyclerView.ViewHolder(root) {
-        var layoutNutrientsWrapHeight = root.context.toPx(36).toInt()
+        var layoutNutrientsWrapHeight = root.context.toPx(36)
         var lastItemObserver: Observer<HashSet<Long>>? = null
         var separatorInfoObserver:
-                Observer<HashMap<Date, FoodJournalViewModel.SeparatorInfo>>? = null
+                Observer<HashMap<Date, FoodEntryRepository.SeparatorInfo>>? = null
     }
 
     private var mOnItemClickListener: ((foodEntry: FoodEntry) -> Unit)? = null
@@ -78,7 +79,7 @@ class FoodJournalRecyclerAdapter (
             separatorInfoLiveMap.removeObserver(this)
         }
 
-        holder.separatorInfoObserver = Observer<HashMap<Date, FoodJournalViewModel.SeparatorInfo>> {
+        holder.separatorInfoObserver = Observer<HashMap<Date, FoodEntryRepository.SeparatorInfo>> {
             val separatorInfo = it[separator] ?: return@Observer
 
             textviewDate.text = DateTimePresenter(mContext, separator.time).fullDate
@@ -176,7 +177,7 @@ class FoodJournalRecyclerAdapter (
                 else R.drawable.bg_foodjournal_item
             )
             layoutRoot.layoutParams = (layoutRoot.layoutParams as ViewGroup.MarginLayoutParams).also {
-                it.bottomMargin = if (isLastItem) mContext.toPx(12).toInt() else 0
+                it.bottomMargin = if (isLastItem) mContext.toPx(12) else 0
             }
         }
         holder.lastItemObserver?.apply {
