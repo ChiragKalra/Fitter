@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.DatePicker
 import android.widget.TextView
@@ -56,7 +55,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     /* we are only saving millis(DatePicker time) as millis
     will be lost, although the date text retains but we won't
     be converting the DatePicker text to millis, instead we will
-    be syncing millis with DatePicker text*/
+    be syncing millis so that it matches DatePicker text*/
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putLong(TIME, millis)
@@ -79,16 +78,16 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
     private fun populateViewsList() {
         viewsLIst.apply {
-            add(binding.content.foodName) // 0
+            add(binding.content.foodName)        // 0
             add(binding.content.textviewEnergy)  // 1
-            add(binding.content.quantity) // 2
+            add(binding.content.quantity)        // 2
             add(binding.content.amountDropdown)  // 3
-            add(binding.content.mealType) // 4
+            add(binding.content.mealType)        // 4
         }
         nutritionViewsList.apply {
-            add(binding.content.textviewCarbs) // 0
-            add(binding.content.textviewFat)  // 1
-            add(binding.content.textviewProtein) // 2
+            add(binding.content.textviewCarbs)    // 0
+            add(binding.content.textviewFat)      // 1
+            add(binding.content.textviewProtein)  // 2
         }
     }
 
@@ -147,7 +146,6 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             MealType.getEnum(viewsLIst[4].text.toString(), this),
             millis
         )
-        Log.d("eyo", "$food")
         CoroutineScope(IO).launch { db.writeEntry(food, entry) }
         setResult(Activity.RESULT_OK)
         finish()
@@ -184,7 +182,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
     private fun setUpQuantityTypeDropDown() {
         binding.content.amountDropdown.setAdapter(CustomArrayAdapter(this,
-            R.layout.view_dropdown_mealtype,
+            R.layout.item_dropdown,
             Array(QuantityType.values().size) {
                 QuantityType.values()[it].toString()
             }
@@ -193,7 +191,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
     private fun setUpMealDropDown() {
         binding.content.mealType.setAdapter(CustomArrayAdapter(this,
-            R.layout.view_dropdown_mealtype,
+            R.layout.item_dropdown,
             Array(MealType.values().size) {
                 MealType.values()[it].getString(this)
             }

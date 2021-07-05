@@ -114,8 +114,17 @@
     <string name="today">Today</string>
     <string name="default_online_quantity">100</string>
     <string name="default_online_type">Gram(g)</string>
+    <string name="back">back</string>
+    <string name="continue_text">continue</string>
+    <string name="expand">expand</string>
+    <string name="zero_gm">0 gm</string>
+    <string name="search_result_placeholder">Search:</string>
+    <string name="ok">OK</string>
 
     <!-- Long Descriptions -->
+    <string name="food_search">Food Search</string>
+    <string name="food_details">Food Details</string>
+    <string name="custom_food">Add Custom Food</string>
     <string name="no_food_item_detected">No Food Item Detected</string>
     <string name="add_new_food_entry">Add New Food Entry</string>
     <string name="add_new_workout">Add New Workout</string>
@@ -123,16 +132,12 @@
     <string name="capture_a_food_item">Capture a Food Item</string>
     <string name="close_floating_action_buttons">Close Floating Action Buttons</string>
     <string name="toggle_flashlight_button">Toggle flashlight button</string>
-    <string name="expand">expand</string>
-    <string name="zero_gm">0 gm</string>
-    <string name="food_search">Food Search</string>
-    <string name="food_details">Food Details</string>
-    <string name="custom_food">Add Custom Food</string>
-    <string name="search_result_placeholder">Search:</string>
     <string name="alert_dialog_text">You haven\'t filled all the nutritional details</string>
-    <string name="back">back</string>
-    <string name="continue_text">continue</string>
     <string name="fill_details_dialog_text">Please fill all the details</string>
-    <string name="ok">ok</string>
+    <string name="energy_unit">kcal</string>
+    <string name="meal_hint">Meal</string>
+    <string name="quantity_type_hint">Quantity Type</string>
+    <string name="default_quantity">1.0</string>
+    <string name="quantity_hint">Quantity</string>
 </resources>
 
