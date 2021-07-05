@@ -18,9 +18,6 @@ import com.bruhascended.fitapp.databinding.FragmentJournalActivityBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 
 class ActivityJournalFragment: Fragment() {
@@ -29,6 +26,10 @@ class ActivityJournalFragment: Fragment() {
 
     private lateinit var binding: FragmentJournalActivityBinding
     private lateinit var mAdaptor: ActivityJournalRecyclerAdapter
+
+    private val footerHeight: Int
+        get() = requireContext().resources
+            .getDimension(R.dimen.footer_height).toInt()
 
     class FooterDecoration(private val footerHeight: Int) : RecyclerView.ItemDecoration() {
         override fun getItemOffsets(
@@ -50,8 +51,8 @@ class ActivityJournalFragment: Fragment() {
     private fun setupRecyclerView() {
         mAdaptor = ActivityJournalRecyclerAdapter(
             requireContext(),
-            viewModel.lastItemLiveSet,
-            viewModel.separatorInfoMap,
+            viewModel.lastItems,
+            viewModel.separatorInfo,
         ).apply {
             setOnItemClickListener {
                 ActionDialogPresenter(
@@ -65,54 +66,19 @@ class ActivityJournalFragment: Fragment() {
         binding.recyclerviewActivities.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdaptor
-            addItemDecoration(
-                FooterDecoration(
-                    requireContext().resources
-                        .getDimension(R.dimen.footer_height).toInt()
-                )
-            )
-        }
-
-        viewModel.liveActivityEntries.observe(viewLifecycleOwner) { all ->
-            val infoMap = HashMap<Date, ActivityJournalViewModel.SeparatorInfo>()
-            all.forEach {
-                val date = it.date
-                if (!infoMap.containsKey(date)) {
-                    infoMap[date] = ActivityJournalViewModel.SeparatorInfo()
-                }
-                infoMap[date]?.also { info -> info += it }
-            }
-            viewModel.separatorInfoMap.postValue(infoMap)
-
-            val allArr = all.toTypedArray()
-            val newIdSet = HashSet<Long>().apply {
-                if (allArr.isNotEmpty()) {
-                    add(allArr.last().id!!)
-                }
-                if (allArr.size > 1) {
-                    allArr.slice( 0 until all.size - 1).forEachIndexed { ind, activityEntry ->
-                        if (activityEntry.date != allArr[ind+1].date) {
-                            add(activityEntry.id!!)
-                        }
-                    }
-                }
-            }
-            viewModel.lastItemLiveSet.postValue(newIdSet)
-            binding.recyclerviewActivities.invalidateItemDecorations()
+            addItemDecoration(FooterDecoration(footerHeight))
         }
 
         val dateSeparated = viewModel.activityEntries
             .map { pagingData -> pagingData.map { DateSeparatedItem(item = it) } }
-            .map {
-                it.insertSeparators{ after, before ->
+            .map { pagingData ->
+                pagingData.insertSeparators{ after, before ->
                     val afterDate = after?.item?.date
                     val beforeDate = before?.item?.date
                     if (beforeDate == null || (afterDate != null && afterDate <= beforeDate)) {
                         null
                     } else {
-                        DateSeparatedItem(
-                            separator = beforeDate,
-                        )
+                        DateSeparatedItem(separator = beforeDate)
                     }
                 }
             }

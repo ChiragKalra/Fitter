@@ -4,12 +4,13 @@ import androidx.recyclerview.widget.DiffUtil
 import com.bruhascended.db.activity.entities.ActivityEntry
 import java.util.*
 
+
 class DateSeparatedItem(
     val item: ActivityEntry? = null,
     val separator: Date? = null
 ) {
 
-    class Comparator : DiffUtil.ItemCallback<DateSeparatedItem>() {
+    class Comparator: DiffUtil.ItemCallback<DateSeparatedItem>() {
         override fun areItemsTheSame (
             oldItem: DateSeparatedItem,
             newItem: DateSeparatedItem

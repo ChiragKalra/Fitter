@@ -13,6 +13,7 @@ import com.bruhascended.db.activity.entities.ActivityEntry
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemActivityEntryBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorActivityentryBinding
+import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.util.*
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -25,7 +26,7 @@ class ActivityJournalRecyclerAdapter (
     private val mContext: Context,
     private val lastItemLiveSet: MutableLiveData<HashSet<Long>>,
     private val separatorInfoLiveMap:
-        MutableLiveData<HashMap<Date, ActivityJournalViewModel.SeparatorInfo>>
+        MutableLiveData<HashMap<Date, ActivityEntryRepository.SeparatorInfo>>
 ): PagingDataAdapter<DateSeparatedItem, ActivityJournalRecyclerAdapter.ActivityEntryItemHolder> (
     DateSeparatedItem.Comparator()
 ) {
@@ -38,7 +39,7 @@ class ActivityJournalRecyclerAdapter (
         var layoutNutrientsWrapHeight = root.context.toPx(36)
         var lastItemObserver: Observer<HashSet<Long>>? = null
         var separatorInfoObserver:
-                Observer<HashMap<Date, ActivityJournalViewModel.SeparatorInfo>>? = null
+                Observer<HashMap<Date, ActivityEntryRepository.SeparatorInfo>>? = null
     }
 
     private var mOnItemClickListener: ((foodEntry: ActivityEntry) -> Unit)? = null
@@ -86,7 +87,7 @@ class ActivityJournalRecyclerAdapter (
             separatorInfoLiveMap.removeObserver(this)
         }
 
-        holder.separatorInfoObserver = Observer<HashMap<Date, ActivityJournalViewModel.SeparatorInfo>> {
+        holder.separatorInfoObserver = Observer<HashMap<Date, ActivityEntryRepository.SeparatorInfo>> {
             val separatorInfo = it[separator] ?: return@Observer
 
             textviewDate.text = DateTimePresenter(mContext, separator.time).fullDate
