@@ -40,6 +40,14 @@ enum class MealType (
             }
             return Other
         }
+
+        fun getEnum(string: String,context: Context): MealType{
+            var mealType = MealType.getCurrentMealType()
+            for(value in MealType.values()){
+                if(value.getString(context) == string) mealType = value
+            }
+            return mealType
+        }
     }
 
     fun getString(context: Context) = context.getString(stringRes)
