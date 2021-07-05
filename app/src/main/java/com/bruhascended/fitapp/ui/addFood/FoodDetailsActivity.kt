@@ -211,6 +211,12 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
                         foodQuantity,
                         QuantityType.valueOf(viewsLIst[2].text.toString())
                     )
+                } else {
+                    foodQuantity = DEFAULT_QUANTITY
+                    viewModel.calculateNutrientData(this,
+                        foodQuantity,
+                        QuantityType.valueOf(viewsLIst[2].text.toString())
+                    )
                 }
             }
         }
