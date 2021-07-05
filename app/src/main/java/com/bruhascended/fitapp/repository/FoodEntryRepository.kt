@@ -86,7 +86,6 @@ class FoodEntryRepository(
 
     fun loadLiveSeparators(): MutableLiveData<HashMap<Date, SeparatorInfo>> {
         val liveInfoMap = MutableLiveData<HashMap<Date, SeparatorInfo>>()
-        val liveLastIds = MutableLiveData<HashSet<Long>>()
         loadLiveFoodEntries().observeForever { all ->
             CoroutineScope(Dispatchers.IO).launch {
                 val infoMap = HashMap<Date, SeparatorInfo>()
@@ -107,21 +106,6 @@ class FoodEntryRepository(
                     }
                 }
                 liveInfoMap.postValue(infoMap)
-
-                val allArr = all.toTypedArray()
-                val newIdSet = HashSet<Long>().apply {
-                    if (allArr.isNotEmpty()) {
-                        add(allArr.last().entry.entryId!!)
-                    }
-                    if (allArr.size > 1) {
-                        allArr.slice(0 until all.size - 1).forEachIndexed { ind, foodEntry ->
-                            if (foodEntry.entry.date != allArr[ind + 1].entry.date) {
-                                add(foodEntry.entry.entryId!!)
-                            }
-                        }
-                    }
-                }
-                liveLastIds.postValue(newIdSet)
             }
         }
         return liveInfoMap
