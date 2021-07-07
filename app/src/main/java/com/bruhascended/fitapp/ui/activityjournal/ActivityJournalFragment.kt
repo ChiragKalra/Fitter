@@ -88,6 +88,10 @@ class ActivityJournalFragment: Fragment() {
                 mAdaptor.submitData(it)
             }
         }
+
+        viewModel.lastItems.observe(viewLifecycleOwner) {
+            binding.recyclerviewActivities.invalidateItemDecorations()
+        }
     }
 
     override fun onCreateView(
