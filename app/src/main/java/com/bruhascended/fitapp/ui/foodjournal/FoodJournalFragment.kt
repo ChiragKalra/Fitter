@@ -88,6 +88,10 @@ class FoodJournalFragment: Fragment() {
                 mAdaptor.submitData(it)
             }
         }
+
+        viewModel.lastItemIds.observe(viewLifecycleOwner) {
+            binding.recyclerviewFoods.invalidateItemDecorations()
+        }
     }
 
     override fun onCreateView(
