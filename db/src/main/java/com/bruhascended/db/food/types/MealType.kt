@@ -12,11 +12,11 @@ enum class MealType (
     val hoursOfDay: IntRange? = null
 ) {
     Breakfast(breakfast, 5 until 11),
-    Brunch(brunch, 11 until 1),
-    Lunch(lunch, 1 until 3),
-    EveningSnack(evening_snack, 4 until 7),
-    Dinner(dinner, 7 until 11),
-    LateNightSnack(late_night_snack, 11 until 4),
+    Brunch(brunch, 11 until 13),
+    Lunch(lunch, 13 until 16),
+    EveningSnack(evening_snack, 16 until 19),
+    Dinner(dinner, 19 until 23),
+    LateNightSnack(late_night_snack, 23 until 24),
     Other(other_meal_type);
 
     companion object {
@@ -39,6 +39,14 @@ enum class MealType (
                 }
             }
             return Other
+        }
+
+        fun getEnum(string: String,context: Context): MealType{
+            var mealType = MealType.getCurrentMealType()
+            for(value in MealType.values()){
+                if(value.getString(context) == string) mealType = value
+            }
+            return mealType
         }
     }
 

@@ -15,9 +15,11 @@
         android:paddingTop="18dp"
         android:paddingBottom="18dp"
         android:animateLayoutChanges="true"
-        android:elevation="4dp"
+        android:foreground="?android:attr/selectableItemBackground"
         android:backgroundTint="?headerBackgroundColor"
-        android:background="@drawable/bg_foodjournal_item">
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/bg_item_to_last">
 
         <TextView
             android:id="@+id/textview_meal"
