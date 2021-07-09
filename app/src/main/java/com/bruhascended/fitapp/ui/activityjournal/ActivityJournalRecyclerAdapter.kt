@@ -1,6 +1,7 @@
 package com.bruhascended.fitapp.ui.activityjournal
 
 import android.content.Context
+import android.graphics.drawable.TransitionDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.bruhascended.db.R.string.*
 import com.bruhascended.db.activity.entities.ActivityEntry
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemActivityEntryBinding
+import com.bruhascended.fitapp.databinding.ItemFooterBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorActivityentryBinding
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.util.*
@@ -36,10 +38,12 @@ class ActivityJournalRecyclerAdapter (
         val itemBinding: ItemActivityEntryBinding? = null,
         val separatorBinding: ItemSeparatorActivityentryBinding? = null,
     ) : RecyclerView.ViewHolder(root) {
-        var layoutNutrientsWrapHeight = root.context.toPx(36)
+        var layoutNutrientsWrapHeight =
+            root.context.resources.getDimension(R.dimen.activity_details_height).toInt()
         var lastItemObserver: Observer<HashSet<Long>>? = null
         var separatorInfoObserver:
                 Observer<HashMap<Date, ActivityEntryRepository.SeparatorInfo>>? = null
+        var isLastItemBg = false
     }
 
     private var mOnItemClickListener: ((foodEntry: ActivityEntry) -> Unit)? = null
@@ -48,9 +52,8 @@ class ActivityJournalRecyclerAdapter (
         mOnItemClickListener = listener
     }
 
-    override fun getItemViewType (position: Int): Int {
-        return if (getItem(position)?.item != null) 0 else 1
-    }
+    override fun getItemViewType (position: Int) =
+        getItem(position)?.type?.ordinal ?: 0
 
     private fun doubleToString(d: Double): String {
         return DecimalFormat(
@@ -62,20 +65,31 @@ class ActivityJournalRecyclerAdapter (
     }
 
     override fun onCreateViewHolder (parent: ViewGroup, viewType: Int): ActivityEntryItemHolder {
-        return if (viewType == 0) {
-            val binding = ItemActivityEntryBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-            ActivityEntryItemHolder(binding.root, itemBinding = binding)
-        } else {
-            val binding = ItemSeparatorActivityentryBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-            ActivityEntryItemHolder(binding.root, separatorBinding = binding)
+        return when (viewType) {
+            DateSeparatedItem.ItemType.Item.ordinal -> {
+                val binding = ItemActivityEntryBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                ActivityEntryItemHolder(binding.root, itemBinding = binding)
+            }
+            DateSeparatedItem.ItemType.Separator.ordinal -> {
+                val binding = ItemSeparatorActivityentryBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                ActivityEntryItemHolder(binding.root, separatorBinding = binding)
+            }
+            else -> {
+                val binding = ItemFooterBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                ActivityEntryItemHolder(binding.root)
+            }
         }
     }
 
@@ -156,7 +170,6 @@ class ActivityJournalRecyclerAdapter (
         entry: ActivityEntry,
         holder: ActivityEntryItemHolder,
     ) {
-
         textviewTime.text = DateTimePresenter(mContext, entry.startTime).condensedTime
         textviewCalories.text = mContext.getString(
             calorie_count,
@@ -207,18 +220,23 @@ class ActivityJournalRecyclerAdapter (
                 expanded = !expanded
             }
         }
+        val bg = layoutRoot.background as TransitionDrawable
+        bg.isCrossFadeEnabled = true
 
         holder.lastItemObserver?.apply {
             lastItemLiveSet.removeObserver(this)
         }
         holder.lastItemObserver = Observer<HashSet<Long>> { set ->
-            val isLastItem = entry.id in set
-            layoutRoot.setBackgroundResource(
-                if (isLastItem) R.drawable.bg_foodjournal_item_end
-                else R.drawable.bg_foodjournal_item
-            )
-            layoutRoot.layoutParams = (layoutRoot.layoutParams as ViewGroup.MarginLayoutParams).also {
-                it.bottomMargin = if (isLastItem) mContext.toPx(12) else 0
+            if (entry.id in set) {
+                if (!holder.isLastItemBg) {
+                    bg.reverseTransition(300)
+                    holder.isLastItemBg = true
+                }
+            } else {
+                if (holder.isLastItemBg) {
+                    bg.reverseTransition(300)
+                    holder.isLastItemBg = false
+                }
             }
         }
         holder.lastItemObserver?.apply {
@@ -228,11 +246,11 @@ class ActivityJournalRecyclerAdapter (
 
     override fun onBindViewHolder (holder: ActivityEntryItemHolder, position: Int) {
         val item = getItem(position) ?: return
-        val foodEntry = item.item
-        if (item.isSeparator) {
-            holder.separatorBinding?.presentSeparator(item.separator!!, holder)
-        } else if (foodEntry != null) {
-            holder.itemBinding?.presentItem(foodEntry, holder)
+        when (item.type) {
+            DateSeparatedItem.ItemType.Separator ->
+                holder.separatorBinding?.presentSeparator(item.separator!!, holder)
+            DateSeparatedItem.ItemType.Item ->
+                holder.itemBinding?.presentItem(item.item!!, holder)
         }
     }
 }

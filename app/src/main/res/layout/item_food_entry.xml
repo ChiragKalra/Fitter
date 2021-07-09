@@ -17,7 +17,7 @@
         android:animateLayoutChanges="true"
         android:elevation="4dp"
         android:backgroundTint="?headerBackgroundColor"
-        android:background="@drawable/bg_foodjournal_item">
+        android:background="@drawable/bg_item">
 
         <TextView
             android:id="@+id/textview_meal"

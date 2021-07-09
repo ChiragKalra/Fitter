@@ -6,9 +6,14 @@ import java.util.*
 
 
 class DateSeparatedItem(
+    val type: ItemType,
     val item: ActivityEntry? = null,
     val separator: Date? = null
 ) {
+
+    enum class ItemType {
+        Item, Separator, Footer
+    }
 
     class Comparator: DiffUtil.ItemCallback<DateSeparatedItem>() {
         override fun areItemsTheSame (
@@ -29,7 +34,7 @@ class DateSeparatedItem(
     }
 
     val isSeparator: Boolean
-        get() = separator != null
+        get() = type == ItemType.Separator
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -4,4 +4,5 @@
     <dimen name="fab_size">56dp</dimen>
     <dimen name="mini_fab_size">40dp</dimen>
     <dimen name="footer_height">96dp</dimen>
+    <dimen name="activity_details_height">36dp</dimen>
 </resources>

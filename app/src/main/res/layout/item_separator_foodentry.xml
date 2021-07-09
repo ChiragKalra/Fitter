@@ -17,7 +17,7 @@
         android:layout_marginBottom="0dp"
         android:clipToPadding="false"
         android:backgroundTint="?headerBackgroundColor"
-        android:background="@drawable/bg_foodjournal_separator">
+        android:background="@drawable/bg_separator">
 
         <TextView
             android:id="@+id/textview_date"

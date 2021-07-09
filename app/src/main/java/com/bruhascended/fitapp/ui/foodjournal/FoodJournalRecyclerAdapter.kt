@@ -172,8 +172,8 @@ class FoodJournalRecyclerAdapter (
         holder.lastItemObserver = Observer<HashSet<Long>> { set ->
             val isLastItem = entry.entryId in set
             layoutRoot.setBackgroundResource(
-                if (isLastItem) R.drawable.bg_foodjournal_item_end
-                else R.drawable.bg_foodjournal_item
+                if (isLastItem) R.drawable.bg_item_last
+                else R.drawable.bg_item
             )
             layoutRoot.layoutParams = (layoutRoot.layoutParams as ViewGroup.MarginLayoutParams).also {
                 it.bottomMargin = if (isLastItem) mContext.toPx(12).toInt() else 0
