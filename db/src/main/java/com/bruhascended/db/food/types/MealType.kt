@@ -13,7 +13,7 @@ enum class MealType (
 ) {
     Breakfast(breakfast, 5 until 11),
     Brunch(brunch, 11 until 13),
-    Lunch(lunch, 13 until 15),
+    Lunch(lunch, 13 until 16),
     EveningSnack(evening_snack, 16 until 19),
     Dinner(dinner, 19 until 23),
     LateNightSnack(late_night_snack, 23 until 24),

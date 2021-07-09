@@ -1,6 +1,7 @@
 package com.bruhascended.fitapp.ui.foodjournal
 
 import android.content.Context
+import android.graphics.drawable.TransitionDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,7 @@ class FoodJournalRecyclerAdapter (
         var lastItemObserver: Observer<HashSet<Long>>? = null
         var separatorInfoObserver:
                 Observer<HashMap<Date, FoodEntryRepository.SeparatorInfo>>? = null
+        var isLastItemBg = false
     }
 
     private var mOnItemClickListener: ((foodEntry: FoodEntry) -> Unit)? = null
@@ -179,19 +181,24 @@ class FoodJournalRecyclerAdapter (
             }
         }
 
+        val bg = layoutRoot.background as TransitionDrawable
+        bg.isCrossFadeEnabled = true
+
         holder.lastItemObserver?.apply {
             lastItemLiveSet.removeObserver(this)
         }
         holder.lastItemObserver = Observer<HashSet<Long>> { set ->
-            val isLastItem = entry.entryId in set
-            layoutRoot.setBackgroundResource(
-                if (isLastItem) R.drawable.bg_foodjournal_item_end
-                else R.drawable.bg_foodjournal_item
-            )
-            layoutRoot.layoutParams =
-                (layoutRoot.layoutParams as ViewGroup.MarginLayoutParams).also {
-                    it.bottomMargin = if (isLastItem) mContext.toPx(12) else 0
+            if (entry.entryId in set) {
+                if (!holder.isLastItemBg) {
+                    bg.reverseTransition(300)
+                    holder.isLastItemBg = true
                 }
+            } else {
+                if (holder.isLastItemBg) {
+                    bg.reverseTransition(300)
+                    holder.isLastItemBg = false
+                }
+            }
         }
         holder.lastItemObserver?.apply {
             lastItemLiveSet.observeForever(this)
