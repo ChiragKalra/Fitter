@@ -14,6 +14,7 @@ import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.db.R.string.calorie_count
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemFoodEntryBinding
+import com.bruhascended.fitapp.databinding.ItemFooterBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorFoodentryBinding
 import com.bruhascended.fitapp.repository.FoodEntryRepository
 import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEntryItemHolder
@@ -37,7 +38,8 @@ class FoodJournalRecyclerAdapter (
         val itemBinding: ItemFoodEntryBinding? = null,
         val separatorBinding: ItemSeparatorFoodentryBinding? = null,
     ) : RecyclerView.ViewHolder(root) {
-        var layoutNutrientsWrapHeight = root.context.toPx(36)
+        var layoutNutrientsWrapHeight =
+            root.context.resources.getDimension(R.dimen.nutrient_details_height).toInt()
         var lastItemObserver: Observer<HashSet<Long>>? = null
         var separatorInfoObserver:
                 Observer<HashMap<Date, FoodEntryRepository.SeparatorInfo>>? = null
@@ -49,25 +51,35 @@ class FoodJournalRecyclerAdapter (
         mOnItemClickListener = listener
     }
 
-    override fun getItemViewType (position: Int): Int {
-        return if (getItem(position)?.item != null) 0 else 1
-    }
+    override fun getItemViewType (position: Int) =
+        getItem(position)?.type?.ordinal ?: 0
 
     override fun onCreateViewHolder (parent: ViewGroup, viewType: Int): FoodEntryItemHolder {
-        return if (viewType == 0) {
-            val binding = ItemFoodEntryBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-            FoodEntryItemHolder(binding.root, itemBinding = binding)
-        } else {
-            val binding = ItemSeparatorFoodentryBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-            FoodEntryItemHolder(binding.root, separatorBinding = binding)
+        return when (viewType) {
+            DateSeparatedItem.ItemType.Item.ordinal -> {
+                val binding = ItemFoodEntryBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                FoodEntryItemHolder(binding.root, itemBinding = binding)
+            }
+            DateSeparatedItem.ItemType.Separator.ordinal -> {
+                val binding = ItemSeparatorFoodentryBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                FoodEntryItemHolder(binding.root, separatorBinding = binding)
+            }
+            else -> {
+                val binding = ItemFooterBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                FoodEntryItemHolder(binding.root)
+            }
         }
     }
 
@@ -176,9 +188,10 @@ class FoodJournalRecyclerAdapter (
                 if (isLastItem) R.drawable.bg_foodjournal_item_end
                 else R.drawable.bg_foodjournal_item
             )
-            layoutRoot.layoutParams = (layoutRoot.layoutParams as ViewGroup.MarginLayoutParams).also {
-                it.bottomMargin = if (isLastItem) mContext.toPx(12) else 0
-            }
+            layoutRoot.layoutParams =
+                (layoutRoot.layoutParams as ViewGroup.MarginLayoutParams).also {
+                    it.bottomMargin = if (isLastItem) mContext.toPx(12) else 0
+                }
         }
         holder.lastItemObserver?.apply {
             lastItemLiveSet.observeForever(this)
@@ -187,11 +200,11 @@ class FoodJournalRecyclerAdapter (
 
     override fun onBindViewHolder (holder: FoodEntryItemHolder, position: Int) {
         val item = getItem(position) ?: return
-        val foodEntry = item.item
-        if (item.isSeparator) {
-            holder.separatorBinding?.presentSeparator(item.separator!!, holder)
-        } else if (foodEntry != null) {
-            holder.itemBinding?.presentItem(foodEntry, holder)
+        when (item.type) {
+            DateSeparatedItem.ItemType.Separator ->
+                holder.separatorBinding?.presentSeparator(item.separator!!, holder)
+            DateSeparatedItem.ItemType.Item ->
+                holder.itemBinding?.presentItem(item.item!!, holder)
         }
     }
 }

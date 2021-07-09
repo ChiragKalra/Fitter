@@ -1,6 +1,5 @@
 package com.bruhascended.fitapp.ui.foodjournal
 
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +11,6 @@ import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.FragmentJournalFoodBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
@@ -26,27 +23,6 @@ class FoodJournalFragment: Fragment() {
 
     private lateinit var binding: FragmentJournalFoodBinding
     private lateinit var mAdaptor: FoodJournalRecyclerAdapter
-
-    private val footerHeight: Int
-    get() = requireContext().resources
-            .getDimension(R.dimen.footer_height).toInt()
-
-    class FooterDecoration(private val footerHeight: Int) : RecyclerView.ItemDecoration() {
-        override fun getItemOffsets(
-            outRect: Rect,
-            view: View,
-            parent: RecyclerView,
-            state: RecyclerView.State
-        ) {
-            val adapter = parent.adapter ?: return
-            when (parent.getChildAdapterPosition(view)) {
-                adapter.itemCount - 1 ->
-                    outRect.bottom = footerHeight
-                else ->
-                    outRect.set(0, 0, 0, 0)
-            }
-        }
-    }
 
     private fun setupRecyclerView() {
         mAdaptor = FoodJournalRecyclerAdapter(
@@ -66,19 +42,32 @@ class FoodJournalFragment: Fragment() {
         binding.recyclerviewFoods.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdaptor
-            addItemDecoration(FooterDecoration(footerHeight))
         }
 
         val dateSeparated = viewModel.foodEntries
-            .map { pagingData -> pagingData.map { DateSeparatedItem(item = it) } }
+            .map { pagingData ->
+                pagingData.map {
+                    DateSeparatedItem(
+                        DateSeparatedItem.ItemType.Item,
+                        item = it
+                    )
+                }
+            }
             .map { pagingData ->
                 pagingData.insertSeparators { after, before ->
                     val afterDate = after?.item?.entry?.date
                     val beforeDate = before?.item?.entry?.date
-                    if (beforeDate == null || (afterDate != null && afterDate <= beforeDate)) {
+                    if (before == null) {
+                        DateSeparatedItem(DateSeparatedItem.ItemType.Footer)
+                    } else if (
+                        beforeDate == null || (afterDate != null && afterDate <= beforeDate)
+                    ) {
                         null
                     } else {
-                        DateSeparatedItem(separator = beforeDate)
+                        DateSeparatedItem(
+                            DateSeparatedItem.ItemType.Separator,
+                            separator = beforeDate
+                        )
                     }
                 }
             }
@@ -87,10 +76,6 @@ class FoodJournalFragment: Fragment() {
             dateSeparated.cachedIn(lifecycleScope).collectLatest {
                 mAdaptor.submitData(it)
             }
-        }
-
-        viewModel.lastItemIds.observe(viewLifecycleOwner) {
-            binding.recyclerviewFoods.invalidateItemDecorations()
         }
     }
 

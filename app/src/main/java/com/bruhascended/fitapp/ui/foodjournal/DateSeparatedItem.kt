@@ -5,9 +5,14 @@ import com.bruhascended.db.food.entities.FoodEntry
 import java.util.*
 
 class DateSeparatedItem(
+    val type: ItemType,
     val item: FoodEntry? = null,
-    val separator: Date? = null
+    val separator: Date? = null,
 ) {
+
+    enum class ItemType {
+        Item, Separator, Footer
+    }
 
     class Comparator : DiffUtil.ItemCallback<DateSeparatedItem>() {
 
@@ -29,7 +34,7 @@ class DateSeparatedItem(
     }
 
     val isSeparator: Boolean
-        get() = separator != null
+        get() = type == ItemType.Separator
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
