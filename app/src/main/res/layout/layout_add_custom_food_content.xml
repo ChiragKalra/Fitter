@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-
-        <variable
-            name="viewModel"
-            type="com.bruhascended.fitapp.ui.addFood.SharedActivityViewModel" />
-    </data>
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -186,7 +178,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:inputType="none"
-                    android:text="@{viewModel.setDate}"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
