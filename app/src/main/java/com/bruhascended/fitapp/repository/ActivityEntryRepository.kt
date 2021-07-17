@@ -35,9 +35,7 @@ class ActivityEntryRepository(
             return repository!!
         }
     }
-
-
-    data class SeparatorInfo (
+    data class SeparatorInfo(
         var totalCalories: Int = 0,
         var totalDuration: Long = 0L,
         var totalDistance: Double = .0,
@@ -60,7 +58,7 @@ class ActivityEntryRepository(
     }
 
 
-    private val db: ActivityEntryDatabase  = ActivityEntryDatabaseFactory(mApp).build()
+    private val db: ActivityEntryDatabase = ActivityEntryDatabaseFactory(mApp).build()
 
     suspend fun writeEntry(entry: ActivityEntry) = db.entryManager().insert(entry)
 
@@ -109,8 +107,8 @@ class ActivityEntryRepository(
                         add(allArr.last().id!!)
                     }
                     if (allArr.size > 1) {
-                        allArr.slice( 0 until all.size - 1).forEachIndexed { ind, entry ->
-                            if (entry.date != allArr[ind+1].date) {
+                        allArr.slice(0 until all.size - 1).forEachIndexed { ind, entry ->
+                            if (entry.date != allArr[ind + 1].date) {
                                 add(entry.id!!)
                             }
                         }
