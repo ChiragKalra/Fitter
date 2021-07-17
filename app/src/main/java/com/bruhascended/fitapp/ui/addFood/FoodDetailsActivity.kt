@@ -5,14 +5,15 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.text.format.DateFormat
 import android.view.MenuItem
+import android.view.View
 import android.widget.DatePicker
-import android.widget.Toast
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.bruhascended.api.models.foodsv2.Hint
+import com.bruhascended.db.food.entities.Entry
 import com.bruhascended.db.food.entities.Food
 import com.bruhascended.db.food.entities.FoodEntry
 import com.bruhascended.db.food.types.MealType
@@ -20,17 +21,17 @@ import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityFoodDetailsBinding
 import com.bruhascended.fitapp.ui.foodjournal.ActionDialogPresenter
-import com.bruhascended.fitapp.util.CustomArrayAdapter
-import com.bruhascended.fitapp.util.FoodNutrientDetails
-import com.bruhascended.fitapp.util.MultiViewType
-import com.bruhascended.fitapp.util.setupToolbar
+import com.bruhascended.fitapp.util.*
 import java.util.*
+
+const val DEFAULT_QUANTITY = 1.0
 
 class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private lateinit var binding: ActivityFoodDetailsBinding
     private lateinit var viewModel: SharedActivityViewModel
-    private var foodDetails = FoodNutrientDetails()
-    private var freshStart: Boolean = true
+    private val viewsLIst = mutableListOf<TextView>()
+    private var millis: Long = 0
+    private var foodQuantity = DEFAULT_QUANTITY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +43,7 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         binding.content.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
 
+        // all the intents are setUp here
         val itemIntent = intent
         val item =
             itemIntent.getSerializableExtra(FoodSearchActivity.KEY_FOOD_DATA) as MultiViewType?
@@ -51,103 +53,145 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             if (item.resId == 0)
                 viewModel.setData(item.content as Hint)
             else viewModel.setDataFromDb(item.content as Food)
-        }
+        } else viewModel.setDataFromDb(foodEntry!!.food)
 
+        populateViewsList()
         setUpMealDropDown()
         setUpDatePickerDialog()
-        setUpQuantityTypeDropDownItemListener()
-        setUpMealTypeDropDownItemListener()
-        setUpTextChangeListener()
+        setUpQuantityTextChangeListeners()
+        setUpAmountDropDownListener()
 
-        viewModel.typeArrayItems.observe({ lifecycle }) { it ->
+        /* Nutritional values is only calculated after quantityTypeDropDown gets populated,
+        thus the first point where viewModel.CalculateNutrientData is called */
+        viewModel.QuantityTYpeItems.observe({ lifecycle }) { it ->
             val amountArray = it.map { it.toString() }.toTypedArray()
             binding.content.amountDropdown.setAdapter(
-                CustomArrayAdapter(
-                    this,
-                    R.layout.view_dropdown_mealtype,
-                    amountArray
-                )
+                CustomArrayAdapter(this, R.layout.item_dropdown, amountArray)
             )
-        }
-
-        binding.submit.setOnClickListener {
-            submitData()
-        }
-
-
-        viewModel.NutrientDetails.value.let {
-            if (it != null) foodDetails = it
-            else {
-                if (item != null) {
-                    foodDetails.quantity = 1.0
-                    if (item.resId == 0) {
-                        val content = item.content as Hint
-                        for (measure in content.measures) {
-                            if (viewModel.checkout(measure.label)) {
-                                foodDetails.quantityType =
-                                    QuantityType.valueOf(measure.label.toString())
-                                break
-                            }
-                        }
-                    } else {
-                        val content = item.content as Food
-                        val quantityTypeArr = content.weightInfo.keys.toList()
-                        foodDetails.quantityType = quantityTypeArr[0]
-                    }
+            /* we are only saving millis as all other views data is retained by default,
+            although the date text too retains but we cannot convert it to timeInMillis
+            so millis is synced so that it matches the date picker text */
+            if (savedInstanceState?.get(TIME) == null) {
+                if (foodEntry == null)
+                    setUpDefaultValues(amountArray)
+                else setCopyToNow(foodEntry)
+            } else {
+                millis = savedInstanceState.getLong(TIME)
+                // sync foodQuantity with quantity text view
+                viewsLIst[1].text.toString().let {
+                    if (it.isNotEmpty()) foodQuantity = it.toDouble()
                 }
-                if (foodEntry != null) {
-                    setCopyToNow(foodEntry)
+                /* here we are reducing unnecessary calls to viewModel.calculateNutrientData
+                by checking if our viewModel got destroyed or not */
+                if (viewModel.NutrientDetails.value == null) {
+                    viewModel.calculateNutrientData(this,
+                        foodQuantity,
+                        QuantityType.valueOf(viewsLIst[2].text.toString())
+                    )
                 }
-                viewModel.calculateNutrientData(foodDetails)
             }
-        } // TODO customise default values
-    }
-
-    override fun onResume() {
-        super.onResume()
-        freshStart = false
-        foodDetails.let {
-            binding.content.quantity.setText(it.quantity.toString())
-            if (it.mealType != null) binding.content.mealType.setText(it.mealType.toString())
-            else binding.content.mealType.setText("")
         }
-        binding.content.amountDropdown.setText(foodDetails.quantityType.toString())
-        binding.content.datePicker.setText(DateFormat.format("dd/MM/yyyy", viewModel.millis))
     }
 
     private fun setCopyToNow(foodEntry: FoodEntry) {
-        if (viewModel.NutrientDetails.value == null) {
-            viewModel.setDataFromDb(foodEntry.food)
-            foodDetails.apply {
-                quantityType = foodEntry.entry.quantityType
-                quantity = foodEntry.entry.quantity
-                mealType = foodEntry.entry.mealType
-            }
+        foodEntry.let {
+            viewsLIst[0].text = it.food.foodName
+            viewsLIst[1].text = it.entry.quantity.toString()
+            viewsLIst[2].text = it.entry.quantityType.toString()
+            foodQuantity = it.entry.quantity
+        }
+        millis = Calendar.getInstance().apply {
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR_OF_DAY, 0)
+        }.timeInMillis
+        binding.content.apply {
+            datePicker.setText(DateTimePresenter(this@FoodDetailsActivity, millis).condensedDate)
+            mealType.setText(MealType.getCurrentMealType().getString(this@FoodDetailsActivity))
+        }
+        viewModel.calculateNutrientData(this,
+            foodQuantity, QuantityType.valueOf(viewsLIst[2].text.toString())
+        )
+    }
+
+    private fun populateViewsList() {
+        viewsLIst.apply {
+            add(binding.content.foodName)       // 0
+            add(binding.content.quantity)       // 1
+            add(binding.content.amountDropdown) // 2
+            add(binding.content.mealType)       // 3
         }
     }
 
-    private fun submitData() {
-        if (foodDetails.checkIfNull()) {
-            viewModel.insertData(binding.content.foodName.text.toString())
-            setResult(Activity.RESULT_OK)
-            finish()
-        } else Toast.makeText(this, "Fill all the Details", Toast.LENGTH_SHORT).show()
-        //TODO show a alert dialog
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putLong(TIME, millis)
     }
 
-    private fun setUpTextChangeListener() {
+    private fun setUpDefaultValues(amountArray: Array<String>) {
+        millis = Calendar.getInstance().apply {
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR_OF_DAY, 0)
+        }.timeInMillis
+        binding.content.apply {
+            amountDropdown.setText(amountArray[0])
+            datePicker.setText(DateTimePresenter(this@FoodDetailsActivity, millis).condensedDate)
+            mealType.setText(MealType.getCurrentMealType().getString(this@FoodDetailsActivity))
+        }
+        viewModel.calculateNutrientData(this,
+            foodQuantity,
+            QuantityType.valueOf(viewsLIst[2].text.toString())
+        )
+    }
+
+    /* This function helps insert data to db and values cannot be null
+    as we always fill it up with default values */
+    fun submitData(view: View) {
+        val food = Food(
+            viewModel.foodName.value!!,
+            viewModel.perEnergy!!,
+            viewModel.weightInfo_map,
+            viewModel.nutrientInfo_map
+        )
+        val calories =
+            viewModel.weightInfo_map[QuantityType.valueOf(viewsLIst[2].text.toString())]!! * foodQuantity * viewModel.perEnergy!!
+        val entry = Entry(
+            calories.toInt(),
+            foodQuantity,
+            QuantityType.valueOf(viewsLIst[2].text.toString()),
+            MealType.getEnum(viewsLIst[3].text.toString(), this),
+            millis
+        )
+        viewModel.insertData(food, entry)
+        setResult(Activity.RESULT_OK)
+        finish()
+    }
+
+    /* This function is not called if the amountDropDown has not yet been
+    inflated */
+    private fun setUpQuantityTextChangeListeners() {
         binding.content.quantity.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!freshStart) {
-                    if (!s.isNullOrEmpty() && s.toString() != ".") {
-                        foodDetails.quantity = s.toString().toDouble()
-                        viewModel.calculateNutrientData(foodDetails)
+                if (viewsLIst[2].text.toString().isNotEmpty()) {
+                    if (!s.isNullOrEmpty() && s.toString() != "."
+                    ) {
+                        foodQuantity = viewsLIst[1].text.toString().toDouble()
+                        viewModel.calculateNutrientData(this@FoodDetailsActivity,
+                            foodQuantity,
+                            QuantityType.valueOf(viewsLIst[2].text.toString())
+                        )
                     } else {
-                        foodDetails.quantity = 1.0 // TODO default quantity
-                        viewModel.calculateNutrientData(foodDetails)
+                        foodQuantity = DEFAULT_QUANTITY
+                        viewModel.calculateNutrientData(this@FoodDetailsActivity,
+                            foodQuantity,
+                            QuantityType.valueOf(viewsLIst[2].text.toString())
+                        )
                     }
                 }
             }
@@ -158,26 +202,31 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         })
     }
 
-    private fun setUpMealTypeDropDownItemListener() {
-        binding.content.mealType.setOnItemClickListener { parent, view, position, id ->
-            foodDetails.mealType = MealType.valueOf(parent.getItemAtPosition(position).toString())
-            viewModel.calculateNutrientData(foodDetails)
-        }
-    }
-
-    private fun setUpQuantityTypeDropDownItemListener() {
+    private fun setUpAmountDropDownListener() {
         binding.content.amountDropdown.setOnItemClickListener { parent, view, position, id ->
-            foodDetails.quantityType =
-                QuantityType.valueOf(parent.getItemAtPosition(position).toString())
-            viewModel.calculateNutrientData(foodDetails)
+            viewsLIst[1].text.toString().let {
+                if (it.isNotEmpty()) {
+                    foodQuantity = it.toDouble()
+                    viewModel.calculateNutrientData(this,
+                        foodQuantity,
+                        QuantityType.valueOf(viewsLIst[2].text.toString())
+                    )
+                } else {
+                    foodQuantity = DEFAULT_QUANTITY
+                    viewModel.calculateNutrientData(this,
+                        foodQuantity,
+                        QuantityType.valueOf(viewsLIst[2].text.toString())
+                    )
+                }
+            }
         }
     }
 
     private fun setUpMealDropDown() {
         binding.content.mealType.setAdapter(CustomArrayAdapter(this,
-            R.layout.view_dropdown_mealtype,
+            R.layout.item_dropdown,
             Array(MealType.values().size) {
-                MealType.values()[it].toString()
+                MealType.values()[it].getString(this)
             }
         ))
     }
@@ -193,17 +242,17 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        val cal = Calendar.getInstance().apply {
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(year, month, dayOfMonth)
+        }
+        millis = cal.timeInMillis
         binding.content.datePicker.setText(
-            String.format(
-                "%02d/%02d/%d",
-                dayOfMonth,
-                month + 1,
-                year
-            )
+            DateTimePresenter(this, millis).condensedDate
         )
-        val cal = Calendar.getInstance()
-        cal.set(year, month, dayOfMonth)
-        viewModel.millis = cal.timeInMillis
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
