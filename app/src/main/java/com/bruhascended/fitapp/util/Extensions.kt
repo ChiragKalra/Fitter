@@ -12,7 +12,7 @@ fun Calendar.getTodayMidnightTime(cal: Calendar): Long {
 
 fun Calendar.getStartTime(cal: Calendar): Long {
     cal.timeInMillis = cal.getTodayMidnightTime(cal)
-    cal.add(Calendar.WEEK_OF_YEAR, -1)       // TODO SET START TIME HERE
+    cal.add(Calendar.WEEK_OF_YEAR, -2)       // TODO SET START TIME HERE
     return timeInMillis
 }
 
