@@ -16,6 +16,9 @@ interface ActivityEntryDao {
     @Query("SELECT * FROM activity_entry WHERE id LIKE :id")
     fun findById (id: Long): ActivityEntry?
 
+    @Query("SELECT * FROM activity_entry WHERE startTime LIKE :timeInMillis")
+    fun findByStartTime (timeInMillis: Long): ActivityEntry?
+
     @Query("SELECT * FROM activity_entry WHERE id LIKE :id")
     fun loadLive (id: Long): LiveData<ActivityEntry?>
 
