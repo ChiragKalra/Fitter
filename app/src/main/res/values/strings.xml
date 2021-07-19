@@ -135,12 +135,6 @@
     <string name="capture_a_food_item">Capture a Food Item</string>
     <string name="close_floating_action_buttons">Close Floating Action Buttons</string>
     <string name="toggle_flashlight_button">Toggle flashlight button</string>
-    <string name="expand">expand</string>
-    <string name="zero_gm">0 gm</string>
-    <string name="food_search">Food Search</string>
-    <string name="food_details">Food Details</string>
-    <string name="custom_food">Add Custom Food</string>
-    <string name="search_result_placeholder">Search:</string>
     <string name="activity_icon">Activity Icon</string>
     <string name="alert_dialog_text">You haven\'t filled all the nutritional details</string>
     <string name="fill_details_dialog_text">Please fill all the details</string>
