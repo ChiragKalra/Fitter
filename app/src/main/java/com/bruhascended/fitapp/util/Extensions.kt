@@ -10,9 +10,11 @@ fun Calendar.getTodayMidnightTime(cal: Calendar): Long {
     return cal.timeInMillis
 }
 
-fun Calendar.getStartTime(cal: Calendar): Long {
-    cal.timeInMillis = cal.getTodayMidnightTime(cal)
-    cal.add(Calendar.WEEK_OF_YEAR, -2)       // TODO SET START TIME HERE
-    return timeInMillis
+fun Calendar.getTodayStartTime(cal: Calendar): Long{
+    cal.set(java.util.Calendar.HOUR_OF_DAY, 0)
+    cal.set(java.util.Calendar.MINUTE, 0)
+    cal.set(java.util.Calendar.SECOND, 0)
+    cal.set(java.util.Calendar.MILLISECOND, 0)
+    return cal.timeInMillis
 }
 

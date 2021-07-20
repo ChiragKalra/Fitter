@@ -35,6 +35,7 @@ class ActivityEntryRepository(
             return repository!!
         }
     }
+
     data class SeparatorInfo(
         var totalCalories: Int = 0,
         var totalDuration: Long = 0L,
@@ -60,9 +61,11 @@ class ActivityEntryRepository(
 
     private val db: ActivityEntryDatabase = ActivityEntryDatabaseFactory(mApp).build()
 
-    suspend fun writeEntry(entry: ActivityEntry) = db.entryManager().insert(entry)
+    fun writeEntry(entry: ActivityEntry) = db.entryManager().insert(entry)
 
     fun deleteEntry(entry: ActivityEntry) = db.entryManager().delete(entry)
+
+    fun findByStartTime(timeInMillis: Long) = db.entryManager().findByStartTime(timeInMillis)
 
     fun loadActivityEntries(): Flow<PagingData<ActivityEntry>> {
         return Pager(
