@@ -26,12 +26,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 
-enum class FitActionsRequestCode {
-    READ_SESSIONS,
-    INSERT_SESSIONS
+enum class RequestRuntimePermissions(string: String) {
+    @RequiresApi(Build.VERSION_CODES.Q)
+    ACTIVITY_RECOGNITION(android.Manifest.permission.ACTIVITY_RECOGNITION),
+    FINE_LOCATION(android.Manifest.permission.ACCESS_FINE_LOCATION)
 }
 
 class MainActivity : AppCompatActivity() {
+    private var permissionsApproved = 0
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var fabPresenter: FabPresenter
@@ -40,13 +42,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var requestOauthPermissionsLauncher: ActivityResultLauncher<Intent>
     private val fitnessOptions by lazy {
         FitnessOptions.builder()
-            .accessActivitySessions(FitActionsRequestCode.READ_SESSIONS.ordinal)
             .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.TYPE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.TYPE_ACTIVITY_SEGMENT, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.TYPE_ACTIVITY_SEGMENT,FitnessOptions.ACCESS_WRITE)
-            .addDataType(DataType.AGGREGATE_ACTIVITY_SUMMARY, FitnessOptions.ACCESS_READ)
             .build()
     }
 
@@ -85,22 +84,24 @@ class MainActivity : AppCompatActivity() {
         setUpResultContracts()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            checkForPermissions()
+            checkForActivityRecognitionPermission()
+
+        checkForAndroidPermissions()
     }
 
     private fun setUpResultContracts() {
         requestAndroidPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-                var allImpPermissionsApproved = true
                 for (permission in permissions.keys) {
                     if (permissions[permission] == false) {
                         Toast.makeText(this, "Imp android permissions denied", Toast.LENGTH_SHORT)
                             .show()
-                        allImpPermissionsApproved = false
                         break
                     }
+                    permissionsApproved += 1
                 }
-                if (allImpPermissionsApproved) checkForOauthPermissions()
+                if (permissionsApproved == RequestRuntimePermissions.values().size)
+                    checkForOauthPermissions()
             }
 
         requestOauthPermissionsLauncher =
@@ -111,20 +112,16 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun checkForPermissions() {
+    private fun checkForAndroidPermissions() {
         when {
-            checkSelfPermission(
-                android.Manifest.permission.ACTIVITY_RECOGNITION
-            ) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
+            checkSelfPermission(RequestRuntimePermissions.FINE_LOCATION.name)
+                    == PackageManager.PERMISSION_GRANTED -> {
                 checkForOauthPermissions()
             }
 
             ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
-                android.Manifest.permission.ACTIVITY_RECOGNITION
+                RequestRuntimePermissions.FINE_LOCATION.name
             ) -> {
                 Toast.makeText(
                     this,
@@ -137,8 +134,37 @@ class MainActivity : AppCompatActivity() {
             else -> {
                 requestAndroidPermissionLauncher.launch(
                     arrayOf(
-                        android.Manifest.permission.ACTIVITY_RECOGNITION,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION
+                        RequestRuntimePermissions.FINE_LOCATION.name
+                    )
+                )
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun checkForActivityRecognitionPermission() {
+        when {
+            checkSelfPermission(
+                RequestRuntimePermissions.ACTIVITY_RECOGNITION.name
+            ) == PackageManager.PERMISSION_GRANTED -> {
+            }
+
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                RequestRuntimePermissions.ACTIVITY_RECOGNITION.name
+            ) -> {
+                Toast.makeText(
+                    this,
+                    "Imp Android Permission already denied by user",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+            }
+
+            else -> {
+                requestAndroidPermissionLauncher.launch(
+                    arrayOf(
+                        RequestRuntimePermissions.ACTIVITY_RECOGNITION.name,
                     )
                 )
             }
