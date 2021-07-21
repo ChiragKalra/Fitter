@@ -10,6 +10,9 @@ interface PeriodicEntryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert (periodicEntry: PeriodicEntry): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll (periodicEntries: List<PeriodicEntry>): List<Long>
+
     @Delete
     fun delete (periodicEntry: PeriodicEntry)
 

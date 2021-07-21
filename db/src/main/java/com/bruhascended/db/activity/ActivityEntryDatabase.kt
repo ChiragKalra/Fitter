@@ -38,6 +38,10 @@ abstract class ActivityEntryDatabase : RoomDatabase() {
         periodicEntryManager().insert(periodicEntry)
     }
 
+    fun insertPeriodicEntries(periodicEntries: List<PeriodicEntry>) {
+        periodicEntryManager().insertAll(periodicEntries)
+    }
+
     fun deletePeriodicEntry(periodicEntry: PeriodicEntry) {
         periodicEntryManager().delete(periodicEntry)
     }
