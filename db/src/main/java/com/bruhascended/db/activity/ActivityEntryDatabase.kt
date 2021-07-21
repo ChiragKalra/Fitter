@@ -33,4 +33,12 @@ abstract class ActivityEntryDatabase : RoomDatabase() {
             date.time + 24*60*60*1000L
         )
     }
+
+    fun insertPeriodicEntry(periodicEntry: PeriodicEntry) {
+        periodicEntryManager().insert(periodicEntry)
+    }
+
+    fun deletePeriodicEntry(periodicEntry: PeriodicEntry) {
+        periodicEntryManager().delete(periodicEntry)
+    }
 }
