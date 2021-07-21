@@ -184,6 +184,8 @@ class ActivityJournalRecyclerAdapter (
                     move_min_count,
                     (info.duration!! / (1000 * 60)).toString()
                 )
+            } else {
+                textviewMoveMin.visibility = View.INVISIBLE
             }
             if (info.distance != null) {
                 textviewDistanceKm.text = mContext.getString(
@@ -191,12 +193,16 @@ class ActivityJournalRecyclerAdapter (
                     if (true) distance_km_count else distance_mi_count,
                     doubleToString(info.distance!!)
                 )
+            } else {
+                textviewDistanceKm.visibility = View.INVISIBLE
             }
             if (info.steps != null) {
                 textviewSteps.text = mContext.getString(
                     steps_count,
                     info.steps.toString()
                 )
+            } else {
+                textviewDistanceKm.visibility = View.INVISIBLE
             }
         }
 
