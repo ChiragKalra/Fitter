@@ -8,15 +8,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+import java.util.Date
+
 
 class ActivityJournalViewModel (mApp: Application) : AndroidViewModel(mApp) {
 
     private val repository by ActivityEntryRepository.Delegate(mApp)
 
     val lastItems = repository.loadLiveLastItems()
-    val separatorInfo = repository.loadLiveSeparators()
 
     val activityEntries = repository.loadActivityEntries()
+
+    fun separatorInfoOf(date: Date) = repository.loadLiveSeparatorAt(date)
 
     fun deleteEntry(activityEntry: ActivityEntry) {
         CoroutineScope(Dispatchers.IO).launch {

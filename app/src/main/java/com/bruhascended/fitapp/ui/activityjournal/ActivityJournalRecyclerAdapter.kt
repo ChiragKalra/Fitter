@@ -5,30 +5,27 @@ import android.graphics.drawable.TransitionDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.db.R.string.*
 import com.bruhascended.db.activity.entities.ActivityEntry
+import com.bruhascended.db.activity.entities.PeriodicEntry
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemActivityEntryBinding
 import com.bruhascended.fitapp.databinding.ItemFooterBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorActivityentryBinding
-import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.util.*
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 
 class ActivityJournalRecyclerAdapter (
     private val mContext: Context,
-    private val lastItemLiveSet: MutableLiveData<HashSet<Long>>,
-    private val separatorInfoLiveMap:
-        MutableLiveData<HashMap<Date, ActivityEntryRepository.SeparatorInfo>>
+    private val lastItemLiveSet: MutableLiveData<HashSet<Long>>
 ): PagingDataAdapter<DateSeparatedItem, ActivityJournalRecyclerAdapter.ActivityEntryItemHolder> (
     DateSeparatedItem.Comparator()
 ) {
@@ -41,8 +38,8 @@ class ActivityJournalRecyclerAdapter (
         var layoutNutrientsWrapHeight =
             root.context.resources.getDimension(R.dimen.activity_details_height).toInt()
         var lastItemObserver: Observer<HashSet<Long>>? = null
-        var separatorInfoObserver:
-                Observer<HashMap<Date, ActivityEntryRepository.SeparatorInfo>>? = null
+        var separatorInfoObserver: Observer<PeriodicEntry>? = null
+        var liveSeparatorInfo: LiveData<PeriodicEntry>? = null
         var isLastItemBg = false
     }
 
@@ -96,13 +93,14 @@ class ActivityJournalRecyclerAdapter (
     private fun ItemSeparatorActivityentryBinding.presentSeparator(
         separator: Date,
         holder: ActivityEntryItemHolder,
+        livePeriodicEntry: LiveData<PeriodicEntry>,
     ) {
         holder.separatorInfoObserver?.apply {
-            separatorInfoLiveMap.removeObserver(this)
+            holder.liveSeparatorInfo?.removeObserver(this)
         }
 
-        holder.separatorInfoObserver = Observer<HashMap<Date, ActivityEntryRepository.SeparatorInfo>> {
-            val separatorInfo = it[separator] ?: return@Observer
+        holder.separatorInfoObserver = Observer<PeriodicEntry> {
+            val separatorInfo = it ?: return@Observer
 
             textviewDate.text = DateTimePresenter(mContext, separator.time).fullDate
 
@@ -161,8 +159,9 @@ class ActivityJournalRecyclerAdapter (
             }
         }
 
+        holder.liveSeparatorInfo = livePeriodicEntry
         holder.separatorInfoObserver?.apply {
-            separatorInfoLiveMap.observeForever(this)
+            holder.liveSeparatorInfo?.observeForever(this)
         }
     }
 
@@ -254,7 +253,9 @@ class ActivityJournalRecyclerAdapter (
         val item = getItem(position) ?: return
         when (item.type) {
             DateSeparatedItem.ItemType.Separator ->
-                holder.separatorBinding?.presentSeparator(item.separator!!, holder)
+                holder.separatorBinding?.presentSeparator(
+                    item.separator!!, holder, item.liveDayEntry!!
+                )
             DateSeparatedItem.ItemType.Item ->
                 holder.itemBinding?.presentItem(item.item!!, holder)
         }

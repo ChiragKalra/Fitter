@@ -1,14 +1,17 @@
 package com.bruhascended.fitapp.ui.activityjournal
 
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
 import com.bruhascended.db.activity.entities.ActivityEntry
+import com.bruhascended.db.activity.entities.PeriodicEntry
 import java.util.*
 
 
 class DateSeparatedItem(
     val type: ItemType,
     val item: ActivityEntry? = null,
-    val separator: Date? = null
+    val separator: Date? = null,
+    val liveDayEntry: LiveData<PeriodicEntry>? = null
 ) {
 
     enum class ItemType {

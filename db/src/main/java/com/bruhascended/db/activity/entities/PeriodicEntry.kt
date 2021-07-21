@@ -22,12 +22,28 @@ data class PeriodicEntry (
         totalSteps += other.steps ?: 0
     }
 
+    operator fun plus(entry: ActivityEntry) = PeriodicEntry(
+        startTime,
+        totalCalories + entry.calories,
+        totalDuration + (entry.duration ?: 0),
+        totalDistance + (entry.distance ?: .0),
+        totalSteps + (entry.steps ?: 0),
+    )
+
     operator fun minusAssign(other: ActivityEntry) {
         totalCalories -= other.calories
         totalDuration -= other.duration ?: 0L
         totalDistance -= other.distance ?: .0
         totalSteps -= other.steps ?: 0
     }
+
+    operator fun minus(entry: ActivityEntry) = PeriodicEntry(
+        startTime,
+        totalCalories - entry.calories,
+        totalDuration - (entry.duration ?: 0),
+        totalDistance - (entry.distance ?: .0),
+        totalSteps - (entry.steps ?: 0),
+    )
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

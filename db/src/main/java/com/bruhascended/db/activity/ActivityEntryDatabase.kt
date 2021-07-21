@@ -8,7 +8,8 @@ import com.bruhascended.db.activity.daos.ActivityEntryDao
 import com.bruhascended.db.activity.daos.PeriodicEntryDao
 import com.bruhascended.db.activity.entities.ActivityEntry
 import com.bruhascended.db.activity.entities.PeriodicEntry
-import java.util.*
+
+import java.util.Date
 
 
 @Database(
