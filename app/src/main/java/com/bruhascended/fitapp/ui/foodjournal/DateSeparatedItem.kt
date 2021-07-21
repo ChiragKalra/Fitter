@@ -1,6 +1,8 @@
 package com.bruhascended.fitapp.ui.foodjournal
 
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
+import com.bruhascended.db.food.entities.DayEntry
 import com.bruhascended.db.food.entities.FoodEntry
 import java.util.*
 
@@ -8,6 +10,7 @@ class DateSeparatedItem(
     val type: ItemType,
     val item: FoodEntry? = null,
     val separator: Date? = null,
+    val liveDayEntry: LiveData<DayEntry?>? = null,
 ) {
 
     enum class ItemType {

@@ -5,31 +5,28 @@ import android.graphics.drawable.TransitionDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bruhascended.db.R.string.calorie_count
+import com.bruhascended.db.food.entities.DayEntry
 import com.bruhascended.db.food.entities.FoodEntry
 import com.bruhascended.db.food.types.NutrientType
 import com.bruhascended.db.food.types.QuantityType
-import com.bruhascended.db.R.string.calorie_count
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemFoodEntryBinding
 import com.bruhascended.fitapp.databinding.ItemFooterBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorFoodentryBinding
-import com.bruhascended.fitapp.repository.FoodEntryRepository
 import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEntryItemHolder
 import com.bruhascended.fitapp.util.*
-import java.util.Date
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
+import java.util.*
 
 
 class FoodJournalRecyclerAdapter (
     private val mContext: Context,
-    private val lastItemLiveSet: MutableLiveData<HashSet<Long>>,
-    private val separatorInfoLiveMap:
-        MutableLiveData<HashMap<Date, FoodEntryRepository.SeparatorInfo>>
+    private val lastItemLiveSet: MutableLiveData<HashSet<Long>>
 ): PagingDataAdapter<DateSeparatedItem, FoodEntryItemHolder> (
     DateSeparatedItem.Comparator()
 ) {
@@ -42,8 +39,8 @@ class FoodJournalRecyclerAdapter (
         var layoutNutrientsWrapHeight =
             root.context.resources.getDimension(R.dimen.nutrient_details_height).toInt()
         var lastItemObserver: Observer<HashSet<Long>>? = null
-        var separatorInfoObserver:
-                Observer<HashMap<Date, FoodEntryRepository.SeparatorInfo>>? = null
+        var separatorInfoObserver: Observer<DayEntry?>? = null
+        var lastLiveDayEntry: LiveData<DayEntry?>? = null
         var isLastItemBg = false
     }
 
@@ -88,28 +85,29 @@ class FoodJournalRecyclerAdapter (
     private fun ItemSeparatorFoodentryBinding.presentSeparator(
         separator: Date,
         holder: FoodEntryItemHolder,
+        liveDayEntry: LiveData<DayEntry?>
     ) {
         holder.separatorInfoObserver?.apply {
-            separatorInfoLiveMap.removeObserver(this)
+            holder.lastLiveDayEntry?.removeObserver(this)
         }
 
-        holder.separatorInfoObserver = Observer<HashMap<Date, FoodEntryRepository.SeparatorInfo>> {
-            val separatorInfo = it[separator] ?: return@Observer
+        holder.separatorInfoObserver = Observer<DayEntry?> {
+            val separatorInfo = it ?: return@Observer
 
             textviewDate.text = DateTimePresenter(mContext, separator.time).fullDate
 
             textviewCalories.text = mContext.getString(
                 calorie_count,
-                separatorInfo.totalCalories.toString()
+                separatorInfo.calories.toString()
             )
             // TODO: Set Using User Preference
             progressbarCalories.apply {
                 progress = 0f
                 progressMax = 1800f
-                setProgressWithAnimation(separatorInfo.totalCalories.toFloat())
+                setProgressWithAnimation(separatorInfo.calories.toFloat())
             }
 
-            separatorInfo.totalNutrients.forEach { (type, value) ->
+            separatorInfo.nutrientInfo.forEach { (type, value) ->
                 if (type == null) return@forEach
                 when (type) {
                     NutrientType.Protein -> textviewProteinGram
@@ -130,8 +128,9 @@ class FoodJournalRecyclerAdapter (
             }
         }
 
+        holder.lastLiveDayEntry = liveDayEntry
         holder.separatorInfoObserver?.apply {
-            separatorInfoLiveMap.observeForever(this)
+            holder.lastLiveDayEntry?.observeForever(this)
         }
     }
 
@@ -209,7 +208,11 @@ class FoodJournalRecyclerAdapter (
         val item = getItem(position) ?: return
         when (item.type) {
             DateSeparatedItem.ItemType.Separator ->
-                holder.separatorBinding?.presentSeparator(item.separator!!, holder)
+                holder.separatorBinding?.presentSeparator(
+                    item.separator!!,
+                    holder,
+                    item.liveDayEntry!!
+                )
             DateSeparatedItem.ItemType.Item ->
                 holder.itemBinding?.presentItem(item.item!!, holder)
         }
