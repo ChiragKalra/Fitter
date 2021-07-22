@@ -127,6 +127,7 @@
     <!-- Long Descriptions -->
     <string name="food_search">Food Search</string>
     <string name="food_details">Food Details</string>
+    <string name="choose_activity">Choose Activity</string>
     <string name="custom_food">Add Custom Food</string>
     <string name="no_food_item_detected">No Food Item Detected</string>
     <string name="add_new_food_entry">Add New Food Entry</string>
@@ -143,5 +144,11 @@
     <string name="quantity_type_hint">Quantity Type</string>
     <string name="default_quantity">1.0</string>
     <string name="quantity_hint">Quantity</string>
+    <string name="actvity">Actvity</string>
+    <string name="calories">Calories</string>
+    <string name="distance">distance</string>
+    <string name="submit">submit</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
 

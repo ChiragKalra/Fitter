@@ -1,5 +1,6 @@
-package com.bruhascended.fitapp.ui.main
+package com.bruhascended.fitapp.ui.addworkout
 
+import android.content.Context
 import com.bruhascended.db.activity.types.ActivityType
 
 object ActivitiesMap {
@@ -122,5 +123,15 @@ object ActivitiesMap {
 
     fun getActivityType(string: String): ActivityType? {
         return activitiesMap[string]
+    }
+
+    fun getActivityTypesList(context: Context): List<ActivityViewType> {
+        val activitiesList = mutableListOf<ActivityViewType>()
+        for (value in ActivityType.values()) {
+            activitiesList.add(
+                ActivityViewType(value.iconRes, value.getString(context))
+            )
+        }
+        return activitiesList
     }
 }

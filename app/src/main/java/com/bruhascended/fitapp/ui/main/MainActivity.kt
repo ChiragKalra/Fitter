@@ -27,9 +27,9 @@ import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 
 enum class RequestRuntimePermissions(string: String) {
+    FINE_LOCATION(android.Manifest.permission.ACCESS_FINE_LOCATION),
     @RequiresApi(Build.VERSION_CODES.Q)
-    ACTIVITY_RECOGNITION(android.Manifest.permission.ACTIVITY_RECOGNITION),
-    FINE_LOCATION(android.Manifest.permission.ACCESS_FINE_LOCATION)
+    ACTIVITY_RECOGNITION(android.Manifest.permission.ACTIVITY_RECOGNITION)
 }
 
 class MainActivity : AppCompatActivity() {

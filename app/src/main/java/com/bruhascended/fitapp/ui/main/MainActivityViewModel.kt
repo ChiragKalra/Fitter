@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.bruhascended.db.activity.entities.ActivityEntry
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
+import com.bruhascended.fitapp.ui.addworkout.ActivitiesMap
 import com.bruhascended.fitapp.util.getTodayMidnightTime
 import com.bruhascended.fitapp.util.getTodayStartTime
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
