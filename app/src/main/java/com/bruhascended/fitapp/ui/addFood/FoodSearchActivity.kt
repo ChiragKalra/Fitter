@@ -3,36 +3,23 @@ package com.bruhascended.fitapp.ui.addFood
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bruhascended.api.models.foodsv2.Hint
-import com.bruhascended.db.food.entities.Entry
-import com.bruhascended.db.food.entities.Food
-import com.bruhascended.db.food.types.MealType
-import com.bruhascended.db.food.types.NutrientType
-import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityFoodSearchBinding
-import com.bruhascended.fitapp.repository.FoodEntryRepository
+import com.bruhascended.fitapp.ui.addFood.adapters.FoodSearchAdapter
+import com.bruhascended.fitapp.ui.addFood.entities.MultiViewType
 import com.bruhascended.fitapp.ui.capturefood.PredictionPresenter
-import com.bruhascended.fitapp.util.MultiViewType
 import com.bruhascended.fitapp.util.setupToolbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
-import java.util.*
 
 class FoodSearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFoodSearchBinding

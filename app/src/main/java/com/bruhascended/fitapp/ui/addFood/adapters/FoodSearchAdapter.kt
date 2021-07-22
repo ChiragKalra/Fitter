@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.ui.addFood
+package com.bruhascended.fitapp.ui.addFood.adapters
 
 
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import com.bruhascended.db.food.entities.Food
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemFoodsHistoryListBinding
 import com.bruhascended.fitapp.databinding.ItemFoodsListBinding
-import com.bruhascended.fitapp.util.MultiViewType
+import com.bruhascended.fitapp.ui.addFood.entities.MultiViewType
 import com.bumptech.glide.Glide
 
 class FoodSearchAdapter(

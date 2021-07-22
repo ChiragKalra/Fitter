@@ -1,9 +1,8 @@
-package com.bruhascended.fitapp.util
+package com.bruhascended.fitapp.ui.addFood.adapters
 
 import android.content.Context
 import android.content.res.Resources
 import android.database.DataSetObserver
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
