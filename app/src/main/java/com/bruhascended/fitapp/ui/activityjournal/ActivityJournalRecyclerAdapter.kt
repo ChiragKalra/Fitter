@@ -169,7 +169,11 @@ class ActivityJournalRecyclerAdapter (
         entry: ActivityEntry,
         holder: ActivityEntryItemHolder,
     ) {
-        textviewTime.text = DateTimePresenter(mContext, entry.startTime).condensedTime
+        textviewTime.text = mContext.getString(
+            R.string.to_join,
+            DateTimePresenter(mContext, entry.startTime).condensedTime,
+            DateTimePresenter(mContext, entry.endTime).condensedTime,
+        )
         textviewCalories.text = mContext.getString(
             calorie_count,
             entry.calories.toString()

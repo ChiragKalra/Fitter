@@ -143,5 +143,8 @@
     <string name="quantity_type_hint">Quantity Type</string>
     <string name="default_quantity">1.0</string>
     <string name="quantity_hint">Quantity</string>
+
+    <!-- Join -->
+    <string name="to_join">%1$s - %2$s</string>
 </resources>
 
