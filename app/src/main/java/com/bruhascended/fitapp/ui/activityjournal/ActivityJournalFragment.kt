@@ -27,8 +27,7 @@ class ActivityJournalFragment: Fragment() {
     private fun setupRecyclerView() {
         mAdaptor = ActivityJournalRecyclerAdapter(
             requireContext(),
-            viewModel.lastItems,
-            viewModel.separatorInfo,
+            viewModel.lastItems
         ).apply {
             setOnItemClickListener {
                 ActionDialogPresenter(
@@ -61,7 +60,8 @@ class ActivityJournalFragment: Fragment() {
                     } else {
                         DateSeparatedItem(
                             DateSeparatedItem.ItemType.Separator,
-                            separator = beforeDate
+                            separator = beforeDate,
+                            liveDayEntry = viewModel.separatorInfoOf(beforeDate!!)
                         )
                     }
                 }

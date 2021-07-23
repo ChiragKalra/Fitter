@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 import kotlin.reflect.KProperty
 
@@ -36,36 +35,13 @@ class ActivityEntryRepository(
         }
     }
 
-    data class SeparatorInfo(
-        var totalCalories: Int = 0,
-        var totalDuration: Long = 0L,
-        var totalDistance: Double = .0,
-        var totalSteps: Int = 0,
-    ) {
-
-        operator fun plusAssign(entry: ActivityEntry) {
-            totalCalories += entry.calories
-            totalSteps += entry.steps ?: 0
-            totalDuration += entry.duration ?: 0
-            totalDistance += entry.distance ?: .0
-        }
-
-        operator fun plus(entry: ActivityEntry) = SeparatorInfo(
-            totalCalories + entry.calories,
-            totalDuration + (entry.duration ?: 0),
-            totalDistance + (entry.distance ?: .0),
-            totalSteps + (entry.steps ?: 0),
-        )
-    }
-
-
-    private val db: ActivityEntryDatabase = ActivityEntryDatabaseFactory(mApp).build()
+    private val db: ActivityEntryDatabase  = ActivityEntryDatabaseFactory(mApp).build()
 
     fun writeEntry(entry: ActivityEntry) = db.entryManager().insert(entry)
 
-    fun deleteEntry(entry: ActivityEntry) = db.entryManager().delete(entry)
-
     fun findByStartTime(timeInMillis: Long) = db.entryManager().findByStartTime(timeInMillis)
+
+    fun deleteEntry(entry: ActivityEntry) = db.entryManager().delete(entry)
 
     fun loadActivityEntries(): Flow<PagingData<ActivityEntry>> {
         return Pager(
@@ -80,25 +56,9 @@ class ActivityEntryRepository(
         }.flow
     }
 
-    fun loadLiveActivityEntries() = db.entryManager().loadAllLive()
+    private fun loadLiveActivityEntries() = db.entryManager().loadAllLive()
 
-    fun loadLiveSeparators(): MutableLiveData<HashMap<Date, SeparatorInfo>> {
-        val liveInfoMap = MutableLiveData<HashMap<Date, SeparatorInfo>>()
-        loadLiveActivityEntries().observeForever { all ->
-            CoroutineScope(Dispatchers.IO).launch {
-                val infoMap = HashMap<Date, SeparatorInfo>()
-                all.forEach {
-                    val date = it.date
-                    if (!infoMap.containsKey(date)) {
-                        infoMap[date] = SeparatorInfo()
-                    }
-                    infoMap[date]?.also { info -> info += it }
-                }
-                liveInfoMap.postValue(infoMap)
-            }
-        }
-        return liveInfoMap
-    }
+    fun loadLiveSeparatorAt(date: Date) = db.getLivePeriodicEntryOf(date)
 
     fun loadLiveLastItems(): MutableLiveData<HashSet<Long>> {
         val liveLastIds = MutableLiveData<HashSet<Long>>()
@@ -110,8 +70,8 @@ class ActivityEntryRepository(
                         add(allArr.last().id!!)
                     }
                     if (allArr.size > 1) {
-                        allArr.slice(0 until all.size - 1).forEachIndexed { ind, entry ->
-                            if (entry.date != allArr[ind + 1].date) {
+                        allArr.slice( 0 until all.size - 1).forEachIndexed { ind, entry ->
+                            if (entry.date != allArr[ind+1].date) {
                                 add(entry.id!!)
                             }
                         }

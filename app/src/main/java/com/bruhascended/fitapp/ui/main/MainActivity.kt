@@ -1,6 +1,5 @@
 package com.bruhascended.fitapp.ui.main
 
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -11,7 +10,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -26,14 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 
-enum class RequestRuntimePermissions(string: String) {
-    FINE_LOCATION(android.Manifest.permission.ACCESS_FINE_LOCATION),
-    @RequiresApi(Build.VERSION_CODES.Q)
-    ACTIVITY_RECOGNITION(android.Manifest.permission.ACTIVITY_RECOGNITION)
-}
-
 class MainActivity : AppCompatActivity() {
-    private var permissionsApproved = 0
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var fabPresenter: FabPresenter
@@ -83,93 +74,86 @@ class MainActivity : AppCompatActivity() {
 
         setUpResultContracts()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            checkForActivityRecognitionPermission()
-
-        checkForAndroidPermissions()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            checkActivityRecognitionPermission()
+        } else {
+            checkAndroidRuntimePermissions()
+        }
     }
 
-    private fun setUpResultContracts() {
-        requestAndroidPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-                for (permission in permissions.keys) {
-                    if (permissions[permission] == false) {
-                        Toast.makeText(this, "Imp android permissions denied", Toast.LENGTH_SHORT)
-                            .show()
-                        break
-                    }
-                    permissionsApproved += 1
-                }
-                if (permissionsApproved == RequestRuntimePermissions.values().size)
-                    checkForOauthPermissions()
-            }
+    // fun's to check for runtime permissions
 
-        requestOauthPermissionsLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                if (it.resultCode == Activity.RESULT_OK) performFitActions()
-                else
-                    Toast.makeText(this, "Oauth Permissions Denied", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun checkForAndroidPermissions() {
+    private fun checkAndroidRuntimePermissions() {
         when {
-            checkSelfPermission(RequestRuntimePermissions.FINE_LOCATION.name)
-                    == PackageManager.PERMISSION_GRANTED -> {
+            checkSelfPermission(
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
                 checkForOauthPermissions()
             }
-
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
-                RequestRuntimePermissions.FINE_LOCATION.name
-            ) -> {
-                Toast.makeText(
-                    this,
-                    "Imp Android Permission already denied by user",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-            }
-
             else -> {
                 requestAndroidPermissionLauncher.launch(
-                    arrayOf(
-                        RequestRuntimePermissions.FINE_LOCATION.name
-                    )
+                    arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION)
                 )
             }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun checkForActivityRecognitionPermission() {
+    private fun checkActivityRecognitionPermission() {
         when {
             checkSelfPermission(
-                RequestRuntimePermissions.ACTIVITY_RECOGNITION.name
+                android.Manifest.permission.ACTIVITY_RECOGNITION
             ) == PackageManager.PERMISSION_GRANTED -> {
+                checkAndroidRuntimePermissions()
             }
-
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
-                RequestRuntimePermissions.ACTIVITY_RECOGNITION.name
-            ) -> {
-                Toast.makeText(
-                    this,
-                    "Imp Android Permission already denied by user",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-            }
-
             else -> {
                 requestAndroidPermissionLauncher.launch(
-                    arrayOf(
-                        RequestRuntimePermissions.ACTIVITY_RECOGNITION.name,
-                    )
+                    arrayOf(android.Manifest.permission.ACTIVITY_RECOGNITION)
                 )
             }
         }
     }
+
+    private fun setUpResultContracts() {
+        requestAndroidPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    val str = android.Manifest.permission.ACTIVITY_RECOGNITION
+                    if (it.keys.contains(str)) {
+                        str.let { permission ->
+                            if (it[permission] == true)
+                                checkAndroidRuntimePermissions()
+                            else
+                                Toast.makeText(this, permission + "Denied", Toast.LENGTH_SHORT)
+                                    .show()
+                        }
+                    } else checkIfPermissionsGranted(it)
+                } else {
+                    checkIfPermissionsGranted(it)
+                }
+            }
+
+        requestOauthPermissionsLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                performFitActions()
+            }
+    }
+
+    private fun checkIfPermissionsGranted(it: Map<String, Boolean>) {
+        var allPermissionsApproved = true
+        for (key in it.keys) {
+            if (it[key] == false) {
+                Toast.makeText(this, key + "Denied", Toast.LENGTH_SHORT).show()
+                allPermissionsApproved = false
+                break
+            }
+        }
+        if (allPermissionsApproved) {
+            checkForOauthPermissions()
+        }
+    }
+
+    // fit Sign In functions
 
     private fun checkForOauthPermissions() {
         if (GoogleSignIn.hasPermissions(getGoogleAccount(), fitnessOptions)) {
@@ -205,5 +189,4 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.overflow_menu_item, menu)
         return true
     }
-
 }

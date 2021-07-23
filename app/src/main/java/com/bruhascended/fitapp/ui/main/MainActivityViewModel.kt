@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.bruhascended.db.activity.entities.ActivityEntry
+import com.bruhascended.db.activity.types.ActivityType
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.ui.addworkout.ActivitiesMap
 import com.bruhascended.fitapp.util.getTodayMidnightTime
@@ -68,14 +69,14 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         startTime = cal.getTodayStartTime(cal)
 
         val entriesList = mutableListOf<ActivityEntry>()
-        val numOfDays = DAYS.WEEK.days
+        val numOfDays = DAYS.MONTH.days
         var tempNumOfDays = 0
 
         CoroutineScope(IO).launch {
             for (day in 1..numOfDays) {
 
                 val readRequest = DataReadRequest.Builder()
-                    .bucketByActivitySegment(1, TimeUnit.MINUTES)
+                    .bucketByActivitySegment(5, TimeUnit.MINUTES)
                     .aggregate(estimatedStepSource)
                     .aggregate(DataType.TYPE_DISTANCE_DELTA)
                     .aggregate(DataType.TYPE_CALORIES_EXPENDED)
@@ -152,12 +153,13 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private fun insertEntriesToDb(list: MutableList<ActivityEntry>) {
         CoroutineScope(IO).launch {
             for (entry in list) {
-                val activityEntry: ActivityEntry? = findActivity(entry)
-                if (activityEntry != null) {
-                    entry.id = activityEntry.id
+                if (entry.activity != ActivityType.Unknown && entry.activity != ActivityType.Still) {
+                    val activityEntry: ActivityEntry? = findActivity(entry)
+                    if (activityEntry != null) {
+                        entry.id = activityEntry.id
+                    }
+                    repository.writeEntry(entry)
                 }
-                Log.d("eyo", "${entry}")
-                repository.writeEntry(entry)
             }
         }
     }
