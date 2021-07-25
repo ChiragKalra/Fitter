@@ -6,10 +6,10 @@ import kotlin.math.abs
 
 
 @Entity
-data class PeriodicEntry (
+data class PeriodicEntry(
     @PrimaryKey
-    val startTime: Long,
-    var totalCalories: Int = 0,
+    var startTime: Long,
+    var totalCalories: Float = 0f,
     var totalDuration: Long = 0L,
     var totalDistance: Double = .0,
     var totalSteps: Int = 0,

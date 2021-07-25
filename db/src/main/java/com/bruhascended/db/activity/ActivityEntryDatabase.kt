@@ -16,7 +16,7 @@ import java.util.Date
     entities = [
         ActivityEntry::class,
         PeriodicEntry::class
-     ],
+    ],
     version = 1,
     exportSchema = false
 )
@@ -30,9 +30,12 @@ abstract class ActivityEntryDatabase : RoomDatabase() {
     fun getLivePeriodicEntryOf(date: Date): LiveData<PeriodicEntry> {
         return periodicEntryManager().getTimeRangeSumLive(
             date.time,
-            date.time + 24*60*60*1000L
+            date.time + 24 * 60 * 60 * 1000L
         )
     }
+
+    fun findPeriodicEntryByStartTime(time: Long) =
+        periodicEntryManager().findByStartTime(time)
 
     fun insertPeriodicEntry(periodicEntry: PeriodicEntry) {
         periodicEntryManager().insert(periodicEntry)

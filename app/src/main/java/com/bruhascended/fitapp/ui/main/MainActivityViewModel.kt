@@ -5,9 +5,11 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.bruhascended.db.activity.entities.ActivityEntry
+import com.bruhascended.db.activity.entities.PeriodicEntry
 import com.bruhascended.db.activity.types.ActivityType
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.ui.addworkout.ActivitiesMap
+import com.bruhascended.fitapp.util.DateTimePresenter
 import com.bruhascended.fitapp.util.getTodayMidnightTime
 import com.bruhascended.fitapp.util.getTodayStartTime
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -44,11 +46,18 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         .build()
 
     fun syncPassiveData(context: Context, googleAccount: GoogleSignInAccount) {
+        cal.add(Calendar.DAY_OF_YEAR, -DAYS.WEEK.days)
+        startTime = cal.timeInMillis
+        Log.d("eyo","${DateTimePresenter(context,startTime).fullTimeAndDate}")
+        Log.d("eyo","${DateTimePresenter(context,endTime).fullTimeAndDate}")
+        val periodicEntriesList = mutableListOf<PeriodicEntry>()
+
         val redRequest = DataReadRequest.Builder()
             .bucketByTime(30, TimeUnit.MINUTES)
             .aggregate(DataType.TYPE_CALORIES_EXPENDED)
             .aggregate(estimatedStepSource)
             .aggregate(DataType.TYPE_DISTANCE_DELTA)
+            .aggregate(DataType.TYPE_MOVE_MINUTES)
             .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
             .enableServerQueries()
             .build()
@@ -56,7 +65,49 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         Fitness.getHistoryClient(context, googleAccount)
             .readData(redRequest)
             .addOnSuccessListener {
-                // TODO
+                for (bucket in it.buckets) {
+                    var calories: Float = 0f
+                    var steps: Int = 0
+                    var distance: Double = .0
+                    var duration: Long = 0L
+                    for (dataSet in bucket.dataSets) {
+                        when {
+                            dataSet.dataType == DataType.TYPE_MOVE_MINUTES && dataSet.dataPoints.isNotEmpty() -> {
+                                duration =
+                                    (dataSet.dataPoints[0].getValue(Field.FIELD_DURATION)
+                                        .asInt() * 60000).toLong()
+                            }
+
+                            dataSet.dataType == DataType.TYPE_STEP_COUNT_DELTA && dataSet.dataPoints.isNotEmpty() -> {
+                                steps =
+                                    dataSet.dataPoints[0].getValue(Field.FIELD_STEPS)
+                                        .asInt()
+                            }
+                            dataSet.dataType == DataType.TYPE_DISTANCE_DELTA && dataSet.dataPoints.isNotEmpty() -> {
+                                distance =
+                                    dataSet.dataPoints[0].getValue(Field.FIELD_DISTANCE)
+                                        .asFloat()
+                                        .toDouble() / 1000
+                            }
+                            dataSet.dataType == DataType.TYPE_CALORIES_EXPENDED && dataSet.dataPoints.isNotEmpty() -> {
+                                calories =
+                                    dataSet.dataPoints[0].getValue(Field.FIELD_CALORIES)
+                                        .asFloat()
+
+                            }
+                        }
+                    }
+                    val entry = PeriodicEntry(
+                        bucket.getStartTime(TimeUnit.MILLISECONDS),
+                        calories,
+                        duration,
+                        distance,
+                        steps
+                    )
+                    periodicEntriesList.add(entry)
+                }
+                Log.d("eyo","reahed insrrtperdiodicenttries fn")
+                insertPeriodicEntriesToDb(periodicEntriesList)
             }
             .addOnFailureListener {
                 Log.d("eyo", it.message.toString())
@@ -145,9 +196,17 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    private fun findActivity(entry: ActivityEntry): ActivityEntry? {
-        val activityEntry: ActivityEntry? = repository.findByStartTime(entry.startTime)
-        return activityEntry
+    private fun insertPeriodicEntriesToDb(periodicEntriesList: MutableList<PeriodicEntry>) {
+        Log.d("eyo","reahed inside insrrtperdiodicenttries fn")
+        CoroutineScope(IO).launch {
+            for (entry in periodicEntriesList) {
+                val periodicEntry: PeriodicEntry? = findPeriodicEntry(entry)
+                if (periodicEntry != null) {
+                    entry.startTime = periodicEntry.startTime
+                }
+                repository.insertPeriodicEntry(entry)
+            }
+        }
     }
 
     private fun insertEntriesToDb(list: MutableList<ActivityEntry>) {
@@ -163,34 +222,15 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             }
         }
     }
+
+    private fun findActivity(entry: ActivityEntry): ActivityEntry? {
+        val activityEntry: ActivityEntry? = repository.findByStartTime(entry.startTime)
+        return activityEntry
+    }
+
+    private fun findPeriodicEntry(entry: PeriodicEntry): PeriodicEntry? {
+        val periodicEntry: PeriodicEntry? = repository.findPeriodicEntryByStartTime(entry.startTime)
+        return periodicEntry
+    }
+
 }
-
-//private fun dumpDataSets(dataSets: List<DataSet>) {
-//    for (dataSet in dataSets) {
-//        for (dp in dataSet.dataPoints) {
-//            for (field in dp.dataType.fields) {
-//                Log.d("eyo", "${field.name} = ${dp.getValue(field)}")
-//            }
-//        }
-//    }
-//}
-
-//                            Log.d("eyo", "${bucket.activity}")
-////                                Log.d("eyo", "${bucket.getStartTime(TimeUnit.MILLISECONDS)}")
-////                                Log.d("eyo", "${bucket.getEndTime(TimeUnit.MILLISECONDS)}")
-//                            Log.d(
-//                                "eyo",
-//                                DateTimePresenter(
-//                                    app,
-//                                    bucket.getStartTime(TimeUnit.MILLISECONDS)
-//                                ).fullTimeAndDate
-//                            )
-//                            Log.d(
-//                                "eyo",
-//                                DateTimePresenter(
-//                                    app,
-//                                    bucket.getEndTime(TimeUnit.MILLISECONDS)
-//                                ).fullTimeAndDate
-//                            )
-//                            dumpDataSets(bucket.dataSets)
-

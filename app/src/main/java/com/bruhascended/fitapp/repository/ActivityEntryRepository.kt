@@ -8,10 +8,12 @@ import androidx.paging.PagingData
 import com.bruhascended.db.activity.ActivityEntryDatabase
 import com.bruhascended.db.activity.ActivityEntryDatabaseFactory
 import com.bruhascended.db.activity.entities.ActivityEntry
+import com.bruhascended.db.activity.entities.PeriodicEntry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import java.time.Period
 import java.util.*
 import kotlin.collections.HashSet
 import kotlin.reflect.KProperty
@@ -35,8 +37,18 @@ class ActivityEntryRepository(
         }
     }
 
-    private val db: ActivityEntryDatabase  = ActivityEntryDatabaseFactory(mApp).build()
+    private val db: ActivityEntryDatabase = ActivityEntryDatabaseFactory(mApp).build()
 
+    // periodic entry fun's
+    fun insertPeriodicEntries(periodicEntries: List<PeriodicEntry>) =
+        db.insertPeriodicEntries(periodicEntries)
+
+    fun insertPeriodicEntry(periodicEntry: PeriodicEntry) = db.insertPeriodicEntry(periodicEntry)
+
+    fun findPeriodicEntryByStartTime(timeInMillis: Long) =
+        db.findPeriodicEntryByStartTime(timeInMillis)
+
+    // activity entry fun's
     fun writeEntry(entry: ActivityEntry) = db.entryManager().insert(entry)
 
     fun findByStartTime(timeInMillis: Long) = db.entryManager().findByStartTime(timeInMillis)
@@ -70,8 +82,8 @@ class ActivityEntryRepository(
                         add(allArr.last().id!!)
                     }
                     if (allArr.size > 1) {
-                        allArr.slice( 0 until all.size - 1).forEachIndexed { ind, entry ->
-                            if (entry.date != allArr[ind+1].date) {
+                        allArr.slice(0 until all.size - 1).forEachIndexed { ind, entry ->
+                            if (entry.date != allArr[ind + 1].date) {
                                 add(entry.id!!)
                             }
                         }
