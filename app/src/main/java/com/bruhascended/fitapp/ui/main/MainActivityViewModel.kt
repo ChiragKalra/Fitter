@@ -9,7 +9,6 @@ import com.bruhascended.db.activity.entities.PeriodicEntry
 import com.bruhascended.db.activity.types.ActivityType
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.ui.addworkout.ActivitiesMap
-import com.bruhascended.fitapp.util.DateTimePresenter
 import com.bruhascended.fitapp.util.getTodayMidnightTime
 import com.bruhascended.fitapp.util.getTodayStartTime
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -31,8 +30,7 @@ enum class DAYS(val days: Int) {
     YEAR(365)
 }
 
-class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
-    val app = application
+class MainActivityViewModel(val app: Application) : AndroidViewModel(app) {
     private val repository by ActivityEntryRepository.Delegate(app)
     val cal = Calendar.getInstance(TimeZone.getDefault())
 
@@ -48,8 +46,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     fun syncPassiveData(context: Context, googleAccount: GoogleSignInAccount) {
         cal.add(Calendar.DAY_OF_YEAR, -DAYS.WEEK.days)
         startTime = cal.timeInMillis
-        Log.d("eyo","${DateTimePresenter(context,startTime).fullTimeAndDate}")
-        Log.d("eyo","${DateTimePresenter(context,endTime).fullTimeAndDate}")
         val periodicEntriesList = mutableListOf<PeriodicEntry>()
 
         val redRequest = DataReadRequest.Builder()
@@ -106,7 +102,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                     )
                     periodicEntriesList.add(entry)
                 }
-                Log.d("eyo","reahed insrrtperdiodicenttries fn")
                 insertPeriodicEntriesToDb(periodicEntriesList)
             }
             .addOnFailureListener {
@@ -197,7 +192,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     }
 
     private fun insertPeriodicEntriesToDb(periodicEntriesList: MutableList<PeriodicEntry>) {
-        Log.d("eyo","reahed inside insrrtperdiodicenttries fn")
         CoroutineScope(IO).launch {
             for (entry in periodicEntriesList) {
                 val periodicEntry: PeriodicEntry? = findPeriodicEntry(entry)
