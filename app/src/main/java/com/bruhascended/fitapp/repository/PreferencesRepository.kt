@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
-import com.bruhascended.db.preferences.ActivityPreferences
-import com.bruhascended.db.preferences.NutritionPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -20,12 +18,19 @@ class PreferencesRepository(
         const val TAG = "UserPreferencesRepo"
     }
 
-    private val Context.dataStore by preferencesDataStore(
-        name = USER_PREFERENCES_NAME
+    data class NutritionPreferences(
+        var calories: Int,
+        var proteins: Double,
+        var fats: Double,
+        var carbs: Double,
     )
 
-    private val dataStore = context.dataStore
-
+    data class ActivityPreferences(
+        var calories: Int,
+        var distance: Double,
+        var steps: Int,
+        var duration: Long,
+    )
 
     object PreferencesKeys {
         val GOAL_CALORIE_NET = intPreferencesKey("GOAL_CALORIE_NET")
@@ -43,6 +48,12 @@ class PreferencesRepository(
         val GOAL_DURATION = longPreferencesKey("GOAL_DURATION")
     }
 
+
+    private val Context.dataStore by preferencesDataStore(
+        name = USER_PREFERENCES_NAME
+    )
+
+    private val dataStore = context.dataStore
 
     val activityGoalsFlow: Flow<ActivityPreferences> = dataStore.data
         .catch { exception ->
