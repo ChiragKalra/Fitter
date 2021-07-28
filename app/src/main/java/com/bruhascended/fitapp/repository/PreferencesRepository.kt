@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
+
 class PreferencesRepository(
     private val context: Context
 ){
@@ -66,10 +67,10 @@ class PreferencesRepository(
             }
         }.map { preferences ->
             ActivityPreferences(
-                preferences[PreferencesKeys.GOAL_CALORIE_BURN] ?: -1,
-                preferences[PreferencesKeys.GOAL_DISTANCE] ?: -1.0,
-                preferences[PreferencesKeys.GOAL_STEPS] ?: -1,
-                preferences[PreferencesKeys.GOAL_DURATION] ?: -1L,
+                preferences[PreferencesKeys.GOAL_CALORIE_BURN] ?: 200,
+                preferences[PreferencesKeys.GOAL_DISTANCE] ?: 1000.0,
+                preferences[PreferencesKeys.GOAL_STEPS] ?: 3000,
+                preferences[PreferencesKeys.GOAL_DURATION] ?: 60*60*1000L,
             )
         }
 
@@ -84,10 +85,10 @@ class PreferencesRepository(
             }
         }.map { preferences ->
             NutritionPreferences(
-                preferences[PreferencesKeys.GOAL_CALORIE_CONSUMPTION] ?: -1,
-                preferences[PreferencesKeys.GOAL_PROTEIN] ?: -1.0,
-                preferences[PreferencesKeys.GOAL_FAT] ?: -1.0,
-                preferences[PreferencesKeys.GOAL_CARBS] ?: -1.0,
+                preferences[PreferencesKeys.GOAL_CALORIE_CONSUMPTION] ?: 1800,
+                preferences[PreferencesKeys.GOAL_PROTEIN] ?: 100.0,
+                preferences[PreferencesKeys.GOAL_FAT] ?: 100.0,
+                preferences[PreferencesKeys.GOAL_CARBS] ?: 100.0,
             )
         }
 
