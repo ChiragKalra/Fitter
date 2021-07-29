@@ -58,8 +58,12 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
+    // preference
+    implementation("androidx.datastore:datastore-preferences:$data_store_version")
+
     // workManager
     implementation("androidx.work:work-runtime-ktx:$work_version")
+    implementation 'androidx.preference:preference:1.1.1'
 
     // testing
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

@@ -6,6 +6,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.app.ActivityCompat
+import com.bruhascended.fitapp.ui.main.permissions
+import com.bruhascended.fitapp.ui.main.runningQOrLater
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.fitness.FitnessOptions
@@ -13,19 +15,23 @@ import com.google.android.gms.fitness.FitnessOptions
 lateinit var requestAndroidPermissionLauncher: ActivityResultLauncher<Array<String>>
 lateinit var requestOauthPermissionsLauncher: ActivityResultLauncher<Intent>
 
-/* in case Api <=28 ACTIVITY_RECOGNITION permission is automatically granted, so always true*/
-fun isActivityRecognitionPermissionGranted(context: Context): Boolean {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        ActivityCompat.checkSelfPermission(
-            context,
-            android.Manifest.permission.ACTIVITY_RECOGNITION
-        ) == PackageManager.PERMISSION_GRANTED
-    } else {
-        true
+fun getAndroidRunTimePermissionGivenMap(context: Context, list: List<permissions>): Map<String,Boolean> {
+    val permissionMap = mutableMapOf<String,Boolean>()
+    if(runningQOrLater){
+        for(permission in list){
+            permissionMap.put(permission.str, checkSelf(context,permission.str))
+        }
+    }else{
+        for(permission in list){
+            if(permission != permissions.ACTIVITY_RECOGNITION && permission != permissions.BACKGROUND_LOCATION){
+                permissionMap.put(permission.str, checkSelf(context,permission.str))
+            }
+        }
     }
+    return permissionMap
 }
 
-fun isAndroidRunTimePermissionGiven(context: Context, permission: String): Boolean {
+private fun checkSelf(context: Context, permission: String): Boolean {
     return ActivityCompat.checkSelfPermission(
         context,
         permission

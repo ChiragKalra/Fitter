@@ -1,25 +1,34 @@
 package com.bruhascended.fitapp.workers
 
+import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.bruhascended.fitapp.util.DateTimePresenter
-import com.bruhascended.fitapp.util.getGoogleAccount
-import com.bruhascended.fitapp.util.getTodayMidnightTime
-import com.bruhascended.fitapp.util.getTodayStartTime
+import com.bruhascended.fitapp.repository.ActivityEntryRepository
+import com.bruhascended.fitapp.repository.UserPreferenceRepository
+import com.bruhascended.fitapp.ui.main.permissions
+import com.bruhascended.fitapp.util.*
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataSource
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.request.DataReadRequest
-import org.tensorflow.lite.schema.LogicalAndOptions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class PeriodicEntryWorker(private val context: Context, params: WorkerParameters) :
+class PeriodicEntryWorker(
+    val context: Context,
+    params: WorkerParameters
+) :
     CoroutineWorker(context, params) {
+
     companion object {
+        val name = "PeriodicEntry"
         val fitnessOptions: FitnessOptions = FitnessOptions.builder()
             .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.TYPE_MOVE_MINUTES, FitnessOptions.ACCESS_READ)
@@ -29,9 +38,26 @@ class PeriodicEntryWorker(private val context: Context, params: WorkerParameters
     }
 
     override suspend fun doWork(): Result {
+        if (getAndroidRunTimePermissionGivenMap(
+                context,
+                permissions.values().toList()
+            ).containsValue(false)
+        ) {
+            return Result.failure()
+        } else if (!isOauthPermissionsApproved(context, fitnessOptions)) {
+            return Result.failure()
+        }
+
+        val UserRepository = UserPreferenceRepository(context)
+        val activityEntryRepository by ActivityEntryRepository.Delegate(Application())
+
         try {
-            performSync(context)
-            Log.d("eyo","Sync is run")
+            UserRepository.userPreferencesFLow.collect { preference ->
+                if (preference.syncEnabled) {
+                    performSync(context, preference.lastSyncStartTime, UserRepository)
+                }
+            }
+            Log.d("eyo", "Sync is run")
         } catch (e: Exception) {
             Log.d("eyo", "${e.message}")
             return Result.retry()
@@ -40,14 +66,30 @@ class PeriodicEntryWorker(private val context: Context, params: WorkerParameters
     }
 }
 
-private fun performSync(context: Context) {
+private fun performSync(
+    context: Context,
+    lastSyncStartTime: Long?,
+    repository: UserPreferenceRepository
+) {
+    var endTime: Long? = null
+    var startTime: Long? = null
     val cal = Calendar.getInstance(TimeZone.getDefault())
-    cal.add(Calendar.DAY_OF_WEEK,-8)
-    val endTime = cal.getTodayMidnightTime(cal)
-    cal.add(Calendar.WEEK_OF_MONTH, -1)
-    val startTime = cal.getTodayStartTime(cal)
-    Log.d("eyo","${DateTimePresenter(context,startTime).fullTimeAndDate}")
-    Log.d("eyo","${DateTimePresenter(context,endTime).fullTimeAndDate}")
+
+    if (lastSyncStartTime == null) {
+        cal.add(Calendar.DAY_OF_WEEK, -6)
+        endTime = cal.getTodayMidnightTime(cal)
+        cal.add(Calendar.WEEK_OF_MONTH, -1)
+        startTime = cal.getTodayStartTime(cal)
+    } else {
+        cal.timeInMillis = lastSyncStartTime
+        cal.add(Calendar.DAY_OF_WEEK, -1)
+        endTime = cal.getTodayMidnightTime(cal)
+        cal.add(Calendar.DAY_OF_WEEK, -6)
+        startTime = cal.getTodayStartTime(cal)
+    }
+
+    Log.d("eyo", "${DateTimePresenter(context, startTime).fullTimeAndDate}")
+    Log.d("eyo", "${DateTimePresenter(context, endTime).fullTimeAndDate}")
 
     val estimatedStepSource = DataSource.Builder()
         .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
@@ -69,10 +111,16 @@ private fun performSync(context: Context) {
     Fitness.getHistoryClient(context, getGoogleAccount(context, PeriodicEntryWorker.fitnessOptions))
         .readData(readRequest)
         .addOnSuccessListener {
+            CoroutineScope(IO).launch {
+                try {
+                    repository.updateLastSyncTime(startTime)
+                } catch (e: Exception) {
+                    Log.d("eyo", "${e.message}")
+                }
+            }
             Log.d("eyo", "${it.buckets.size}")
         }
         .addOnFailureListener {
             Log.d("eyo", "${it.message}")
         }
-
 }
