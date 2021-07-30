@@ -18,7 +18,9 @@ class FoodJournalViewModel (mApp: Application) : AndroidViewModel(mApp) {
     val liveFoodEntries = foodEntryRepository.loadLiveFoodEntries()
 
     val lastItemIds = foodEntryRepository.loadLiveLastItem()
-    val separatorInfo = foodEntryRepository.loadLiveSeparators()
+
+    fun getSeparatorInfo(date: Date) =
+        foodEntryRepository.loadLiveSeparator(date)
 
     fun deleteEntry(foodEntry: FoodEntry) {
         CoroutineScope(Dispatchers.IO).launch {

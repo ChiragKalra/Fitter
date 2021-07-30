@@ -27,8 +27,7 @@ class FoodJournalFragment: Fragment() {
     private fun setupRecyclerView() {
         mAdaptor = FoodJournalRecyclerAdapter(
             requireContext(),
-            viewModel.lastItemIds,
-            viewModel.separatorInfo,
+            viewModel.lastItemIds
         ).apply {
             setOnItemClickListener {
                 ActionDialogPresenter(
@@ -66,7 +65,8 @@ class FoodJournalFragment: Fragment() {
                     } else {
                         DateSeparatedItem(
                             DateSeparatedItem.ItemType.Separator,
-                            separator = beforeDate
+                            separator = beforeDate,
+                            liveDayEntry = viewModel.getSeparatorInfo(beforeDate)
                         )
                     }
                 }
