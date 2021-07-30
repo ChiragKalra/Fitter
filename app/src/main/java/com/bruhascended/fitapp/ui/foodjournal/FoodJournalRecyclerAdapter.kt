@@ -20,6 +20,7 @@ import com.bruhascended.fitapp.databinding.ItemFoodEntryBinding
 import com.bruhascended.fitapp.databinding.ItemFooterBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorFoodentryBinding
 import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEntryItemHolder
+import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.util.*
 import java.util.*
 
