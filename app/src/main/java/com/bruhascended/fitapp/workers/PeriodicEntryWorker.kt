@@ -29,12 +29,6 @@ class PeriodicEntryWorker(
 
     companion object {
         val name = "PeriodicEntry"
-        val fitnessOptions: FitnessOptions = FitnessOptions.builder()
-            .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.TYPE_MOVE_MINUTES, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.TYPE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
-            .build()
     }
 
     override suspend fun doWork(): Result {
@@ -44,7 +38,7 @@ class PeriodicEntryWorker(
             ).containsValue(false)
         ) {
             return Result.failure()
-        } else if (!isOauthPermissionsApproved(context, fitnessOptions)) {
+        } else if (!isOauthPermissionsApproved(context, FitBuilder.fitnessOptions)) {
             return Result.failure()
         }
 
@@ -54,22 +48,27 @@ class PeriodicEntryWorker(
         try {
             UserRepository.userPreferencesFLow.collect { preference ->
                 if (preference.syncEnabled) {
-                    performSync(context, preference.lastSyncStartTime, UserRepository)
+                    performPeriodicSync(
+                        context,
+                        preference.lastPeriodicSyncStartTime,
+                        UserRepository,
+                        activityEntryRepository
+                    )
                 }
             }
-            Log.d("eyo", "Sync is run")
         } catch (e: Exception) {
-            Log.d("eyo", "${e.message}")
+            Log.d("periodic_eyo", "${e.message}")
             return Result.retry()
         }
         return Result.success()
     }
 }
 
-private fun performSync(
+private fun performPeriodicSync(
     context: Context,
     lastSyncStartTime: Long?,
-    repository: UserPreferenceRepository
+    userRepository: UserPreferenceRepository,
+    activityEntryRepository: ActivityEntryRepository
 ) {
     var endTime: Long? = null
     var startTime: Long? = null
@@ -89,14 +88,9 @@ private fun performSync(
     }
 
     Log.d("eyo", "${DateTimePresenter(context, startTime).fullTimeAndDate}")
-    Log.d("eyo", "${DateTimePresenter(context, endTime).fullTimeAndDate}")
+    Log.d("periodic_eyo", "${DateTimePresenter(context, endTime).fullTimeAndDate}")
 
-    val estimatedStepSource = DataSource.Builder()
-        .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
-        .setType(DataSource.TYPE_DERIVED)
-        .setStreamName("estimated_steps")
-        .setAppPackageName("com.google.android.gms")
-        .build()
+    val estimatedStepSource = FitBuilder.estimatedStepSource
 
     val readRequest = DataReadRequest.Builder()
         .bucketByTime(30, TimeUnit.MINUTES)
@@ -108,19 +102,20 @@ private fun performSync(
         .enableServerQueries()
         .build()
 
-    Fitness.getHistoryClient(context, getGoogleAccount(context, PeriodicEntryWorker.fitnessOptions))
+    Fitness.getHistoryClient(context, getGoogleAccount(context, FitBuilder.fitnessOptions))
         .readData(readRequest)
         .addOnSuccessListener {
             CoroutineScope(IO).launch {
                 try {
-                    repository.updateLastSyncTime(startTime)
+                    userRepository.updateLastSyncTime(startTime)
+                    activityEntryRepository.insertPeriodicEntries(dumpPeriodicEntryBuckets(it.buckets))
                 } catch (e: Exception) {
-                    Log.d("eyo", "${e.message}")
+                    Log.d("periodic_eyo", "${e.message}")
                 }
             }
-            Log.d("eyo", "${it.buckets.size}")
+            Log.d("periodic_eyo", "${it.buckets.size}")
         }
         .addOnFailureListener {
-            Log.d("eyo", "${it.message}")
+            Log.d("periodic_eyo", "${it.message}")
         }
 }

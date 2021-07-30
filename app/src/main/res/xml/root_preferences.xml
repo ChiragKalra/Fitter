@@ -4,7 +4,8 @@
 
         <Preference
             app:title="Google Fit"
-            app:summary="signed out"/>
+            app:key="signInStatus"
+            />
 
         <SwitchPreferenceCompat
             app:key="syncEnabled"

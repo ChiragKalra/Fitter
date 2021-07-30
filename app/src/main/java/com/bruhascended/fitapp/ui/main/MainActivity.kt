@@ -37,14 +37,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var fabPresenter: FabPresenter
     private lateinit var viewModel: MainActivityViewModel
-    private val fitnessOptions by lazy {
-        FitnessOptions.builder()
-            .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.TYPE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.TYPE_ACTIVITY_SEGMENT, FitnessOptions.ACCESS_READ)
-            .build()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +75,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkAndroidRuntimePermissions() {
-        val permissionsMap = getAndroidRunTimePermissionGivenMap(this, permissions.values().toList())
+        val permissionsMap =
+            getAndroidRunTimePermissionGivenMap(this, permissions.values().toList())
         val permissionsNeeded = mutableListOf<String>()
         for (key in permissionsMap.keys) {
             if (permissionsMap[key] == false) {
@@ -100,13 +93,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkForOauthPermissions() {
-        if (isOauthPermissionsApproved(this, fitnessOptions)) {
+        if (isOauthPermissionsApproved(this, FitBuilder.fitnessOptions)) {
             performFitActions()
         } else {
             requestOauthPermissionsLauncher.launch(
                 GoogleSignIn.getClient(
                     this, GoogleSignInOptions.Builder()
-                        .addExtension(fitnessOptions)
+                        .addExtension(FitBuilder.fitnessOptions)
                         .build()
                 ).signInIntent
             )
@@ -116,7 +109,7 @@ class MainActivity : AppCompatActivity() {
     private fun setUpResultContracts() {
         requestAndroidPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-                Log.d("eyo","${it}")
+                Log.d("eyo", "${it}")
                 checkIfPermissionGranted(it)
             }
 
@@ -147,8 +140,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun performFitActions() {
         viewModel.apply {
-            syncPassiveData(this@MainActivity, getGoogleAccount(this@MainActivity, fitnessOptions))
-            syncActivities(this@MainActivity, getGoogleAccount(this@MainActivity, fitnessOptions))
+            syncPeriodicData(
+                this@MainActivity,
+                getGoogleAccount(this@MainActivity, FitBuilder.fitnessOptions)
+            )
+            syncActivities(
+                this@MainActivity,
+                getGoogleAccount(this@MainActivity, FitBuilder.fitnessOptions)
+            )
         }
     }
 
@@ -163,9 +162,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.settings_activity -> {
-                val intent = Intent(this,SettingsActivity::class.java)
+                val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
             }
         }

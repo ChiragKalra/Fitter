@@ -9,8 +9,7 @@ import com.bruhascended.db.activity.entities.PeriodicEntry
 import com.bruhascended.db.activity.types.ActivityType
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.ui.addworkout.ActivitiesMap
-import com.bruhascended.fitapp.util.getTodayMidnightTime
-import com.bruhascended.fitapp.util.getTodayStartTime
+import com.bruhascended.fitapp.util.*
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.data.DataSource
@@ -24,29 +23,17 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
-enum class DAYS(val days: Int) {
-    WEEK(7),
-    MONTH(30),
-    YEAR(365)
-}
-
 class MainActivityViewModel(val app: Application) : AndroidViewModel(app) {
     private val repository by ActivityEntryRepository.Delegate(app)
     val cal = Calendar.getInstance(TimeZone.getDefault())
 
     var endTime = cal.timeInMillis
     var startTime = cal.getTodayStartTime(cal)
-    val estimatedStepSource = DataSource.Builder()
-        .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
-        .setType(DataSource.TYPE_DERIVED)
-        .setStreamName("estimated_steps")
-        .setAppPackageName("com.google.android.gms")
-        .build()
+    val estimatedStepSource = FitBuilder.estimatedStepSource
 
-    fun syncPassiveData(context: Context, googleAccount: GoogleSignInAccount) {
-        cal.add(Calendar.DAY_OF_YEAR, -DAYS.WEEK.days)
+    fun syncPeriodicData(context: Context, googleAccount: GoogleSignInAccount) {
+        cal.add(Calendar.DAY_OF_WEEK,-6)
         startTime = cal.timeInMillis
-        val periodicEntriesList = mutableListOf<PeriodicEntry>()
 
         val redRequest = DataReadRequest.Builder()
             .bucketByTime(30, TimeUnit.MINUTES)
@@ -61,48 +48,7 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app) {
         Fitness.getHistoryClient(context, googleAccount)
             .readData(redRequest)
             .addOnSuccessListener {
-                for (bucket in it.buckets) {
-                    var calories: Float = 0f
-                    var steps: Int = 0
-                    var distance: Double = .0
-                    var duration: Long = 0L
-                    for (dataSet in bucket.dataSets) {
-                        when {
-                            dataSet.dataType == DataType.TYPE_MOVE_MINUTES && dataSet.dataPoints.isNotEmpty() -> {
-                                duration =
-                                    (dataSet.dataPoints[0].getValue(Field.FIELD_DURATION)
-                                        .asInt() * 60000).toLong()
-                            }
-
-                            dataSet.dataType == DataType.TYPE_STEP_COUNT_DELTA && dataSet.dataPoints.isNotEmpty() -> {
-                                steps =
-                                    dataSet.dataPoints[0].getValue(Field.FIELD_STEPS)
-                                        .asInt()
-                            }
-                            dataSet.dataType == DataType.TYPE_DISTANCE_DELTA && dataSet.dataPoints.isNotEmpty() -> {
-                                distance =
-                                    dataSet.dataPoints[0].getValue(Field.FIELD_DISTANCE)
-                                        .asFloat()
-                                        .toDouble() / 1000
-                            }
-                            dataSet.dataType == DataType.TYPE_CALORIES_EXPENDED && dataSet.dataPoints.isNotEmpty() -> {
-                                calories =
-                                    dataSet.dataPoints[0].getValue(Field.FIELD_CALORIES)
-                                        .asFloat()
-
-                            }
-                        }
-                    }
-                    val entry = PeriodicEntry(
-                        bucket.getStartTime(TimeUnit.MILLISECONDS),
-                        calories,
-                        duration,
-                        distance,
-                        steps
-                    )
-                    periodicEntriesList.add(entry)
-                }
-                insertPeriodicEntriesToDb(periodicEntriesList)
+                CoroutineScope(IO).launch { insertPeriodicEntriesToDb(dumpPeriodicEntryBuckets(it.buckets)) }
             }
             .addOnFailureListener {
                 Log.d("eyo", it.message.toString())
@@ -114,12 +60,8 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app) {
         endTime = cal.timeInMillis
         startTime = cal.getTodayStartTime(cal)
 
-        val entriesList = mutableListOf<ActivityEntry>()
-        val numOfDays = DAYS.MONTH.days
-        var tempNumOfDays = 0
-
         CoroutineScope(IO).launch {
-            for (day in 1..numOfDays) {
+            for (day in 1..7) {
 
                 val readRequest = DataReadRequest.Builder()
                     .bucketByActivitySegment(5, TimeUnit.MINUTES)
@@ -134,59 +76,15 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app) {
                 Fitness.getHistoryClient(context, googleAccount)
                     .readData(readRequest)
                     .addOnSuccessListener {
-                        tempNumOfDays += 1
-                        for (bucket in it.buckets) {
-                            var calories: Int? = null
-                            var steps: Int? = null
-                            var distance: Double? = null
-                            for (dataSet in bucket.dataSets) {
-                                when {
-                                    dataSet.dataType == DataType.TYPE_STEP_COUNT_DELTA && dataSet.dataPoints.isNotEmpty() -> {
-                                        steps =
-                                            dataSet.dataPoints[0].getValue(Field.FIELD_STEPS)
-                                                .asInt()
-                                    }
-                                    dataSet.dataType == DataType.TYPE_DISTANCE_DELTA && dataSet.dataPoints.isNotEmpty() -> {
-                                        distance =
-                                            dataSet.dataPoints[0].getValue(Field.FIELD_DISTANCE)
-                                                .asFloat()
-                                                .toDouble() / 1000
-                                    }
-                                    dataSet.dataType == DataType.TYPE_CALORIES_EXPENDED && dataSet.dataPoints.isNotEmpty() -> {
-                                        calories =
-                                            dataSet.dataPoints[0].getValue(Field.FIELD_CALORIES)
-                                                .asFloat()
-                                                .roundToInt()
-                                    }
-                                }
-                            }
-                            val entry = calories?.let { it1 ->
-                                ActivitiesMap.getActivityType(bucket.activity)?.let { it2 ->
-                                    ActivityEntry(
-                                        it2,
-                                        it1,
-                                        bucket.getStartTime(TimeUnit.MILLISECONDS),
-                                        bucket.getEndTime(TimeUnit.MILLISECONDS) - bucket.getStartTime(
-                                            TimeUnit.MILLISECONDS
-                                        ),
-                                        distance,
-                                        steps
-                                    )
-                                }
-                            }
-                            if (entry != null) {
-                                entriesList.add(entry)
-                            }
-                        }
-                        if (tempNumOfDays == numOfDays)
-                            insertEntriesToDb(entriesList)
+                        insertEntriesToDb(dumpActivityEntryBuckets(it.buckets))
                     }
                     .addOnFailureListener {
                         Log.d("eyo", "${it.message}")
                     }
-                cal.add(Calendar.DAY_OF_WEEK, -1)
-                endTime = cal.getTodayMidnightTime(cal)
+
+                cal.add(Calendar.DAY_OF_WEEK,-1)
                 startTime = cal.getTodayStartTime(cal)
+                endTime = cal.getTodayMidnightTime(cal)
             }
         }
     }
