@@ -36,6 +36,8 @@ android {
 dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
+    api "androidx.datastore:datastore-preferences:1.0.0-rc02"
+
     api "androidx.paging:paging-runtime-ktx:3.0.0"
     api 'androidx.room:room-runtime:2.4.0-alpha02'
     api "androidx.room:room-ktx:2.4.0-alpha02"

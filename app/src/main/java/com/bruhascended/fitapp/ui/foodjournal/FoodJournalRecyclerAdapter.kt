@@ -18,8 +18,13 @@ import com.bruhascended.fitapp.databinding.ItemFoodEntryBinding
 import com.bruhascended.fitapp.databinding.ItemFooterBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorFoodentryBinding
 import com.bruhascended.fitapp.repository.FoodEntryRepository
+import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.foodjournal.FoodJournalRecyclerAdapter.FoodEntryItemHolder
 import com.bruhascended.fitapp.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.Date
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
@@ -48,6 +53,8 @@ class FoodJournalRecyclerAdapter (
     }
 
     private var mOnItemClickListener: ((foodEntry: FoodEntry) -> Unit)? = null
+
+    private val preferencesRepo = PreferencesRepository(mContext)
 
     fun setOnItemClickListener (listener: ((foodEntry: FoodEntry) -> Unit)?) {
         mOnItemClickListener = listener
@@ -102,30 +109,40 @@ class FoodJournalRecyclerAdapter (
                 calorie_count,
                 separatorInfo.totalCalories.toString()
             )
-            // TODO: Set Using User Preference
-            progressbarCalories.apply {
-                progress = 0f
-                progressMax = 1800f
-                setProgressWithAnimation(separatorInfo.totalCalories.toFloat())
-            }
 
-            separatorInfo.totalNutrients.forEach { (type, value) ->
-                if (type == null) return@forEach
-                when (type) {
-                    NutrientType.Protein -> textviewProteinGram
-                    NutrientType.Carbs -> textviewCarbsGram
-                    NutrientType.Fat -> textviewFatGram
-                }.text = QuantityType.Gram.toString(mContext, value)
+            CoroutineScope(Dispatchers.Main).launch {
+                preferencesRepo.nutritionGoalsFlow.collectLatest { nutritionGoals ->
+                    progressbarCalories.apply {
+                        progress = 0f
+                        progressMax = nutritionGoals.calories.toFloat()
+                        setProgressWithAnimation(separatorInfo.totalCalories.toFloat())
+                    }
 
-                when (type) {
-                    NutrientType.Protein -> progressbarProtein
-                    NutrientType.Carbs -> progressbarCarbs
-                    NutrientType.Fat -> progressbarFat
-                }.apply {
-                    // TODO: Set Using User Preference
-                    progressMax = 100f
-                    progress = 0f
-                    setProgressWithAnimation(value.toFloat(), AnimationDuration.VERY_LONG.ms)
+                    separatorInfo.totalNutrients.forEach { (type, value) ->
+                        if (type == null) return@forEach
+                        when (type) {
+                            NutrientType.Protein -> textviewProteinGram
+                            NutrientType.Carbs -> textviewCarbsGram
+                            NutrientType.Fat -> textviewFatGram
+                        }.text = QuantityType.Gram.toString(mContext, value)
+
+                        when (type) {
+                            NutrientType.Protein -> progressbarProtein
+                            NutrientType.Carbs -> progressbarCarbs
+                            NutrientType.Fat -> progressbarFat
+                        }.apply {
+                            progressMax =  when (type) {
+                                NutrientType.Protein -> nutritionGoals.proteins.toFloat()
+                                NutrientType.Carbs -> nutritionGoals.carbs.toFloat()
+                                NutrientType.Fat -> nutritionGoals.carbs.toFloat()
+                            }
+                            progress = 0f
+                            setProgressWithAnimation(
+                                value.toFloat(),
+                                AnimationDuration.VERY_LONG.ms
+                            )
+                        }
+                    }
                 }
             }
         }
