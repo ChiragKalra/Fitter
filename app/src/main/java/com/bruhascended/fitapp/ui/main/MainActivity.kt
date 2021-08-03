@@ -3,6 +3,7 @@ package com.bruhascended.fitapp.ui.main
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,10 @@ import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
 import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.settings.SettingsActivity
+import com.bruhascended.fitapp.util.enqueueImmediateJob
+import com.bruhascended.fitapp.util.getCurrentAccount
+import com.bruhascended.fitapp.workers.ActivityEntryWorker
+import com.bruhascended.fitapp.workers.PeriodicEntryWorker
 
 val runningQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
@@ -54,6 +59,19 @@ class MainActivity : AppCompatActivity() {
         // setup FloatingActionButtons
         fabPresenter = FabPresenter(this, binding)
         fabPresenter.setupFABs()
+
+        immediateSync()
+    }
+
+    private fun immediateSync() {
+        repo = PreferencesRepository(this)
+        val syncEnabled =
+            repo.getPreference(PreferencesRepository.PreferencesKeys.SYNC_ENABLED).toString()
+                .toBooleanStrictOrNull() ?: false
+        if (getCurrentAccount(this) != null && syncEnabled) {
+            enqueueImmediateJob(this, PeriodicEntryWorker.WORK_NAME)
+            enqueueImmediateJob(this, ActivityEntryWorker.WORK_NAME)
+        }
     }
 
     override fun onBackPressed() {
