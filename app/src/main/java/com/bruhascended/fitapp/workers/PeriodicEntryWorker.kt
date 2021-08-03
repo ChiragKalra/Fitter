@@ -23,6 +23,7 @@ class PeriodicEntryWorker(private val context: Context, params: WorkerParameters
     }
 
     override suspend fun doWork(): Result {
+        val repo = PreferencesRepository(context)
         if (getAndroidRunTimePermissionGivenMap(
                 context,
                 permissions.values().toList()
@@ -34,21 +35,23 @@ class PeriodicEntryWorker(private val context: Context, params: WorkerParameters
         }
 
         try {
-            performPeriodicSync(context)
+            performPeriodicSync(context, repo)
         } catch (e: Exception) {
             Log.d("periodic_eyo", "${e.message}")
             return Result.retry()
         }
-
-        enqueueRepeatedJob(context, WORK_NAME)
+        if (repo.getPreference(PreferencesRepository.PreferencesKeys.SYNC_ENABLED).toString()
+                .toBooleanStrictOrNull() == true
+        )
+            enqueueRepeatedJob(context, WORK_NAME)
         return Result.success()
     }
 }
 
 fun performPeriodicSync(
-    context: Context
+    context: Context,
+    repo: PreferencesRepository
 ) {
-    val repo = PreferencesRepository(context)
     val activityEntryRepository: ActivityEntryRepository by ActivityEntryRepository.Delegate(context)
 
     val lastSyncStartTime =

@@ -23,6 +23,7 @@ class ActivityEntryWorker(val context: Context, params: WorkerParameters) :
     }
 
     override suspend fun doWork(): Result {
+        val repo = PreferencesRepository(context)
         if (getAndroidRunTimePermissionGivenMap(
                 context,
                 permissions.values().toList()
@@ -36,19 +37,20 @@ class ActivityEntryWorker(val context: Context, params: WorkerParameters) :
         }
 
         try {
-            performActivitySync(context)
+            performActivitySync(context, repo)
         } catch (e: Exception) {
             Log.d("activity_eyo", "${e.message}")
             return Result.retry()
         }
-        enqueueRepeatedJob(context, WORK_NAME)
+        if (repo.getPreference(PreferencesRepository.PreferencesKeys.SYNC_ENABLED).toString()
+                .toBooleanStrictOrNull() == true
+        )
+            enqueueRepeatedJob(context, WORK_NAME)
         return Result.success()
     }
 }
 
-fun performActivitySync(context: Context) {
-
-    val repo = PreferencesRepository(context)
+fun performActivitySync(context: Context, repo: PreferencesRepository) {
     val activityEntryRepository by ActivityEntryRepository.Delegate(context)
 
     val lastSyncStartTime =
