@@ -16,23 +16,23 @@ enum class WeeklyCardType (
     // DailyNutritionGoals,
     WeeklyCaloriesConsumed(
         R.string.calories_consumed,
-        R.color.blue_700,
-        R.color.blue_500
+        R.color.blue_500,
+        R.color.blue_200
     ),
     WeeklyProteinsConsumed(
         R.string.protein,
-        R.color.purple_700,
-        R.color.purple_500
+        R.color.purple_500,
+        R.color.purple_200
     ),
     WeeklyCarbsConsumed(
         R.string.carbs,
-        R.color.green_700,
-        R.color.green_500
+        R.color.green_500,
+        R.color.green_200
     ),
     WeeklyFatsConsumed(
         R.string.fat,
-        R.color.red_700,
-        R.color.red_500
+        R.color.red_500,
+        R.color.red_200
     ),
     //WeeklyNutrientConsumed,
     // WeeklyCaloriesBurnt,

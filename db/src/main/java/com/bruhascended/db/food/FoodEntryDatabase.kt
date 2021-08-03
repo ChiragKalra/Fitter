@@ -67,7 +67,7 @@ abstract class FoodEntryDatabase : RoomDatabase() {
 
     fun getLiveWeekly(date: Date): LiveData<List<DayEntry>> {
         return dayEntryManager().getTimeRangeLive(
-            date.time - 6 * 24 * 60 * 60 * 1000L,
+            date.time - 7 * 24 * 60 * 60 * 1000L,
             date.time + 1 * 24 * 60 * 60 * 1000L,
         )
     }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemCardDashboardBinding
+import com.bruhascended.fitapp.util.AnimationDuration
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -72,7 +73,7 @@ class WeeklyPlotPresenter (
         val xAxis = chart.xAxis
         xAxis.position = XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(true)
-        xAxis.gridColor = Color.argb(55, 0,0,0)
+        xAxis.gridColor = Color.argb(32, 0,0,0)
         xAxis.mAxisRange = 6f
         xAxis.textSize = 12f
 
@@ -82,7 +83,7 @@ class WeeklyPlotPresenter (
         xAxis.setAvoidFirstLastClipping(true)
 
         // animate calls invalidate()
-        chart.animateX(700)
+        chart.animateX(AnimationDuration.VERY_LONG.ms.toInt())
     }
 
     private fun getData(entries: FloatArray): LineData {
@@ -95,9 +96,9 @@ class WeeklyPlotPresenter (
         val set1 = LineDataSet(values, "DataSet 1")
         // set1.setFillAlpha(110);
         // set1.setFillColor(Color.RED);
-        set1.lineWidth = 1.75f
-        set1.circleRadius = 5f
-        set1.circleHoleRadius = 2.5f
+        set1.lineWidth = 1f
+        set1.circleRadius = 7.5f
+        set1.circleHoleRadius = 5f
         set1.color = mContext.getColor(plotType.plotColor)
         set1.setCircleColor(mContext.getColor(plotType.titleColor))
         set1.highLightColor = Color.TRANSPARENT // cross-hair color
@@ -106,8 +107,9 @@ class WeeklyPlotPresenter (
 
 
         values = ArrayList()
+        val minValue = entries.minOrNull() ?: 0f
         for (i in entries.size..6) {
-            values.add(Entry(i.toFloat(), 0f))
+            values.add(Entry(i.toFloat(), minValue))
         }
 
         // create a dataset and give it a type
@@ -126,7 +128,8 @@ class WeeklyPlotPresenter (
         return LineData(set1, set2)
     }
 
-    fun generateChart(values: FloatArray) {
+    fun generateCard(values: FloatArray?) {
+        values ?: return
         setupChart(binding.lineChart, getData(values), mContext.getColor(R.color.white_900))
     }
 }

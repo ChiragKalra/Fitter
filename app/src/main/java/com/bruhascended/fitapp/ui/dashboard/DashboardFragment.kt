@@ -29,6 +29,12 @@ class DashboardFragment : Fragment() {
     private lateinit var cardGens: List<WeeklyPlotPresenter>
 
     private fun addCards() {
+        // declare card generators
+        val nutritionCardGen = NutritionCardPresenter(
+            requireContext(),
+            layoutInflater
+        )
+
         cardGens = WeeklyCardType.values().map {
             WeeklyPlotPresenter(
                 requireContext(),
@@ -37,12 +43,16 @@ class DashboardFragment : Fragment() {
             )
         }
 
+        // add cards to root
+        binding.contentLayout.addView(nutritionCardGen.view)
+
         for (cardGen in cardGens) {
             binding.contentLayout.addView(cardGen.view)
         }
 
-        for (cardGen in cardGens) {
-            viewModel.getLastWeekDayEntries().observeForever {
+        // fill cards with data
+        viewModel.getLastWeekDayEntries().observeForever {
+            for (cardGen in cardGens) {
                 val pro = arrayListOf<DayEntry>()
                 val weekBefore = Calendar.getInstance().apply {
                     set(Calendar.MILLISECOND, 0)
@@ -51,9 +61,7 @@ class DashboardFragment : Fragment() {
                     set(Calendar.HOUR_OF_DAY, 0)
                     add(Calendar.DAY_OF_YEAR, -7)
                 }
-                val weekDayInt = weekBefore.get(Calendar.DAY_OF_WEEK)-1
-                weekBefore.add(Calendar.DAY_OF_YEAR, 6-weekDayInt)
-                for (i in 0..weekDayInt) {
+                for (i in 0..6) {
                     val day = weekBefore.apply {
                         add(Calendar.DAY_OF_YEAR, 1)
                     }.timeInMillis
@@ -62,7 +70,7 @@ class DashboardFragment : Fragment() {
                     } ?: DayEntry(day)
                     pro.add(got)
                 }
-                cardGen.generateChart(
+                cardGen.generateCard(
                     pro.map { entry ->
                         when (cardGen.plotType) {
                             WeeklyCardType.WeeklyCaloriesConsumed ->
@@ -77,6 +85,10 @@ class DashboardFragment : Fragment() {
                     }.toFloatArray()
                 )
             }
+        }
+
+        viewModel.getTodayLiveNutrition().observeForever {
+            nutritionCardGen.generateCard(it ?: return@observeForever)
         }
     }
 

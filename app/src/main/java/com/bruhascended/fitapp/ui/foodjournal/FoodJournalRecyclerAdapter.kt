@@ -107,7 +107,10 @@ class FoodJournalRecyclerAdapter (
             progressbarCalories.apply {
                 progress = 0f
                 progressMax = 1800f
-                setProgressWithAnimation(separatorInfo.calories.toFloat())
+                setProgressWithAnimation(
+                    separatorInfo.calories.toFloat(),
+                    AnimationDuration.VERY_LONG.ms
+                )
             }
 
             separatorInfo.nutrientInfo.forEach { (type, value) ->
