@@ -12,7 +12,7 @@
             <solid
                 android:color="?headerBackgroundColor"/>
             <corners
-                android:radius="24dp"/>
+                android:radius="16dp"/>
         </shape>
     </item>
 </ripple>

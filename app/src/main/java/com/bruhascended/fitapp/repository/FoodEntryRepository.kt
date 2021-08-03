@@ -62,6 +62,16 @@ class FoodEntryRepository(
         }.flow
     }
 
+    fun loadLastWeek(): LiveData<List<DayEntry>> {
+        val date = Calendar.getInstance().apply {
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR, 0)
+        }.time
+        return db.getLiveWeekly(date)
+    }
+
     fun loadCount(n: Int): LiveData<List<Food>> = db.foodManager().topNLive(n)
 
     fun loadLiveFoodEntries(): LiveData<List<FoodEntry>> = db.loadFoodEntry().allLive()

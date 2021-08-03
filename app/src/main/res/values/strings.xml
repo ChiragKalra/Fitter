@@ -139,5 +139,7 @@
     <string name="quantity_type_hint">Quantity Type</string>
     <string name="default_quantity">1.0</string>
     <string name="quantity_hint">Quantity</string>
+    <string name="calories_consumed">Calories Consumed</string>
+    <string name="more">More</string>
 </resources>
 
