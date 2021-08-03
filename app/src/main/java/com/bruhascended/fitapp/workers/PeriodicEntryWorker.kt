@@ -1,34 +1,25 @@
 package com.bruhascended.fitapp.workers
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
-import com.bruhascended.fitapp.repository.UserPreferenceRepository
-import com.bruhascended.fitapp.ui.main.permissions
+import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.util.*
 import com.google.android.gms.fitness.Fitness
-import com.google.android.gms.fitness.FitnessOptions
-import com.google.android.gms.fitness.data.DataSource
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.request.DataReadRequest
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import com.google.android.gms.tasks.Tasks
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class PeriodicEntryWorker(
-    val context: Context,
-    params: WorkerParameters
-) :
+class PeriodicEntryWorker(private val context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params) {
 
     companion object {
-        val name = "PeriodicEntry"
+        const val WORK_NAME = "PERIODIC_WORK"
     }
 
     override suspend fun doWork(): Result {
@@ -37,58 +28,60 @@ class PeriodicEntryWorker(
                 permissions.values().toList()
             ).containsValue(false)
         ) {
-            return Result.failure()
+            cancelWork(context, WORK_NAME)
         } else if (!isOauthPermissionsApproved(context, FitBuilder.fitnessOptions)) {
-            return Result.failure()
+            cancelWork(context, WORK_NAME)
         }
 
-        val UserRepository = UserPreferenceRepository(context)
-        val activityEntryRepository by ActivityEntryRepository.Delegate(Application())
-
         try {
-            UserRepository.userPreferencesFLow.collect { preference ->
-                if (preference.syncEnabled) {
-                    performPeriodicSync(
-                        context,
-                        preference.lastPeriodicSyncStartTime,
-                        UserRepository,
-                        activityEntryRepository
-                    )
-                }
-            }
+            performPeriodicSync(context)
         } catch (e: Exception) {
             Log.d("periodic_eyo", "${e.message}")
             return Result.retry()
         }
+
+        enqueueRepeatedJob(context, WORK_NAME)
         return Result.success()
     }
 }
 
-private fun performPeriodicSync(
-    context: Context,
-    lastSyncStartTime: Long?,
-    userRepository: UserPreferenceRepository,
-    activityEntryRepository: ActivityEntryRepository
+fun performPeriodicSync(
+    context: Context
 ) {
+    val repo = PreferencesRepository(context)
+    val activityEntryRepository: ActivityEntryRepository by ActivityEntryRepository.Delegate(context)
+
+    val lastSyncStartTime =
+        repo.getPreference(PreferencesRepository.PreferencesKeys.LAST_PERIODIC_SYNC_TIME) as Long?
+
+    val isWorkImmediate = isWorkImmediate(context, PeriodicEntryWorker.WORK_NAME)
+    if (lastSyncStartTime != null && !isWorkImmediate) {
+        if (!isWorkRequired(lastSyncStartTime, PeriodicEntryWorker.WORK_NAME))
+            cancelWork(context, PeriodicEntryWorker.WORK_NAME)
+    }
+
     var endTime: Long? = null
     var startTime: Long? = null
     val cal = Calendar.getInstance(TimeZone.getDefault())
 
-    if (lastSyncStartTime == null) {
+    if (isWorkImmediate) {
+        endTime = cal.timeInMillis
         cal.add(Calendar.DAY_OF_WEEK, -6)
-        endTime = cal.getTodayMidnightTime(cal)
-        cal.add(Calendar.WEEK_OF_MONTH, -1)
         startTime = cal.getTodayStartTime(cal)
     } else {
-        cal.timeInMillis = lastSyncStartTime
-        cal.add(Calendar.DAY_OF_WEEK, -1)
-        endTime = cal.getTodayMidnightTime(cal)
-        cal.add(Calendar.DAY_OF_WEEK, -6)
-        startTime = cal.getTodayStartTime(cal)
+        if (lastSyncStartTime == null) {
+            cal.add(Calendar.DAY_OF_WEEK, -7)
+            endTime = cal.getTodayMidnightTime(cal)
+            cal.add(Calendar.DAY_OF_WEEK, -6)
+            startTime = cal.getTodayStartTime(cal)
+        } else {
+            cal.timeInMillis = lastSyncStartTime
+            cal.add(Calendar.DAY_OF_WEEK, -1)
+            endTime = cal.getTodayMidnightTime(cal)
+            cal.add(Calendar.DAY_OF_WEEK, -6)
+            startTime = cal.getTodayStartTime(cal)
+        }
     }
-
-    Log.d("eyo", "${DateTimePresenter(context, startTime).fullTimeAndDate}")
-    Log.d("periodic_eyo", "${DateTimePresenter(context, endTime).fullTimeAndDate}")
 
     val estimatedStepSource = FitBuilder.estimatedStepSource
 
@@ -102,20 +95,31 @@ private fun performPeriodicSync(
         .enableServerQueries()
         .build()
 
-    Fitness.getHistoryClient(context, getGoogleAccount(context, FitBuilder.fitnessOptions))
-        .readData(readRequest)
-        .addOnSuccessListener {
-            CoroutineScope(IO).launch {
-                try {
-                    userRepository.updateLastSyncTime(startTime)
-                    activityEntryRepository.insertPeriodicEntries(dumpPeriodicEntryBuckets(it.buckets))
-                } catch (e: Exception) {
-                    Log.d("periodic_eyo", "${e.message}")
+    val client =
+        Fitness.getHistoryClient(context, getGoogleAccount(context, FitBuilder.fitnessOptions))
+    val task = client.readData(readRequest)
+    val result = Tasks.await(task.addOnFailureListener {
+        Log.d("periodic_eyo", "${it.message}")
+    })
+
+    try {
+        if (result.status.isSuccess) {
+            runBlocking {
+                val entries = dumpPeriodicEntryBuckets(result.buckets)
+                insertPeriodicEntriesToDb(entries, activityEntryRepository)
+                if (!isWorkImmediate) {
+                    repo.updatePreference(
+                        PreferencesRepository.PreferencesKeys.LAST_PERIODIC_SYNC_TIME,
+                        startTime
+                    )
                 }
             }
-            Log.d("periodic_eyo", "${it.buckets.size}")
+            Log.d("periodic_eyo", "${result.buckets.size}")
         }
-        .addOnFailureListener {
-            Log.d("periodic_eyo", "${it.message}")
-        }
+    } catch (e: Exception) {
+        Log.d("periodic_eyo", "${e.message}")
+    }
 }
+
+
+

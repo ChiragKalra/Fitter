@@ -1,0 +1,17 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="Service">
+
+        <Preference
+            app:key="SIGNED_IN"
+            app:title="Google fit"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:key="SYNC_ENABLED"
+            app:summaryOff="Sync off"
+            app:summaryOn="Sync on"
+            app:title="Sync fit data periodically" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

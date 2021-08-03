@@ -1,34 +1,20 @@
 package com.bruhascended.fitapp.ui.main
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
-import com.bruhascended.fitapp.ui.SettingsActivity
-import com.bruhascended.fitapp.util.*
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.fitness.FitnessOptions
-import com.google.android.gms.fitness.data.DataType
-
-enum class permissions(val str: String) {
-    FOREGROUND_LOCATION(android.Manifest.permission.ACCESS_FINE_LOCATION),
-    BACKGROUND_LOCATION(android.Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-    ACTIVITY_RECOGNITION(android.Manifest.permission.ACTIVITY_RECOGNITION)
-}
+import com.bruhascended.fitapp.repository.PreferencesRepository
+import com.bruhascended.fitapp.ui.settings.SettingsActivity
 
 val runningQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
@@ -36,14 +22,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var fabPresenter: FabPresenter
-    private lateinit var viewModel: MainActivityViewModel
+    private lateinit var repo: PreferencesRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setSupportActionBar(binding.toolbar)
 
-        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
         // initialise navController
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragment) as NavHostFragment
@@ -69,86 +54,6 @@ class MainActivity : AppCompatActivity() {
         // setup FloatingActionButtons
         fabPresenter = FabPresenter(this, binding)
         fabPresenter.setupFABs()
-
-        setUpResultContracts()
-        checkAndroidRuntimePermissions()
-    }
-
-    private fun checkAndroidRuntimePermissions() {
-        val permissionsMap =
-            getAndroidRunTimePermissionGivenMap(this, permissions.values().toList())
-        val permissionsNeeded = mutableListOf<String>()
-        for (key in permissionsMap.keys) {
-            if (permissionsMap[key] == false) {
-                permissionsNeeded.add(key)
-            }
-        }
-        if (permissionsNeeded.size == 0) {
-            checkForOauthPermissions()
-        } else {
-            requestAndroidPermissionLauncher.launch(
-                permissionsNeeded.toTypedArray()
-            )
-        }
-    }
-
-    private fun checkForOauthPermissions() {
-        if (isOauthPermissionsApproved(this, FitBuilder.fitnessOptions)) {
-            performFitActions()
-        } else {
-            requestOauthPermissionsLauncher.launch(
-                GoogleSignIn.getClient(
-                    this, GoogleSignInOptions.Builder()
-                        .addExtension(FitBuilder.fitnessOptions)
-                        .build()
-                ).signInIntent
-            )
-        }
-    }
-
-    private fun setUpResultContracts() {
-        requestAndroidPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-                Log.d("eyo", "${it}")
-                checkIfPermissionGranted(it)
-            }
-
-        requestOauthPermissionsLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-            {
-                if (it.resultCode == Activity.RESULT_OK) {
-                    performFitActions()
-                } else {
-                    // TODO here user's google fit authorisation/signIn has failed
-                }
-            }
-    }
-
-    private fun checkIfPermissionGranted(map: MutableMap<String, Boolean>) {
-        var allApproved = true
-        for (key in map.keys) {
-            if (map[key] == false) {
-                allApproved = false
-                break
-                // TODO here core runtime permission(key) is denied
-            }
-        }
-        if (allApproved) {
-            checkForOauthPermissions()
-        }
-    }
-
-    private fun performFitActions() {
-        viewModel.apply {
-            syncPeriodicData(
-                this@MainActivity,
-                getGoogleAccount(this@MainActivity, FitBuilder.fitnessOptions)
-            )
-            syncActivities(
-                this@MainActivity,
-                getGoogleAccount(this@MainActivity, FitBuilder.fitnessOptions)
-            )
-        }
     }
 
     override fun onBackPressed() {

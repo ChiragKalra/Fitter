@@ -1,6 +1,7 @@
 package com.bruhascended.fitapp.repository
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -13,13 +14,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import java.time.Period
 import java.util.*
 import kotlin.collections.HashSet
 import kotlin.reflect.KProperty
 
 class ActivityEntryRepository(
-    mApp: Application
+    context: Context
 ) {
 
     companion object {
@@ -27,17 +27,17 @@ class ActivityEntryRepository(
     }
 
     class Delegate(
-        private val app: Application
+        private val context: Context
     ) {
         operator fun getValue(thisRef: Any?, property: KProperty<*>): ActivityEntryRepository {
             if (repository == null) {
-                repository = ActivityEntryRepository(app)
+                repository = ActivityEntryRepository(context)
             }
             return repository!!
         }
     }
 
-    private val db: ActivityEntryDatabase = ActivityEntryDatabaseFactory(mApp).build()
+    private val db: ActivityEntryDatabase = ActivityEntryDatabaseFactory(context).build()
 
     // periodic entry fun's
     fun insertPeriodicEntries(periodicEntries: List<PeriodicEntry>) =
