@@ -30,7 +30,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       -  name: checkout 
-         uses: actions/checkout@v2.16
+         uses: actions/checkout@v2
          
      
       -  run: echo -e "EDAMAM_API_ID=$EDAMAM_API_ID" >> local.properties
@@ -38,7 +38,7 @@ jobs:
       -  run: cat local.properties
 
       -  name: Android Emulator Runner
-         uses: ReactiveCircus/android-emulator-runner@v2
+         uses: ReactiveCircus/android-emulator-runner@v2.16
          with:
             api-level: 29
             script: ./gradlew connectedCheck
