@@ -14,10 +14,18 @@ interface DayEntryDao {
     fun delete (dayEntry: DayEntry)
 
     @Query("SELECT * FROM dayEntry WHERE day LIKE :day")
-    fun findByDay (day: Long):DayEntry?
+    fun findByDay (day: Long): DayEntry?
 
     @Query("SELECT * FROM dayEntry WHERE day LIKE :day")
     fun getLive (day: Long): LiveData<DayEntry?>
+
+
+    @Query("""
+        SELECT * 
+        FROM dayEntry
+        WHERE day >= :startDay AND day < :endDay
+    """)
+    fun getTimeRangeLive (startDay: Long, endDay: Long): LiveData<List<DayEntry>>
 
     @Query("SELECT * FROM dayEntry ORDER BY day DESC")
     fun loadAllPaged(): PagingSource<Int,DayEntry>

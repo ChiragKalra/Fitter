@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.bruhascended.db.food.daos.*
 import com.bruhascended.db.food.entities.*
+import java.util.Date
 
 
 @Database(
@@ -63,4 +64,12 @@ abstract class FoodEntryDatabase : RoomDatabase() {
     fun deleteEntry (food: Food, entry: Entry) {
         deleteEntry(FoodEntry(entry, food))
     }
+
+    fun getLiveWeekly(date: Date): LiveData<List<DayEntry>> {
+        return dayEntryManager().getTimeRangeLive(
+            date.time - 7 * 24 * 60 * 60 * 1000L,
+            date.time + 1 * 24 * 60 * 60 * 1000L,
+        )
+    }
+
 }
