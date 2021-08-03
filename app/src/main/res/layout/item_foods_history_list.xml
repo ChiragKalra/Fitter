@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:backgroundTint="?headerBackgroundColor"
     android:background="@drawable/bg_item"
+    android:foreground="?android:attr/selectableItemBackground"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="12dp">

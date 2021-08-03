@@ -96,9 +96,9 @@ class DateTimePresenter (
             DateUtils.isToday(mTimeInMillis) -> timeString
             DateUtils.isToday(mTimeInMillis + DateUtils.DAY_IN_MILLIS) -> "$timeString,\n$yesterdayStr"
             now[Calendar.YEAR] == smsTime[Calendar.YEAR] ->
-                timeString + ",\n" + DateFormat.format("d MMMM", smsTime).toString()
+                timeString + ", " + DateFormat.format("d MMMM", smsTime).toString()
             else ->
-                timeString + ",\n" + DateFormat.format("dd/MM/yyyy", smsTime).toString()
+                timeString + ", " + DateFormat.format("dd/MM/yyyy", smsTime).toString()
         }
     }
 }

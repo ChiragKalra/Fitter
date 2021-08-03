@@ -20,6 +20,8 @@ import com.bruhascended.db.food.types.MealType
 import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityFoodDetailsBinding
+import com.bruhascended.fitapp.ui.addFood.adapters.CustomArrayAdapter
+import com.bruhascended.fitapp.ui.addFood.entities.MultiViewType
 import com.bruhascended.fitapp.ui.foodjournal.ActionDialogPresenter
 import com.bruhascended.fitapp.util.*
 import java.util.*

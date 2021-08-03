@@ -114,6 +114,9 @@
     <string name="today">Today</string>
     <string name="default_online_quantity">100</string>
     <string name="default_online_type">Gram(g)</string>
+    <string name="move_min">min</string>
+    <string name="km">km</string>
+    <string name="steps">steps</string>
     <string name="back">back</string>
     <string name="continue_text">continue</string>
     <string name="expand">expand</string>
@@ -124,6 +127,7 @@
     <!-- Long Descriptions -->
     <string name="food_search">Food Search</string>
     <string name="food_details">Food Details</string>
+    <string name="choose_activity">Choose Activity</string>
     <string name="custom_food">Add Custom Food</string>
     <string name="no_food_item_detected">No Food Item Detected</string>
     <string name="add_new_food_entry">Add New Food Entry</string>
@@ -132,6 +136,7 @@
     <string name="capture_a_food_item">Capture a Food Item</string>
     <string name="close_floating_action_buttons">Close Floating Action Buttons</string>
     <string name="toggle_flashlight_button">Toggle flashlight button</string>
+    <string name="activity_icon">Activity Icon</string>
     <string name="alert_dialog_text">You haven\'t filled all the nutritional details</string>
     <string name="fill_details_dialog_text">Please fill all the details</string>
     <string name="energy_unit">kcal</string>
@@ -139,6 +144,32 @@
     <string name="quantity_type_hint">Quantity Type</string>
     <string name="default_quantity">1.0</string>
     <string name="quantity_hint">Quantity</string>
+
+    <!-- Join -->
+    <string name="to_join">%1$s - %2$s</string>
+    <string name="actvity">Actvity</string>
+    <string name="calories">Calories</string>
+    <string name="distance">distance</string>
+    <string name="submit">submit</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_settings">settings</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync fit data periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="service">Service</string>
     <string name="calories_consumed">Calories Consumed</string>
     <string name="more">More</string>
 </resources>

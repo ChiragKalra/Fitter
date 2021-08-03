@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.ui.addFood
+package com.bruhascended.fitapp.ui.addFood.adapters
 
 
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import com.bruhascended.db.food.entities.Food
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemFoodsHistoryListBinding
 import com.bruhascended.fitapp.databinding.ItemFoodsListBinding
-import com.bruhascended.fitapp.util.MultiViewType
+import com.bruhascended.fitapp.ui.addFood.entities.MultiViewType
 import com.bumptech.glide.Glide
 
 class FoodSearchAdapter(
@@ -43,11 +43,31 @@ class FoodSearchAdapter(
         init {
             itemView.setOnClickListener { itemClicked(getItem(absoluteAdapterPosition)) }
         }
+
+        val binding = ItemFoodsListBinding.bind(itemView)
+
+        fun bindItem(item: Hint) {
+            binding.apply {
+                foodName.text = item.food.label
+                brandName.text = item.food.brand
+                Glide
+                    .with(imageView.context)
+                    .load(item.food.image)
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_restaurant_menu)
+                    .into(imageView)
+            }
+        }
     }
 
     inner class FoodHistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
             itemView.setOnClickListener { itemClicked(getItem(absoluteAdapterPosition)) }
+        }
+
+        val binding = ItemFoodsHistoryListBinding.bind(itemView)
+        fun bindItem(item: Food) {
+            binding.foodName.text = item.foodName
         }
     }
 
@@ -73,25 +93,8 @@ class FoodSearchAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is FoodViewHolder -> {
-                ItemFoodsListBinding.bind(holder.itemView).apply {
-                    val hint = getItem(position).content as Hint
-                    foodName.text = hint.food.label
-                    brandName.text = hint.food.brand
-                    Glide
-                        .with(imageView.context)
-                        .load(hint.food.image)
-                        .circleCrop()
-                        .placeholder(R.drawable.ic_restaurant_menu)
-                        .into(imageView)
-                }
-            }
-            is FoodHistoryViewHolder -> {
-                ItemFoodsHistoryListBinding.bind(holder.itemView).apply {
-                    val history = getItem(position).content as Food
-                    foodName.text = history.foodName
-                }
-            }
+            is FoodViewHolder -> holder.bindItem(getItem(position).content as Hint)
+            is FoodHistoryViewHolder -> holder.bindItem(getItem(position).content as Food)
         }
     }
 }

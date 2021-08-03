@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.util
+package com.bruhascended.fitapp.ui.addFood.entities
 
 import java.io.Serializable
 

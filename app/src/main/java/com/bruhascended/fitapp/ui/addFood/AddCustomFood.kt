@@ -17,7 +17,7 @@ import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityAddCustomFoodBinding
 import com.bruhascended.fitapp.repository.FoodEntryRepository
-import com.bruhascended.fitapp.util.CustomArrayAdapter
+import com.bruhascended.fitapp.ui.addFood.adapters.CustomArrayAdapter
 import com.bruhascended.fitapp.util.DateTimePresenter
 import com.bruhascended.fitapp.util.setupToolbar
 import kotlinx.coroutines.CoroutineScope
