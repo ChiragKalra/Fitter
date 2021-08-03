@@ -30,7 +30,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       -  name: checkout 
-         uses: actions/checkout@v2
+         uses: actions/checkout@v2.16
          
      
       -  run: echo -e "EDAMAM_API_ID=$EDAMAM_API_ID" >> local.properties
