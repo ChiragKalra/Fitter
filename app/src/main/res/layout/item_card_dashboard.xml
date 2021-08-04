@@ -34,34 +34,29 @@
             app:layout_constraintBottom_toTopOf="@id/line_chart"/>
 
 
+        <ImageView
+            android:id="@+id/expand_button"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:backgroundTint="?headerBackgroundColor"
+            android:src="@drawable/ic_arrow_forward"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/line_chart"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="112dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/chartName"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/expand_button"/>
-
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/expand_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="34dp"
-            android:backgroundTint="?headerBackgroundColor"
-            android:drawableEnd="@drawable/ic_arrow_forward"
-            android:paddingTop="0dp"
-            android:paddingBottom="0dp"
-            android:textAllCaps="false"
-            android:textColor="?android:textColor"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/line_chart"
-            app:rippleColor="?colorControlBlue" />
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
