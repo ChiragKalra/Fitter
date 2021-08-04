@@ -34,6 +34,13 @@ abstract class ActivityEntryDatabase : RoomDatabase() {
         )
     }
 
+    fun getLivePeriodicEntryWeekly(date: Date): LiveData<List<PeriodicEntry>> {
+        return periodicEntryManager().getTimeRangeLive(
+            date.time - 7 * 24 * 60 * 60 * 1000L,
+            date.time + 1 * 24 * 60 * 60 * 1000L
+        )
+    }
+
     fun findPeriodicEntryByStartTime(time: Long) =
         periodicEntryManager().findByStartTime(time)
 

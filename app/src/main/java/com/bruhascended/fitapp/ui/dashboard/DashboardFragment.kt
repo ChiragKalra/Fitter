@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.bruhascended.db.activity.entities.PeriodicEntry
 import com.bruhascended.db.food.entities.DayEntry
 import com.bruhascended.db.food.types.NutrientType
 
@@ -70,20 +71,74 @@ class DashboardFragment : Fragment() {
                     } ?: DayEntry(day)
                     pro.add(got)
                 }
-                cardGen.generateCard(
-                    pro.map { entry ->
-                        when (cardGen.plotType) {
-                            WeeklyCardType.WeeklyCaloriesConsumed ->
-                                entry.calories.toFloat()
-                            WeeklyCardType.WeeklyProteinsConsumed ->
-                                entry.nutrientInfo[NutrientType.Protein]?.toFloat() ?: 0f
-                            WeeklyCardType.WeeklyCarbsConsumed ->
-                                entry.nutrientInfo[NutrientType.Carbs]?.toFloat() ?: 0f
-                            WeeklyCardType.WeeklyFatsConsumed ->
-                                entry.nutrientInfo[NutrientType.Fat]?.toFloat() ?: 0f
-                        }
-                    }.toFloatArray()
-                )
+                if (cardGen.plotType in arrayOf(
+                        WeeklyCardType.WeeklyFatsConsumed,
+                        WeeklyCardType.WeeklyProteinsConsumed,
+                        WeeklyCardType.WeeklyCarbsConsumed,
+                        WeeklyCardType.WeeklyCaloriesConsumed,
+                )) {
+                    cardGen.generateCard(
+                        pro.map { entry ->
+                            when (cardGen.plotType) {
+                                WeeklyCardType.WeeklyCaloriesConsumed ->
+                                    entry.calories.toFloat()
+                                WeeklyCardType.WeeklyProteinsConsumed ->
+                                    entry.nutrientInfo[NutrientType.Protein]?.toFloat() ?: 0f
+                                WeeklyCardType.WeeklyCarbsConsumed ->
+                                    entry.nutrientInfo[NutrientType.Carbs]?.toFloat() ?: 0f
+                                else ->
+                                    entry.nutrientInfo[NutrientType.Fat]?.toFloat() ?: 0f
+                            }
+                        }.toFloatArray()
+                    )
+                }
+            }
+        }
+
+        viewModel.getLastWeekActivityEntries().observeForever {
+            val weekBefore = Calendar.getInstance().apply {
+                set(Calendar.MILLISECOND, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.HOUR_OF_DAY, 0)
+                add(Calendar.DAY_OF_YEAR, -7)
+            }
+            val pro = Array(7) {
+                val day = weekBefore.apply {
+                    add(Calendar.DAY_OF_YEAR, 1)
+                }.timeInMillis
+                PeriodicEntry(day)
+            }
+            for (entry in it) {
+                pro.forEach { day ->
+                    if (entry.date == day.date) {
+                        day += entry
+                        return@forEach
+                    }
+                }
+            }
+            for (cardGen in cardGens) {
+                if (cardGen.plotType in arrayOf(
+                        WeeklyCardType.WeeklyCaloriesBurnt,
+                        WeeklyCardType.WeeklyDistanceCovered,
+                        WeeklyCardType.WeeklyStepsTaken,
+                        WeeklyCardType.WeeklyActiveTime,
+                )) {
+                    cardGen.generateCard(
+                        pro.map { entry ->
+                            when (cardGen.plotType) {
+                                WeeklyCardType.WeeklyCaloriesBurnt ->
+                                    entry.totalCalories
+                                WeeklyCardType.WeeklyDistanceCovered ->
+                                    entry.totalDistance.toFloat()
+                                WeeklyCardType.WeeklyStepsTaken ->
+                                    entry.totalSteps.toFloat()
+                                else ->
+                                    entry.totalDuration / (60 * 1000f)
+                            }
+                        }.toFloatArray()
+                    )
+                }
             }
         }
 

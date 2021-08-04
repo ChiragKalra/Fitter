@@ -2,6 +2,7 @@ package com.bruhascended.fitapp.repository
 
 import android.app.Application
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -93,5 +94,15 @@ class ActivityEntryRepository(
             }
         }
         return liveLastIds
+    }
+
+    fun loadLastWeekPeriodicEntries(): LiveData<List<PeriodicEntry>> {
+        val date = Calendar.getInstance().apply {
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR, 0)
+        }.time
+        return db.getLivePeriodicEntryWeekly(date)
     }
 }

@@ -35,8 +35,24 @@ enum class WeeklyCardType (
         R.color.red_200
     ),
     //WeeklyNutrientConsumed,
-    // WeeklyCaloriesBurnt,
-    // WeeklyDistanceCovered,
-    // WeeklyStepsTaken,
-    // WeeklyActiveTime;
+    WeeklyCaloriesBurnt(
+        R.string.calories_burnt,
+        R.color.blue_500,
+        R.color.blue_200
+    ),
+    WeeklyDistanceCovered(
+        R.string.distance,
+        R.color.green_500,
+        R.color.green_200
+    ),
+    WeeklyStepsTaken(
+        R.string.steps,
+        R.color.purple_500,
+        R.color.purple_200
+    ),
+    WeeklyActiveTime(
+        R.string.activity,
+        R.color.red_500,
+        R.color.red_200
+    );
 }

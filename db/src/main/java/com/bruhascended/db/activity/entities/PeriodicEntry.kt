@@ -2,6 +2,7 @@ package com.bruhascended.db.activity.entities
 
 import androidx.room.*
 import java.io.Serializable
+import java.util.*
 import kotlin.math.abs
 
 
@@ -45,6 +46,36 @@ data class PeriodicEntry(
         totalSteps - (entry.steps ?: 0),
     )
 
+    operator fun plusAssign(other: PeriodicEntry) {
+        totalCalories += other.totalCalories
+        totalDuration += other.totalDuration
+        totalDistance += other.totalDistance
+        totalSteps += other.totalSteps
+    }
+
+    operator fun plus(entry: PeriodicEntry) = PeriodicEntry(
+        startTime,
+        totalCalories + entry.totalCalories,
+        totalDuration + entry.totalDuration,
+        totalDistance + entry.totalDistance,
+        totalSteps + entry.totalSteps,
+    )
+
+    operator fun minusAssign(other: PeriodicEntry) {
+        totalCalories -= other.totalCalories
+        totalDuration -= other.totalDuration
+        totalDistance -= other.totalDistance
+        totalSteps -= other.totalSteps
+    }
+
+    operator fun minus(entry: PeriodicEntry) = PeriodicEntry(
+        startTime,
+        totalCalories - entry.totalCalories,
+        totalDuration - entry.totalDuration,
+        totalDistance - entry.totalDistance,
+        totalSteps - entry.totalSteps,
+    )
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -61,6 +92,15 @@ data class PeriodicEntry(
     override fun hashCode(): Int {
         return startTime.hashCode()
     }
+
+    val date: Date
+        get() = Calendar.getInstance().also {
+            it.timeInMillis = startTime
+            it.set(Calendar.HOUR_OF_DAY, 0)
+            it.set(Calendar.MINUTE, 0)
+            it.set(Calendar.SECOND, 0)
+            it.set(Calendar.MILLISECOND, 0)
+        }.time
 
     val id
         get() = abs(hashCode())

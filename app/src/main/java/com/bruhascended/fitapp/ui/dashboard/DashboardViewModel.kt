@@ -2,6 +2,7 @@ package com.bruhascended.fitapp.ui.dashboard
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.repository.FoodEntryRepository
 import java.util.*
 
@@ -9,6 +10,7 @@ import java.util.*
 class DashboardViewModel (mApp: Application) : AndroidViewModel(mApp) {
 
     private val foodEntryRepository by FoodEntryRepository.Delegate(mApp)
+    private val activityEntryRepository by ActivityEntryRepository.Delegate(mApp)
 
     fun getLastWeekDayEntries() = foodEntryRepository.loadLastWeek()
 
@@ -20,4 +22,6 @@ class DashboardViewModel (mApp: Application) : AndroidViewModel(mApp) {
             set(Calendar.HOUR_OF_DAY, 0)
         }.time
     )
+
+    fun getLastWeekActivityEntries() = activityEntryRepository.loadLastWeekPeriodicEntries()
 }
