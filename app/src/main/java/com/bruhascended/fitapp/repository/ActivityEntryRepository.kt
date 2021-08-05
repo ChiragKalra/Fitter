@@ -42,12 +42,13 @@ class ActivityEntryRepository(
 
     // periodic entry fun's
     fun insertPeriodicEntries(periodicEntries: List<PeriodicEntry>) =
-        db.insertPeriodicEntries(periodicEntries)
+        db.periodicEntryManager().insertAll(periodicEntries)
 
-    fun insertPeriodicEntry(periodicEntry: PeriodicEntry) = db.insertPeriodicEntry(periodicEntry)
+    fun insertPeriodicEntry(periodicEntry: PeriodicEntry) =
+        db.periodicEntryManager().insert(periodicEntry)
 
     fun findPeriodicEntryByStartTime(timeInMillis: Long) =
-        db.findPeriodicEntryByStartTime(timeInMillis)
+        db.periodicEntryManager().findByStartTime(timeInMillis)
 
     // activity entry fun's
     fun writeEntry(entry: ActivityEntry) = db.entryManager().insert(entry)
