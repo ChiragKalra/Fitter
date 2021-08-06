@@ -28,8 +28,8 @@ import java.util.Date
 )
 abstract class ActivityEntryDatabase : RoomDatabase() {
     abstract fun entryManager(): ActivityEntryDao
-    protected abstract fun periodicEntryManager(): PeriodicEntryDao
-    protected abstract fun dayEntryManager(): DayEntryDao
+    abstract fun periodicEntryManager(): PeriodicEntryDao
+    abstract fun dayEntryManager(): DayEntryDao
 
     fun getLivePeriodicEntryOf(date: Date): LiveData<PeriodicEntry> {
         return periodicEntryManager().getTimeRangeSumLive(
@@ -44,7 +44,6 @@ abstract class ActivityEntryDatabase : RoomDatabase() {
             date.time + 1 * 24 * 60 * 60 * 1000L
         )
     }
-
     fun findPeriodicEntryByStartTime(time: Long) =
         periodicEntryManager().findByStartTime(time)
 
