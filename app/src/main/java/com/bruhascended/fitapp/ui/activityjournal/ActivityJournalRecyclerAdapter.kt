@@ -106,7 +106,7 @@ class ActivityJournalRecyclerAdapter (
 
             textviewCalories.text = mContext.getString(
                 calorie_count,
-                separatorInfo.totalCalories.toString()
+                separatorInfo.totalCalories.toInt().toString()
             )
             // TODO: Set Using User Preference
             progressbarCalories.apply {
