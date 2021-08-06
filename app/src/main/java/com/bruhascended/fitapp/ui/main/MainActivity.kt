@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.dashboardFragment,
-                R.id.challengesFragment,
+                // R.id.challengesFragment,
                 R.id.journalFragment
             )
         )
@@ -58,8 +58,11 @@ class MainActivity : AppCompatActivity() {
         // setup FloatingActionButtons
         fabPresenter = FabPresenter(this, binding)
         fabPresenter.setupFABs()
+    }
 
+    override fun onStart() {
         immediateSync()
+        super.onStart()
     }
 
     private fun immediateSync() {

@@ -35,6 +35,10 @@ class DashboardFragment : Fragment() {
             requireContext(),
             layoutInflater
         )
+        val activityCardGen = ActivityCardPresenter(
+            requireContext(),
+            layoutInflater
+        )
 
         cardGens = WeeklyCardType.values().map {
             WeeklyPlotPresenter(
@@ -46,6 +50,7 @@ class DashboardFragment : Fragment() {
 
         // add cards to root
         binding.contentLayout.addView(nutritionCardGen.view)
+        binding.contentLayout.addView(activityCardGen.view)
 
         for (cardGen in cardGens) {
             binding.contentLayout.addView(cardGen.view)
@@ -144,6 +149,9 @@ class DashboardFragment : Fragment() {
 
         viewModel.getTodayLiveNutrition().observeForever {
             nutritionCardGen.generateCard(it ?: return@observeForever)
+        }
+        viewModel.getTodayLiveActivity().observeForever {
+            activityCardGen.generateCard(it ?: return@observeForever)
         }
     }
 

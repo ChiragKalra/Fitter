@@ -53,7 +53,7 @@ class WeeklyPlotPresenter (
         chart.setPinchZoom(false)
         chart.setBackgroundColor(color)
 
-        chart.setExtraOffsets(32f, 8f, 32f, 4f)
+        chart.setExtraOffsets(32f, 24f, 32f, 4f)
 
         // add data
         chart.data = data

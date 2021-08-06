@@ -23,5 +23,14 @@ class DashboardViewModel (mApp: Application) : AndroidViewModel(mApp) {
         }.time
     )
 
+    fun getTodayLiveActivity() = activityEntryRepository.loadLiveSeparatorAt(
+        Calendar.getInstance().apply {
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR_OF_DAY, 0)
+        }.time
+    )
+
     fun getLastWeekActivityEntries() = activityEntryRepository.loadLastWeekPeriodicEntries()
 }

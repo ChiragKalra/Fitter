@@ -10,11 +10,13 @@
         android:name="com.bruhascended.fitapp.ui.dashboard.DashboardFragment"
         android:label="@string/dashboard"
         tools:layout="@layout/fragment_dashboard" />
+    <!--
     <fragment
         android:id="@+id/challengesFragment"
         android:name="com.bruhascended.fitapp.ui.challenges.ChallengesFragment"
         android:label="@string/challenges"
         tools:layout="@layout/fragment_challenges" />
+        -->
     <fragment
         android:id="@+id/journalFragment"
         android:name="com.bruhascended.fitapp.ui.journal.JournalFragment"
