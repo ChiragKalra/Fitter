@@ -5,11 +5,12 @@ import android.util.Log
 import androidx.work.*
 import androidx.work.WorkInfo.*
 import com.bruhascended.fitapp.workers.ActivityEntryWorker
+import com.bruhascended.fitapp.workers.DayEntryWorker
 import com.bruhascended.fitapp.workers.PeriodicEntryWorker
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-const val SYNC_INTERVAL = 3L // seconds
+const val SYNC_INTERVAL = 10L // seconds
 const val IMMEDIATE_TAG = "IMMEDIATE_SYNC"
 const val REPEATED_TAG = "REPEATED_SYNC"
 
@@ -20,14 +21,23 @@ fun enqueueSyncJob(context: Context, NAME: String, delay: Long = 0) {
         .setRequiresBatteryNotLow(true)
         .build()
 
-    val workRequest: OneTimeWorkRequest.Builder = if (NAME == PeriodicEntryWorker.WORK_NAME)
-        OneTimeWorkRequestBuilder<PeriodicEntryWorker>()
-            .setConstraints(constraints)
-            .setInitialDelay(delay, TimeUnit.SECONDS)
-    else
-        OneTimeWorkRequestBuilder<ActivityEntryWorker>()
-            .setConstraints(constraints)
-            .setInitialDelay(delay, TimeUnit.SECONDS)
+    val workRequest: OneTimeWorkRequest.Builder = when (NAME) {
+        PeriodicEntryWorker.WORK_NAME -> {
+            OneTimeWorkRequestBuilder<PeriodicEntryWorker>()
+                .setConstraints(constraints)
+                .setInitialDelay(delay, TimeUnit.SECONDS)
+        }
+        ActivityEntryWorker.WORK_NAME -> {
+            OneTimeWorkRequestBuilder<ActivityEntryWorker>()
+                .setConstraints(constraints)
+                .setInitialDelay(delay, TimeUnit.SECONDS)
+        }
+        else -> {
+            OneTimeWorkRequestBuilder<DayEntryWorker>()
+                .setConstraints(constraints)
+                .setInitialDelay(delay, TimeUnit.SECONDS)
+        }
+    }
 
     if (delay == 0L) {
         workRequest.addTag(IMMEDIATE_TAG)
@@ -47,8 +57,10 @@ fun enqueueRepeatedJob(context: Context, NAME: String) {
     enqueueSyncJob(context, NAME, SYNC_INTERVAL)
 }
 
-fun enqueueImmediateJob(context: Context, NAME: String) {
-    enqueueSyncJob(context, NAME)
+fun enqueueImmediateJob(context: Context) {
+    enqueueSyncJob(context, DayEntryWorker.WORK_NAME)
+    enqueueSyncJob(context, ActivityEntryWorker.WORK_NAME)
+    enqueueSyncJob(context, PeriodicEntryWorker.WORK_NAME)
 }
 
 fun isWorkRequired(time: Long, WORK_NAME: String): Boolean {
@@ -57,23 +69,13 @@ fun isWorkRequired(time: Long, WORK_NAME: String): Boolean {
     return time >= cal.timeInMillis
 }
 
-fun cancelWork(context: Context, workName: String) {
-    Log.d("work_eyo", "Cancelled ,$workName")
-    WorkManager.getInstance(context).cancelUniqueWork(workName)
-}
-
-fun isWorkScheduled(context: Context, WORK_NAME: String): Boolean {
-    val workInfos =
-        WorkManager.getInstance(context).getWorkInfosForUniqueWork(WORK_NAME)
-            .get()
-    var workScheduled = false
-    if (workInfos.size == 0 || workInfos == null) return workScheduled
-    for (work in workInfos) {
-        if (work.state == State.RUNNING || work.state == State.ENQUEUED) {
-            workScheduled = true
-        }
+fun cancelWork(context: Context, name: String? = null) {
+    if (name == null) {
+        WorkManager.getInstance(context).cancelAllWorkByTag(IMMEDIATE_TAG)
+        WorkManager.getInstance(context).cancelAllWorkByTag(REPEATED_TAG)
+    } else {
+        WorkManager.getInstance(context).cancelUniqueWork(name)
     }
-    return workScheduled
 }
 
 fun isWorkImmediate(context: Context, WORK_NAME: String): Boolean {
@@ -86,4 +88,18 @@ fun isWorkImmediate(context: Context, WORK_NAME: String): Boolean {
         }
     }
     return false
+}
+
+fun isWorkScheduled(context: Context): Boolean {
+    val workManger = WorkManager.getInstance(context)
+    val workInfos = workManger.getWorkInfosByTag(REPEATED_TAG).get()
+    workInfos.addAll(workManger.getWorkInfosByTag(IMMEDIATE_TAG).get())
+    var workScheduled = false
+    if (workInfos.size == 0 || workInfos == null) return workScheduled
+    for (work in workInfos) {
+        if (work.state == State.RUNNING || work.state == State.ENQUEUED) {
+            workScheduled = true
+        }
+    }
+    return workScheduled
 }

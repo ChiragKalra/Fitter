@@ -6,6 +6,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.repository.PreferencesRepository
+import com.bruhascended.fitapp.repository.PreferencesRepository.*
 import com.bruhascended.fitapp.util.*
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.data.DataType
@@ -22,102 +23,104 @@ class ActivityEntryWorker(val context: Context, params: WorkerParameters) :
         const val WORK_NAME = "ACTIVITY_WORK"
     }
 
+    private val repo = PreferencesRepository(context)
+    private val activityEntryRepository by ActivityEntryRepository.Delegate(context)
+
     override suspend fun doWork(): Result {
-        val repo = PreferencesRepository(context)
         if (getAndroidRunTimePermissionGivenMap(
                 context,
                 permissions.values().toList()
             ).containsValue(false)
         ) {
             // todo notification to user regarding sync failure
-            cancelWork(context, WORK_NAME)
+            return Result.failure()
         } else if (!isOauthPermissionsApproved(context, FitBuilder.fitnessOptions)) {
             // todo notification to user regarding sync failure
-            cancelWork(context, WORK_NAME)
+            return Result.failure()
         }
 
         try {
-            performActivitySync(context, repo)
+            performActivitySync()
         } catch (e: Exception) {
+            // todo
             Log.d("activity_eyo", "${e.message}")
             return Result.retry()
         }
-        if (repo.getPreference(PreferencesRepository.PreferencesKeys.SYNC_ENABLED).toString()
+        if (repo.getPreference(PreferencesKeys.SYNC_ENABLED).toString()
                 .toBooleanStrictOrNull() == true
         )
             enqueueRepeatedJob(context, WORK_NAME)
         return Result.success()
     }
-}
 
-fun performActivitySync(context: Context, repo: PreferencesRepository) {
-    val activityEntryRepository by ActivityEntryRepository.Delegate(context)
+    private fun performActivitySync() {
+        val lastSyncStartTime =
+            repo.getPreference(PreferencesKeys.LAST_ACTIVITY_SYNC_TIME) as Long?
 
-    val lastSyncStartTime =
-        repo.getPreference(PreferencesRepository.PreferencesKeys.LAST_ACTIVITY_SYNC_TIME) as Long?
+        val isWorkImmediate = isWorkImmediate(context, WORK_NAME)
 
-
-    val isWorkImmediate = isWorkImmediate(context, ActivityEntryWorker.WORK_NAME)
-
-    if (lastSyncStartTime != null && !isWorkImmediate) {
-        if (!isWorkRequired(lastSyncStartTime, ActivityEntryWorker.WORK_NAME))
-            cancelWork(context, ActivityEntryWorker.WORK_NAME)
-    }
-
-    var endTime: Long? = null
-    var startTime: Long? = null
-    val cal = Calendar.getInstance(TimeZone.getDefault())
-
-    if (isWorkImmediate) {
-        endTime = cal.timeInMillis
-        startTime = cal.getTodayStartTime(cal)
-    } else {
-        if (lastSyncStartTime != null) {
-            cal.timeInMillis = lastSyncStartTime
+        if (lastSyncStartTime != null && !isWorkImmediate) {
+            if (!isWorkRequired(lastSyncStartTime, WORK_NAME))
+                cancelWork(context, WORK_NAME)
         }
-        cal.add(Calendar.DAY_OF_WEEK, -1)
-        endTime = cal.getTodayMidnightTime(cal)
-        startTime = cal.getTodayStartTime(cal)
-    }
 
-    val estimatedStepSource = FitBuilder.estimatedStepSource
+        var endTime: Long? = null
+        var startTime: Long? = null
+        val cal = Calendar.getInstance(TimeZone.getDefault())
 
-    for (day in 1..7) {
-        val readRequest = DataReadRequest.Builder()
-            .bucketByActivitySegment(5, TimeUnit.MINUTES)
-            .aggregate(estimatedStepSource)
-            .aggregate(DataType.TYPE_DISTANCE_DELTA)
-            .aggregate(DataType.TYPE_CALORIES_EXPENDED)
-            .enableServerQueries()
-            .setTimeRange(startTime!!, endTime!!, TimeUnit.MILLISECONDS)
-            .build()
-        val client =
-            Fitness.getHistoryClient(context, getGoogleAccount(context, FitBuilder.fitnessOptions))
-        val task = client.readData(readRequest)
-        val result = Tasks.await(task.addOnFailureListener {
-            Log.d("activity_eyo", "${it.message}")
-        })
+        if (isWorkImmediate) {
+            endTime = cal.timeInMillis
+            startTime = cal.getTodayStartTime(cal)
+        } else {
+            if (lastSyncStartTime != null) {
+                cal.timeInMillis = lastSyncStartTime
+            }
+            cal.add(Calendar.DAY_OF_WEEK, -1)
+            endTime = cal.getTodayMidnightTime(cal)
+            startTime = cal.getTodayStartTime(cal)
+        }
 
-        try {
-            if (result.status.isSuccess) {
-                runBlocking {
-                    val entries = dumpActivityEntryBuckets(result.buckets)
-                    insertActivityEntriesToDb(entries, activityEntryRepository)
-                    if (!isWorkImmediate) {
-                        repo.updatePreference(
-                            PreferencesRepository.PreferencesKeys.LAST_ACTIVITY_SYNC_TIME,
-                            startTime!!
-                        )
+        val estimatedStepSource = FitBuilder.estimatedStepSource
+
+        for (day in 1..7) {
+            val readRequest = DataReadRequest.Builder()
+                .bucketByActivitySegment(5, TimeUnit.MINUTES)
+                .aggregate(estimatedStepSource)
+                .aggregate(DataType.TYPE_DISTANCE_DELTA)
+                .aggregate(DataType.TYPE_CALORIES_EXPENDED)
+                .enableServerQueries()
+                .setTimeRange(startTime!!, endTime!!, TimeUnit.MILLISECONDS)
+                .build()
+            val client =
+                Fitness.getHistoryClient(
+                    context,
+                    getGoogleAccount(context, FitBuilder.fitnessOptions)
+                )
+            val task = client.readData(readRequest)
+            val result = Tasks.await(task.addOnFailureListener {
+                Log.d("activity_eyo", "${it.message}")
+            })
+
+            try {
+                if (result.status.isSuccess) {
+                    runBlocking {
+                        val entries = dumpActivityEntryBuckets(result.buckets)
+                        insertActivityEntriesToDb(entries, activityEntryRepository)
+                        if (!isWorkImmediate) {
+                            repo.updatePreference(
+                                PreferencesKeys.LAST_ACTIVITY_SYNC_TIME,
+                                startTime!!
+                            )
+                        }
                     }
                 }
-                Log.d("activity_eyo", "${result.buckets.size}")
+            } catch (e: Exception) {
+                Log.d("activity_eyo", "${e.message}")
+                break
             }
-        } catch (e: Exception) {
-            Log.d("activity_eyo", "${e.message}")
-            break
+            cal.add(Calendar.DAY_OF_WEEK, -1)
+            startTime = cal.getTodayStartTime(cal)
+            endTime = cal.getTodayMidnightTime(cal)
         }
-        cal.add(Calendar.DAY_OF_WEEK, -1)
-        startTime = cal.getTodayStartTime(cal)
-        endTime = cal.getTodayMidnightTime(cal)
     }
 }

@@ -2,6 +2,7 @@ package com.bruhascended.fitapp.ui.settings.fragments
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
@@ -12,6 +13,7 @@ import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.settings.SettingsDataStore
 import com.bruhascended.fitapp.util.*
 import com.bruhascended.fitapp.workers.ActivityEntryWorker
+import com.bruhascended.fitapp.workers.DayEntryWorker
 import com.bruhascended.fitapp.workers.PeriodicEntryWorker
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -36,16 +38,14 @@ class MainFragment : PreferenceFragmentCompat() {
 
         lifecycleScope.launch {
             repo.userStatsFlow.collect {
+                Log.d("jenner", "fff")
                 if (!it.syncEnabled) {
                     // cancel all sync
-                    cancelWork(requireContext(), PeriodicEntryWorker.WORK_NAME)
-                    cancelWork(requireContext(), ActivityEntryWorker.WORK_NAME)
+                    cancelWork(requireContext())
                 } else {
                     // do immediate sync
-                    if (!isWorkScheduled(requireContext(), PeriodicEntryWorker.WORK_NAME))
-                        enqueueImmediateJob(requireContext(), PeriodicEntryWorker.WORK_NAME)
-                    if (!isWorkScheduled(requireContext(), ActivityEntryWorker.WORK_NAME))
-                        enqueueImmediateJob(requireContext(), ActivityEntryWorker.WORK_NAME)
+                    if (!isWorkScheduled(requireContext()))
+                        enqueueImmediateJob(requireContext())
                 }
             }
         }
@@ -124,8 +124,9 @@ class MainFragment : PreferenceFragmentCompat() {
 
     private fun setUpEmail() {
         val account = getCurrentAccount(requireContext())
-        if (account != null) signInPreference?.summary = account.email ?: ""
-        else signInPreference?.summary = ""
+        if (account != null) signInPreference?.summary =
+            account.email ?: resources.getString(R.string.Sign_Out)
+        else signInPreference?.summary = resources.getString(R.string.Sign_In)
     }
 
     private fun checkOauthPermissions() {

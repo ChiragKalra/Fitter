@@ -68,8 +68,7 @@ class MainActivity : AppCompatActivity() {
             repo.getPreference(PreferencesRepository.PreferencesKeys.SYNC_ENABLED).toString()
                 .toBooleanStrictOrNull() ?: false
         if (getCurrentAccount(this) != null && syncEnabled) {
-            enqueueImmediateJob(this, PeriodicEntryWorker.WORK_NAME)
-            enqueueImmediateJob(this, ActivityEntryWorker.WORK_NAME)
+            enqueueImmediateJob(this)
         }
     }
 

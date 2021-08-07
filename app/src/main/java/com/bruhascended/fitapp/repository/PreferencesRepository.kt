@@ -56,6 +56,7 @@ class PreferencesRepository(
         // sync
         val LAST_PERIODIC_SYNC_TIME = longPreferencesKey("LAST_PERIODIC_SYNC_TIME")
         val LAST_ACTIVITY_SYNC_TIME = longPreferencesKey("LAST_ACTIVITY_SYNC_TIME")
+        val LAST_DAILY_SYNC_TIME = longPreferencesKey("LAST_DAILY_SYNC_TIME")
 
         // Food Goals
         val GOAL_CALORIE_CONSUMPTION = intPreferencesKey("GOAL_CALORIE_CONSUMPTION")

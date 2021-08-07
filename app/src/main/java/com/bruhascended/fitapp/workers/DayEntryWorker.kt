@@ -4,30 +4,26 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.repository.PreferencesRepository
+import com.bruhascended.fitapp.repository.PreferencesRepository.PreferencesKeys
 import com.bruhascended.fitapp.util.*
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.request.DataReadRequest
 import com.google.android.gms.tasks.Tasks
-import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class PeriodicEntryWorker(private val context: Context, params: WorkerParameters) :
+class DayEntryWorker(val context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params) {
 
     companion object {
-        const val WORK_NAME = "PERIODIC_WORK"
+        const val WORK_NAME = "DAILY_WORK"
     }
 
-    private val activityEntryRepository: ActivityEntryRepository by ActivityEntryRepository.Delegate(
-        context
-    )
-    private val repo = PreferencesRepository(context)
-
+    val repo = PreferencesRepository(context)
     override suspend fun doWork(): Result {
+
         if (getAndroidRunTimePermissionGivenMap(
                 context,
                 permissions.values().toList()
@@ -41,33 +37,36 @@ class PeriodicEntryWorker(private val context: Context, params: WorkerParameters
         }
 
         try {
-            performPeriodicSync()
+            performAction()
         } catch (e: Exception) {
-            // todo
-            Log.d("periodic_eyo", "${e.message}")
+            // todo notify user
+            Log.d("daily_eyo", "${e.message}")
             return Result.retry()
         }
-        if (repo.getPreference(PreferencesRepository.PreferencesKeys.SYNC_ENABLED).toString()
+
+        if (repo.getPreference(PreferencesKeys.SYNC_ENABLED).toString()
                 .toBooleanStrictOrNull() == true
         )
             enqueueRepeatedJob(context, WORK_NAME)
+
         return Result.success()
+
     }
 
-    private fun performPeriodicSync() {
-
-        val lastSyncStartTime =
-            repo.getPreference(PreferencesRepository.PreferencesKeys.LAST_PERIODIC_SYNC_TIME) as Long?
-
-        val isWorkImmediate = isWorkImmediate(context, PeriodicEntryWorker.WORK_NAME)
-        if (lastSyncStartTime != null && !isWorkImmediate) {
-            if (!isWorkRequired(lastSyncStartTime, PeriodicEntryWorker.WORK_NAME))
-                cancelWork(context, PeriodicEntryWorker.WORK_NAME)
-        }
-
+    private fun performAction() {
         var endTime: Long? = null
         var startTime: Long? = null
         val cal = Calendar.getInstance(TimeZone.getDefault())
+
+        val isWorkImmediate = isWorkImmediate(context, PeriodicEntryWorker.WORK_NAME)
+
+        val lastSyncStartTime: Long? =
+            repo.getPreference(PreferencesKeys.LAST_DAILY_SYNC_TIME) as Long?
+
+        if (lastSyncStartTime != null && !isWorkImmediate) {
+            if (!isWorkRequired(lastSyncStartTime, WORK_NAME))
+                cancelWork(context, WORK_NAME)
+        }
 
         if (isWorkImmediate) {
             endTime = cal.timeInMillis
@@ -79,6 +78,7 @@ class PeriodicEntryWorker(private val context: Context, params: WorkerParameters
                 endTime = cal.getTodayMidnightTime(cal)
                 cal.add(Calendar.DAY_OF_WEEK, -6)
                 startTime = cal.getTodayStartTime(cal)
+
             } else {
                 cal.timeInMillis = lastSyncStartTime
                 cal.add(Calendar.DAY_OF_WEEK, -1)
@@ -88,16 +88,13 @@ class PeriodicEntryWorker(private val context: Context, params: WorkerParameters
             }
         }
 
-        val estimatedStepSource = FitBuilder.estimatedStepSource
-
         val readRequest = DataReadRequest.Builder()
-            .bucketByTime(30, TimeUnit.MINUTES)
-            .aggregate(DataType.TYPE_CALORIES_EXPENDED)
-            .aggregate(estimatedStepSource)
-            .aggregate(DataType.TYPE_DISTANCE_DELTA)
-            .aggregate(DataType.TYPE_MOVE_MINUTES)
-            .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+            .read(DataType.TYPE_STEP_COUNT_DELTA)
+            .read(DataType.TYPE_CALORIES_EXPENDED)
+            .read(DataType.TYPE_MOVE_MINUTES)
             .enableServerQueries()
+            .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+            .bucketByTime(1, TimeUnit.DAYS)
             .build()
 
         val client =
@@ -109,23 +106,18 @@ class PeriodicEntryWorker(private val context: Context, params: WorkerParameters
 
         try {
             if (result.status.isSuccess) {
-                runBlocking {
-                    val entries = dumpPeriodicEntryBuckets(result.buckets)
-                    insertPeriodicEntriesToDb(entries, activityEntryRepository)
-                }
+                // todo store to db
                 if (!isWorkImmediate) {
-                    repo.updatePreference(
-                        PreferencesRepository.PreferencesKeys.LAST_PERIODIC_SYNC_TIME,
-                        startTime
-                    )
+                    repo.updatePreference(PreferencesKeys.LAST_DAILY_SYNC_TIME, startTime)
                 }
+                Log.d("daily_eyo", "${result.buckets}")
+            } else {
+                // todo notify user
+                Log.d("daily_eyo", "${result.status}")
             }
         } catch (e: Exception) {
-            // todo
-            Log.d("periodic_eyo", "${e.message}")
+            // todo notify user
+            Log.d("daily_eyo", "${e.message}")
         }
     }
 }
-
-
-

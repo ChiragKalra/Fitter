@@ -121,6 +121,8 @@
     <string name="continue_text">continue</string>
     <string name="expand">expand</string>
     <string name="zero_gm">0 gm</string>
+    <string name="Sign_In">Sign In</string>
+    <string name="Sign_Out">Sign Out</string>
     <string name="search_result_placeholder">Search:</string>
     <string name="ok">OK</string>
 
