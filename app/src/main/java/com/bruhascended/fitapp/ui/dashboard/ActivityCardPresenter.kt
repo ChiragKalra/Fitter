@@ -5,13 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import com.bruhascended.db.R
 import com.bruhascended.db.activity.entities.PeriodicEntry
-import com.bruhascended.db.food.entities.DayEntry
-import com.bruhascended.db.food.types.NutrientType
-import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.databinding.ItemCardActivityBinding
-import com.bruhascended.fitapp.databinding.ItemCardNutritionBinding
 import com.bruhascended.fitapp.util.AnimationDuration
-import com.bruhascended.fitapp.util.DateTimePresenter
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
@@ -97,7 +92,10 @@ class ActivityCardPresenter (
     }
 
 
+    private var previousValues: PeriodicEntry? = null
     fun generateCard(values: PeriodicEntry) {
+        if (values == previousValues) return
         binding.presentSeparator(values)
+        previousValues = values
     }
 }

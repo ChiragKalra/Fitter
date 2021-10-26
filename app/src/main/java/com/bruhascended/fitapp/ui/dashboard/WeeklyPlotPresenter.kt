@@ -128,8 +128,11 @@ class WeeklyPlotPresenter (
         return LineData(set1, set2)
     }
 
+    private var previousValues: FloatArray? = null
     fun generateCard(values: FloatArray?) {
         values ?: return
+        if (previousValues.contentEquals(values)) return
         setupChart(binding.lineChart, getData(values), mContext.getColor(R.color.white_900))
+        previousValues = values
     }
 }

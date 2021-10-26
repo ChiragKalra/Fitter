@@ -34,10 +34,10 @@ class FabPresenter(
     init {
         binding.fabsLayout.apply {
             actionButtons = arrayOf(
-                captureFoodButton, addFoodButton, addWorkoutButton, addWeightButton
+                captureFoodButton, addFoodButton, addWorkoutButton, //addWeightButton
             )
             actionDescriptions = arrayOf(
-                textCapture, textFood, textWorkout, textWeight
+                textCapture, textFood, textWorkout, //textWeight
             )
         }
     }
@@ -72,7 +72,7 @@ class FabPresenter(
 
     private fun setupIntents() {
         // attach destination intents to FABs
-        for (i in 0..3) {
+        for (i in actionButtons.indices) {
             actionButtons[i].setOnClickListener {
                 mActivity.startActivity(Intent(mActivity, actionDestinations[i]))
                 binding.fabsLayout.cancelActionButton.callOnClick()
