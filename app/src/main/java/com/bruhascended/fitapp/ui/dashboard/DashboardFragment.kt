@@ -1,22 +1,16 @@
 package com.bruhascended.fitapp.ui.dashboard
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.bruhascended.db.food.entities.DayEntry
-import com.bruhascended.db.food.types.NutrientType
-
+import com.bruhascended.fitapp.R
+import com.bruhascended.fitapp.databinding.FragmentDashboardBinding
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
-
-import com.bruhascended.fitapp.R
-
-import com.bruhascended.fitapp.databinding.FragmentDashboardBinding
-import java.util.*
 
 
 class DashboardFragment : Fragment() {
@@ -24,73 +18,6 @@ class DashboardFragment : Fragment() {
     private lateinit var binding: FragmentDashboardBinding
 
     private val viewModel: DashboardViewModel by viewModels()
-
-
-    private lateinit var cardGens: List<WeeklyPlotPresenter>
-
-    private fun addCards() {
-        // declare card generators
-        val nutritionCardGen = NutritionCardPresenter(
-            requireContext(),
-            layoutInflater
-        )
-
-        cardGens = WeeklyCardType.values().map {
-            WeeklyPlotPresenter(
-                requireContext(),
-                layoutInflater,
-                it
-            )
-        }
-
-        // add cards to root
-        binding.contentLayout.addView(nutritionCardGen.view)
-
-        for (cardGen in cardGens) {
-            binding.contentLayout.addView(cardGen.view)
-        }
-
-        // fill cards with data
-        viewModel.getLastWeekDayEntries().observeForever {
-            for (cardGen in cardGens) {
-                val pro = arrayListOf<DayEntry>()
-                val weekBefore = Calendar.getInstance().apply {
-                    set(Calendar.MILLISECOND, 0)
-                    set(Calendar.SECOND, 0)
-                    set(Calendar.MINUTE, 0)
-                    set(Calendar.HOUR_OF_DAY, 0)
-                    add(Calendar.DAY_OF_YEAR, -7)
-                }
-                for (i in 0..6) {
-                    val day = weekBefore.apply {
-                        add(Calendar.DAY_OF_YEAR, 1)
-                    }.timeInMillis
-                    val got = it.firstOrNull { entry ->
-                        entry.day == day
-                    } ?: DayEntry(day)
-                    pro.add(got)
-                }
-                cardGen.generateCard(
-                    pro.map { entry ->
-                        when (cardGen.plotType) {
-                            WeeklyCardType.WeeklyCaloriesConsumed ->
-                                entry.calories.toFloat()
-                            WeeklyCardType.WeeklyProteinsConsumed ->
-                                entry.nutrientInfo[NutrientType.Protein]?.toFloat() ?: 0f
-                            WeeklyCardType.WeeklyCarbsConsumed ->
-                                entry.nutrientInfo[NutrientType.Carbs]?.toFloat() ?: 0f
-                            WeeklyCardType.WeeklyFatsConsumed ->
-                                entry.nutrientInfo[NutrientType.Fat]?.toFloat() ?: 0f
-                        }
-                    }.toFloatArray()
-                )
-            }
-        }
-
-        viewModel.getTodayLiveNutrition().observeForever {
-            nutritionCardGen.generateCard(it ?: return@observeForever)
-        }
-    }
 
     private fun setupAppbar() {
         //customise appbar
@@ -111,7 +38,6 @@ class DashboardFragment : Fragment() {
         binding = FragmentDashboardBinding.inflate(inflater)
 
         setupAppbar()
-        addCards()
 
         return binding.root
     }
