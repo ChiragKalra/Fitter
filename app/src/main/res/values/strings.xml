@@ -172,5 +172,6 @@
     <string name="service">Service</string>
     <string name="calories_consumed">Calories Consumed</string>
     <string name="more">More</string>
+    <string name="title_activity_temp">temp</string>
 </resources>
 

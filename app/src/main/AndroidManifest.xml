@@ -24,6 +24,11 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
         <activity
+            android:name=".ui.dashboard.temp"
+            android:exported="false"
+            android:label="@string/title_activity_temp"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.settings.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".ui.main.MainActivity" />
