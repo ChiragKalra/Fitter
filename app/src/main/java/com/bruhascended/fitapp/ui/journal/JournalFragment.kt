@@ -39,14 +39,6 @@ class JournalFragment : Fragment() {
         }
     }
 
-    private fun setupAppBar() {
-        //customise the appbar
-        val view = activity?.findViewById<AppBarLayout>(R.id.app_bar)
-        view?.setExpanded(true, true)
-        val param: AppBarLayout.LayoutParams = activity?.findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar)?.layoutParams as AppBarLayout.LayoutParams
-        param.scrollFlags = SCROLL_FLAG_SNAP or SCROLL_FLAG_SCROLL1 or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED
-    }
-
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -62,8 +54,6 @@ class JournalFragment : Fragment() {
                 )
             )
         }
-
-        setupAppBar()
         setupViewPager()
 
         return binding.root

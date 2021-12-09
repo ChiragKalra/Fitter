@@ -18,14 +18,14 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-private val canvasSize = 300.dp
-private val radius = canvasSize.value / 2
-
+// TODO : include color for background as well as foreground as param
 @Composable
-// TODO : pass canvas size as param in animated circle
-fun AnimatedCircle(indicatorValue: Float = 150f) {
+fun AnimatedCircle(indicatorValue: Float = 150f, canvasSize: Dp = 300.dp) {
+    val strokeWidth = canvasSize.value / 3f
+
     val animatedIndicatorValue = remember {
         Animatable(initialValue = 0f)
     }
@@ -41,38 +41,41 @@ fun AnimatedCircle(indicatorValue: Float = 150f) {
     Column(modifier = Modifier
         .size(canvasSize)
         .drawBehind {
-            backgroundIndicator(size / 1.25f)
-            foregroundIndicator(size / 1.25f, sweepAngle)
+            backgroundIndicator(size / 1.25f, strokeWidth)
+            foregroundIndicator(size / 1.25f, strokeWidth, sweepAngle)
         }) {
     }
 }
 
-fun DrawScope.backgroundIndicator(ComponentSize: Size) {
+fun DrawScope.backgroundIndicator(
+    circleSize: Size,
+    strokeWidth: Float
+) {
     drawArc(
-        Color.Gray.copy(alpha = 0.3f),
+        Color.Magenta.copy(alpha = 0.1f),
         0f, 360f, false,
         style = Stroke(
-            width = 100f,
+            width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = ComponentSize,
+        ), size = circleSize,
         topLeft = Offset(
-            x = (size.width - ComponentSize.width) / 2f,
-            y = (size.height - ComponentSize.height) / 2f,
+            x = (size.width - circleSize.width) / 2f,
+            y = (size.height - circleSize.height) / 2f,
         )
     )
 }
 
-fun DrawScope.foregroundIndicator(ComponentSize: Size, sweepAngle: Float) {
+fun DrawScope.foregroundIndicator(circleSize: Size, strokeWidth: Float, sweepAngle: Float) {
     drawArc(
         Color.Magenta,
         -90f, sweepAngle = sweepAngle, false,
         style = Stroke(
-            width = 100f,
+            width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = ComponentSize,
+        ), size = circleSize,
         topLeft = Offset(
-            x = (size.width - ComponentSize.width) / 2f,
-            y = (size.height - ComponentSize.height) / 2f,
+            x = (size.width - circleSize.width) / 2f,
+            y = (size.height - circleSize.height) / 2f,
         )
     )
 }
@@ -81,5 +84,5 @@ fun DrawScope.foregroundIndicator(ComponentSize: Size, sweepAngle: Float) {
 @Composable
 @Preview(showBackground = true)
 fun AnimatedCirclePreview() {
-    AnimatedCircle()
+    //AnimatedCircle()
 }

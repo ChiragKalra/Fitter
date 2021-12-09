@@ -20,12 +20,6 @@ class ChallengesFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentChallengesBinding.inflate(inflater)
 
-        //customise appbar
-        val view = activity?.findViewById<AppBarLayout>(R.id.app_bar)
-        view?.setExpanded(true, true)
-        val param: AppBarLayout.LayoutParams = activity?.findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar)?.layoutParams as AppBarLayout.LayoutParams
-        param.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP or AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
-
         return binding.root
     }
 }

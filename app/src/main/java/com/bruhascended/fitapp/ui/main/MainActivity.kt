@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
@@ -31,29 +30,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        setSupportActionBar(binding.toolbar)
 
         // initialise navController
+
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        //setup bottomNav with navController
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.dashboardFragment,
-                R.id.challengesFragment,
-                R.id.journalFragment
-            )
-        )
         binding.bottomNav.setupWithNavController(navController)
-
-        //setup collapsing toolbar with navController
-        binding.collapsingToolbar.setupWithNavController(
-            binding.toolbar,
-            navController,
-            appBarConfiguration
-        )
 
         // setup FloatingActionButtons
         fabPresenter = FabPresenter(this, binding)
