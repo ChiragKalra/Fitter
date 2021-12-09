@@ -1,6 +1,5 @@
 package com.bruhascended.fitapp.repository
 
-import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -106,4 +105,11 @@ class ActivityEntryRepository(
         }.time
         return db.getLivePeriodicEntryWeekly(date)
     }
+
+    fun loadRangePeriodicEntries(startDate: Date, endDate: Date) =
+        db.getLivePeriodicEntryOver(startDate, endDate)
+
+    fun loadRangeTotalEntry(startDate: Date, endDate: Date) =
+        db.getLiveTotalEntryOver(startDate, endDate)
+
 }

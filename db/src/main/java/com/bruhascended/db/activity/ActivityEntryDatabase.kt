@@ -44,6 +44,21 @@ abstract class ActivityEntryDatabase : RoomDatabase() {
             date.time + 1 * 24 * 60 * 60 * 1000L
         )
     }
+
+    fun getLivePeriodicEntryOver(startDate: Date, endDate: Date): LiveData<List<PeriodicEntry>> {
+        return periodicEntryManager().getTimeRangeLive(
+            startDate.time,
+            endDate.time
+        )
+    }
+
+    fun getLiveTotalEntryOver(startDate: Date, endDate: Date): LiveData<PeriodicEntry> {
+        return periodicEntryManager().getTimeRangeSumLive(
+            startDate.time,
+            endDate.time
+        )
+    }
+
     fun findPeriodicEntryByStartTime(time: Long) =
         periodicEntryManager().findByStartTime(time)
 
