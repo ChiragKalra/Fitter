@@ -26,15 +26,8 @@ import androidx.compose.ui.unit.dp
 fun AnimatedCircle(indicatorValue: Float = 150f, canvasSize: Dp = 300.dp) {
     val strokeWidth = canvasSize.value / 3f
 
-    val animatedIndicatorValue = remember {
-        Animatable(initialValue = 0f)
-    }
-    LaunchedEffect(key1 = indicatorValue) {
-        animatedIndicatorValue.animateTo(indicatorValue)
-    }
-
     val sweepAngle by animateFloatAsState(
-        targetValue = animatedIndicatorValue.value,
+        targetValue = indicatorValue,
         animationSpec = tween(1000)
     )
 
