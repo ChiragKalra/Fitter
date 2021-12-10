@@ -126,6 +126,7 @@
 
     <!-- Long Descriptions -->
     <string name="food_search">Food Search</string>
+    <string name="calories_burnt">Calories Burnt</string>
     <string name="food_details">Food Details</string>
     <string name="choose_activity">Choose Activity</string>
     <string name="custom_food">Add Custom Food</string>
@@ -147,7 +148,6 @@
 
     <!-- Join -->
     <string name="to_join">%1$s - %2$s</string>
-    <string name="actvity">Actvity</string>
     <string name="calories">Calories</string>
     <string name="distance">distance</string>
     <string name="submit">submit</string>
