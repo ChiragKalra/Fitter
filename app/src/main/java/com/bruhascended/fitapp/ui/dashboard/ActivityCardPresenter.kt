@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import com.bruhascended.db.R
-import com.bruhascended.db.activity.entities.PeriodicEntry
+import com.bruhascended.db.activity.entities.DayEntry
 import com.bruhascended.fitapp.databinding.ItemCardActivityBinding
 import com.bruhascended.fitapp.util.AnimationDuration
 import java.text.DecimalFormat
@@ -32,7 +32,7 @@ class ActivityCardPresenter (
     }
 
     private fun ItemCardActivityBinding.presentSeparator(
-        separatorInfo: PeriodicEntry
+        separatorInfo: DayEntry
     ) { 
 
         textviewCalories.text = mContext.getString(
@@ -43,7 +43,7 @@ class ActivityCardPresenter (
         progressbarCalories.apply {
             progress = 0f
             progressMax = 1800f
-            setProgressWithAnimation(separatorInfo.totalCalories.toFloat())
+            setProgressWithAnimation(separatorInfo.totalCalories)
         }
 
         separatorInfo.also { info ->
@@ -92,8 +92,8 @@ class ActivityCardPresenter (
     }
 
 
-    private var previousValues: PeriodicEntry? = null
-    fun generateCard(values: PeriodicEntry) {
+    private var previousValues: DayEntry? = null
+    fun generateCard(values: DayEntry) {
         if (values == previousValues) return
         binding.presentSeparator(values)
         previousValues = values
