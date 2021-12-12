@@ -3,8 +3,6 @@ package com.bruhascended.db.friends.entities
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.bruhascended.db.weight.entities.MonthlyStats
-import com.bruhascended.db.weight.entities.WeeklyStats
 import java.io.Serializable
 
 @Entity(tableName = "friends")

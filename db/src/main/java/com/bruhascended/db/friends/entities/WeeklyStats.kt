@@ -1,12 +1,17 @@
-package com.bruhascended.db.weight.entities
+package com.bruhascended.db.friends.entities
 
+import androidx.room.ColumnInfo
 import java.io.Serializable
 import kotlin.math.abs
 
 data class WeeklyStats(
+    @ColumnInfo(name = "weekly_total_calories")
     var totalCalories: Float = 0f,
+    @ColumnInfo(name = "weekly_total_duration")
     var totalDuration: Long = 0L,
+    @ColumnInfo(name = "weekly_total_distance")
     var totalDistance: Double = .0,
+    @ColumnInfo(name = "weekly_total_steps")
     var totalSteps: Int = 0,
 ): Serializable {
 
