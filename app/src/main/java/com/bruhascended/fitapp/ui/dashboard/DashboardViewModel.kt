@@ -32,5 +32,7 @@ class DashboardViewModel (mApp: Application) : AndroidViewModel(mApp) {
         }.time
     )
 
-    fun getLastWeekActivityEntries() = activityEntryRepository.loadLastWeekPeriodicEntries()
+    fun getLastWeekActivityEntries() = activityEntryRepository.loadLastWeekDayEntries()
+
+    fun getLastMonthActivityEntries() = activityEntryRepository.loadLastMonthDayEntries()
 }

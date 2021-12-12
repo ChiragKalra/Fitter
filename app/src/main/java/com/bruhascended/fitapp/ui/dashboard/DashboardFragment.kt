@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.bruhascended.db.activity.entities.PeriodicEntry
 import com.bruhascended.db.food.entities.DayEntry
 import com.bruhascended.db.food.types.NutrientType
 
@@ -101,27 +100,7 @@ class DashboardFragment : Fragment() {
         }
 
         viewModel.getLastWeekActivityEntries().observeForever {
-            val weekBefore = Calendar.getInstance().apply {
-                set(Calendar.MILLISECOND, 0)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.HOUR_OF_DAY, 0)
-                add(Calendar.DAY_OF_YEAR, -7)
-            }
-            val pro = Array(7) {
-                val day = weekBefore.apply {
-                    add(Calendar.DAY_OF_YEAR, 1)
-                }.timeInMillis
-                PeriodicEntry(day)
-            }
-            for (entry in it) {
-                pro.forEach { day ->
-                    if (entry.date == day.date) {
-                        day += entry
-                        return@forEach
-                    }
-                }
-            }
+            val pro = it.toTypedArray()
             for (cardGen in cardGens) {
                 if (cardGen.plotType in arrayOf(
                         WeeklyCardType.WeeklyCaloriesBurnt,
