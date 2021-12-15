@@ -8,10 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bruhascended.fitapp.R
+import com.bruhascended.fitapp.ui.friends.AuthHelper.AuthState
 
 class FriendsFragment : Fragment() {
 
@@ -34,7 +32,7 @@ class FriendsFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
-        authHelper = AuthHelper(this)
+        authHelper = AuthHelper(this, viewModel)
         val view = ComposeView(requireContext()).apply {
             setContent {
                 Root()
@@ -46,49 +44,23 @@ class FriendsFragment : Fragment() {
     @Preview
     @Composable
     fun Root() {
-        var isAuthenticated by remember { mutableStateOf(authHelper.isAuthenticated) }
+        var authState by remember {
+            mutableStateOf(authHelper.authState)
+        }
         authHelper.onAuthStateChange {
-            isAuthenticated = it
+            authState = it
         }
-        if (isAuthenticated) {
-            Friends()
-        } else {
-            GoogleAuth()
-        }
-    }
-    
-    @Composable
-    fun Friends() {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .fillMaxWidth(),
-            ) {
-                Text(
-                    text = stringResource(R.string.friend_requests),
-                    modifier = Modifier.align(Alignment.Top)
-                )
-            }
-        }
-    }
-    
-    @Composable
-    fun Username() {
-        Column(modifier = Modifier.padding(16.dp)) {
-            var name by remember { mutableStateOf("") }
-            if (name.isNotEmpty()) {
-                Text(
-                    text = stringResource(R.string.select_a_username),
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    style = MaterialTheme.typography.h5
-                )
-            }
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Name") }
-            )
+        when (authState) {
+            AuthState.Unauthorised ->
+                GoogleAuth()
+            AuthState.Authorising ->
+                AuthorisingWithGoogle()
+            AuthState.UsernameNotSet ->
+                SetUsername()
+            AuthState.SettingUsername ->
+                SettingUpProfile()
+            AuthState.Authorised ->
+                Friends()
         }
     }
 
@@ -120,5 +92,76 @@ class FriendsFragment : Fragment() {
         }
     }
 
+    @Composable
+    fun AuthorisingWithGoogle() {
+        Column(modifier = Modifier.padding(16.dp)) {
+            CircularProgressIndicator()
+            Text(
+                text = stringResource(R.string.signing_in),
+                modifier = Modifier.padding(bottom = 8.dp),
+                style = MaterialTheme.typography.h5
+            )
+        }
+    }
 
+    @Composable
+    fun SetUsername() {
+        Column(modifier = Modifier.padding(16.dp)) {
+            var name by remember { mutableStateOf("") }
+            authHelper.getUsername {
+                if (it != null && name.isBlank()) name = it
+            }
+            if (name.isNotEmpty()) {
+                Text(
+                    text = stringResource(R.string.select_a_username),
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    style = MaterialTheme.typography.h5
+                )
+            }
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Name") }
+            )
+            Button(
+                onClick = {
+                    authHelper.setUsername(name)
+                },
+                modifier = Modifier
+            ) {
+                Text(
+                    text = stringResource(R.string.google_auth),
+                    modifier = Modifier.align(Alignment.Top)
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun SettingUpProfile() {
+        Column(modifier = Modifier.padding(16.dp)) {
+            CircularProgressIndicator()
+            Text(
+                text = stringResource(R.string.setting_up_profile),
+                modifier = Modifier.padding(bottom = 8.dp),
+                style = MaterialTheme.typography.h5
+            )
+        }
+    }
+
+    @Composable
+    fun Friends() {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Button(
+                onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .fillMaxWidth(),
+            ) {
+                Text(
+                    text = stringResource(R.string.friend_requests),
+                    modifier = Modifier.align(Alignment.Top)
+                )
+            }
+        }
+    }
 }

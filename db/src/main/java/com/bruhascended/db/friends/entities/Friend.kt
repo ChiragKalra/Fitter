@@ -10,6 +10,8 @@ data class Friend (
     var email: String,
     var username: String,
     @Embedded
+    var dailyActivity: DailyStats,
+    @Embedded
     var weeklyActivity: WeeklyStats,
     @Embedded
     var monthlyActivity: MonthlyStats,
