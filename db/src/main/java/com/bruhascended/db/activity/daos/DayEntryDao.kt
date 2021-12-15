@@ -8,7 +8,7 @@ import com.bruhascended.db.activity.entities.DayEntry
 @Dao
 interface DayEntryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert (dayEntry: DayEntry): Long
+    fun insert (activity_day_entries: DayEntry): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll (dayEntries: List<DayEntry>): List<Long>
@@ -16,35 +16,35 @@ interface DayEntryDao {
     @Delete
     fun delete (dayEntry: DayEntry)
 
-    @Query("SELECT * FROM dayEntry WHERE startTime LIKE :time")
+    @Query("SELECT * FROM activity_day_entries WHERE startTime LIKE :time")
     fun findByStartTime (time: Long): DayEntry?
 
-    @Query("SELECT * FROM dayEntry WHERE startTime LIKE :time")
+    @Query("SELECT * FROM activity_day_entries WHERE startTime LIKE :time")
     fun getLiveByStartTime (time: Long): LiveData<DayEntry?>
 
-    @Query("SELECT * FROM dayEntry ORDER BY startTime DESC")
+    @Query("SELECT * FROM activity_day_entries ORDER BY startTime DESC")
     fun loadAllPaged(): PagingSource<Int, DayEntry>
 
-    @Query("SELECT * FROM dayEntry")
+    @Query("SELECT * FROM activity_day_entries")
     fun loadAllSync(): List<DayEntry>
 
     @Query("""
         SELECT * 
-        FROM dayEntry 
+        FROM activity_day_entries 
         WHERE startTime >= :startTime AND startTime < :endTime
     """)
     fun getTimeRangeSync (startTime: Long, endTime: Long): List<DayEntry>
 
     @Query("""
         SELECT * 
-        FROM dayEntry 
+        FROM activity_day_entries 
         WHERE startTime >= :startTime AND startTime < :endTime
     """)
     fun getTimeRangePaged (startTime: Long, endTime: Long): PagingSource<Int, DayEntry>
 
     @Query("""
         SELECT * 
-        FROM dayEntry 
+        FROM activity_day_entries 
         WHERE startTime >= :startTime AND startTime < :endTime
     """)
     fun getTimeRangeLive (startTime: Long, endTime: Long): LiveData<List<DayEntry>>
@@ -56,7 +56,7 @@ interface DayEntryDao {
                 SUM(totalDuration) as totalDuration, 
                 SUM(totalDistance) as totalDistance, 
                 SUM(totalSteps) as totalSteps 
-        FROM dayEntry 
+        FROM activity_day_entries 
         WHERE startTime >= :startTime AND startTime < :endTime
     """)
     fun getTimeRangeSumSync (startTime: Long, endTime: Long): DayEntry
@@ -67,7 +67,7 @@ interface DayEntryDao {
                 SUM(totalDuration) as totalDuration, 
                 SUM(totalDistance) as totalDistance, 
                 SUM(totalSteps) as totalSteps 
-        FROM dayEntry 
+        FROM activity_day_entries 
         WHERE startTime >= :startTime AND startTime < :endTime
     """)
     fun getTimeRangeSumLive (startTime: Long, endTime: Long): LiveData<DayEntry>

@@ -80,7 +80,7 @@
         animals for both the humans and the animals for both the humans and the animals for both the
         humans and the animals for both the humans and the animals for both the humans and the
         animals for both the humans and the animals for both the humans and the animals for both the
-        humans and the animals for both the humans and the animals for both the humans and the animals
+        humans and the animals for both the humans and the animFals for both the humans and the animals
         for both the humans and the animals for both the humans and the animals for both the humans
         and the animals for both the humans and the animals for both the humans and the animals for
         both the humans and the animals for both the humans and the animals for both the humans and
@@ -99,7 +99,7 @@
     <string name="food">Food</string>
     <string name="activity">Activity</string>
     <string name="dashboard">Dashboard</string>
-    <string name="challenges">Challenges</string>
+    <string name="friends">Friends</string>
     <string name="journal">Journal</string>
     <string name="add_new">Add New</string>
     <string name="settings">Settings</string>
@@ -123,6 +123,7 @@
     <string name="zero_gm">0 gm</string>
     <string name="search_result_placeholder">Search:</string>
     <string name="ok">OK</string>
+    <string name="google_auth">Google Sign In</string>
 
     <!-- Long Descriptions -->
     <string name="food_search">Food Search</string>
@@ -145,6 +146,7 @@
     <string name="quantity_type_hint">Quantity Type</string>
     <string name="default_quantity">1.0</string>
     <string name="quantity_hint">Quantity</string>
+    <string name="sign_in_for_friends">Sign in with Google to see what your friends are up to.</string>
 
     <!-- Join -->
     <string name="to_join">%1$s - %2$s</string>
@@ -172,5 +174,12 @@
     <string name="service">Service</string>
     <string name="calories_consumed">Calories Consumed</string>
     <string name="more">More</string>
+    <string name="friend_requests">Requests</string>
+
+    <!-- Google Auth Client Web ID -->
+    <string name="web_client_id">
+        310941426439-jihgvogoiuea7fp5q01br98d3c3fm6cj.apps.googleusercontent.com
+    </string>
+    <string name="select_a_username">Select a username</string>
 </resources>
 
