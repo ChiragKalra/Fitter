@@ -107,10 +107,7 @@ class FriendsFragment : Fragment() {
     @Composable
     fun SetUsername() {
         Column(modifier = Modifier.padding(16.dp)) {
-            var name by remember { mutableStateOf("") }
-            authHelper.getUsername {
-                if (it != null && name.isBlank()) name = it
-            }
+            var name by remember { mutableStateOf(authHelper.previousUsername ?: "") }
             if (name.isNotEmpty()) {
                 Text(
                     text = stringResource(R.string.select_a_username),
@@ -153,7 +150,7 @@ class FriendsFragment : Fragment() {
     fun Friends() {
         Column(modifier = Modifier.padding(16.dp)) {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { viewModel.friendRepository.getAll() },
                 modifier = Modifier
                     .fillMaxWidth(),
             ) {

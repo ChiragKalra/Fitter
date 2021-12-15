@@ -30,6 +30,7 @@ class AuthHelper (
 	private var auth: FirebaseAuth = FirebaseAuth.getInstance()
 	private var googleSignInClient: GoogleSignInClient
 	private var authStateCallback: ((newState: AuthState) -> Unit)? = null
+	var previousUsername: String? = null
 
 	init {
 		val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -87,7 +88,10 @@ class AuthHelper (
 		auth.signInWithCredential(credential)
 			.addOnCompleteListener { task ->
 				if (task.isSuccessful) {
-					authStateCallback?.invoke(AuthState.UsernameNotSet)
+					getUsername {
+						previousUsername = it
+						authStateCallback?.invoke(AuthState.UsernameNotSet)
+					}
 				} else {
 					authStateCallback?.invoke(AuthState.Unauthorised)
 				}
