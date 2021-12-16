@@ -1,14 +1,10 @@
 package com.bruhascended.fitapp.repository
 
 import android.app.Application
-import com.bruhascended.db.friends.FriendDatabaseFactory
-import com.bruhascended.fitapp.firebase.FriendsFirebaseDao
 import com.bruhascended.fitapp.firebase.UsersFirebaseDao
 import kotlin.reflect.KProperty
 
-class UsersRepository(
-    mApp: Application
-) {
+class UsersRepository {
 
     companion object {
         private var repository: UsersRepository? = null
@@ -19,7 +15,7 @@ class UsersRepository(
     ) {
         operator fun getValue(thisRef: Any?, property: KProperty<*>): UsersRepository {
             if (repository == null) {
-                repository = UsersRepository(app)
+                repository = UsersRepository()
             }
             return repository!!
         }

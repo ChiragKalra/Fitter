@@ -55,8 +55,13 @@ class FriendsFirebaseDao {
 		)
 	}
 
+	private var previousListener: ValueEventListener? = null
+
 	fun flowFriendsDailyActivity(userUid: String, callback: (list: List<Friend>) -> Unit) {
-		reference.addValueEventListener(object: ValueEventListener {
+		if (previousListener != null) {
+			reference.removeEventListener(previousListener!!)
+		}
+		previousListener = object: ValueEventListener {
 			override fun onDataChange(snapshot: DataSnapshot) {
 				val friendsUid = snapshot.child(userUid).child("friends")
 					.getValue<List<String>>() ?: return
@@ -67,6 +72,46 @@ class FriendsFirebaseDao {
 				callback(list)
 			}
 			override fun onCancelled(error: DatabaseError) {}
-		})
+		}
+		reference.addValueEventListener(previousListener!!)
+	}
+
+	fun updateUserStatistics(
+		userUid: String,
+		dailyStats: DailyStats,
+		weeklyStats: WeeklyStats,
+		monthlyStats: MonthlyStats
+	) {
+		val userRef = reference.child(userUid)
+		userRef
+			.child("daily")
+			.setValue(
+				mapOf(
+					"steps" to dailyStats.totalSteps,
+					"calories" to dailyStats.totalCalories,
+					"duration" to dailyStats.totalDuration,
+					"distance" to dailyStats.totalDistance
+				)
+			)
+		userRef
+			.child("weekly")
+			.setValue(
+				mapOf(
+					"steps" to weeklyStats.totalSteps,
+					"calories" to weeklyStats.totalCalories,
+					"duration" to weeklyStats.totalDuration,
+					"distance" to weeklyStats.totalDistance
+				)
+			)
+		userRef
+			.child("monthly")
+			.setValue(
+				mapOf(
+					"steps" to monthlyStats.totalSteps,
+					"calories" to monthlyStats.totalCalories,
+					"duration" to monthlyStats.totalDuration,
+					"distance" to monthlyStats.totalDistance
+				)
+			)
 	}
 }
