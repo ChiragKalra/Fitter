@@ -7,7 +7,8 @@ import java.io.Serializable
 
 @Entity(tableName = "friends")
 data class Friend (
-    var email: String,
+    @PrimaryKey
+    var uid: String,
     var username: String,
     @Embedded
     var dailyActivity: DailyStats,
@@ -15,6 +16,4 @@ data class Friend (
     var weeklyActivity: WeeklyStats,
     @Embedded
     var monthlyActivity: MonthlyStats,
-    @PrimaryKey(autoGenerate = true)
-    var uid: Long = -1,
 ): Serializable

@@ -6,11 +6,11 @@ import kotlin.math.abs
 
 data class WeeklyStats(
     @ColumnInfo(name = "weekly_total_calories")
-    var totalCalories: Float = 0f,
+    var totalCalories: Int = 0,
     @ColumnInfo(name = "weekly_total_duration")
-    var totalDuration: Long = 0L,
+    var totalDuration: Int = 0,
     @ColumnInfo(name = "weekly_total_distance")
-    var totalDistance: Double = .0,
+    var totalDistance: Float = 0f,
     @ColumnInfo(name = "weekly_total_steps")
     var totalSteps: Int = 0,
 ): Serializable {

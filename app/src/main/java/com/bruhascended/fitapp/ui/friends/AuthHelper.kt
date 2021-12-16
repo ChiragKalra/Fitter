@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 
 class AuthHelper (
-	private val mFragment: Fragment,
+	mFragment: Fragment,
 	private val viewModel: FriendsViewModel
 ) {
 
@@ -31,6 +31,20 @@ class AuthHelper (
 	private var googleSignInClient: GoogleSignInClient
 	private var authStateCallback: ((newState: AuthState) -> Unit)? = null
 	var previousUsername: String? = null
+
+	private val startForResult = mFragment.registerForActivityResult(
+		ActivityResultContracts.StartActivityForResult()
+	) { result: ActivityResult ->
+		if (result.resultCode == Activity.RESULT_OK) {
+			val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+			try {
+				val account = task.getResult(ApiException::class.java)
+				firebaseAuthWithGoogle(account.idToken!!)
+			} catch (e: ApiException) {
+				authStateCallback?.invoke(AuthState.Unauthorised)
+			}
+		}
+	}
 
 	init {
 		val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -53,11 +67,12 @@ class AuthHelper (
 		startForResult.launch(googleSignInClient.signInIntent)
 	}
 
-	fun setUsername(username: String) {
+	fun setUsername(username: String, onComplete: (success: Boolean) -> Unit) {
 		val uid = auth.currentUser?.uid
 		authStateCallback?.invoke(AuthState.SettingUsername)
 		if (uid != null) {
-			viewModel.usersRepository.setUsernameWithCallback(uid, username) {
+			viewModel.usersRepository.setUsername(uid, username) {
+				onComplete(it)
 				if (it)
 					authStateCallback?.invoke(AuthState.Authorised)
 				else
@@ -68,10 +83,10 @@ class AuthHelper (
 		}
 	}
 
-	fun getUsername(callback: (username: String?) -> Unit) {
+	private fun getUsername(callback: (username: String?) -> Unit) {
 		val uid = auth.currentUser?.uid
 		if (uid != null) {
-			viewModel.usersRepository.getUsernameWithCallback(uid) {
+			viewModel.usersRepository.getUsername(uid) {
 				callback(it)
 			}
 		} else {
@@ -98,17 +113,6 @@ class AuthHelper (
 			}
 	}
 
-	private val startForResult = mFragment.registerForActivityResult(
-		ActivityResultContracts.StartActivityForResult()
-	) { result: ActivityResult ->
-		if (result.resultCode == Activity.RESULT_OK) {
-			val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-			try {
-				val account = task.getResult(ApiException::class.java)
-				firebaseAuthWithGoogle(account.idToken!!)
-			} catch (e: ApiException) {
-				authStateCallback?.invoke(AuthState.Unauthorised)
-			}
-		}
-	}
+	fun isValidUsername(name: String) =
+		viewModel.usersRepository.isValidUsername(name)
 }

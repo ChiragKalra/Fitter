@@ -28,5 +28,4 @@ class FriendsRepository(
     private val roomDb = FriendDatabaseFactory(mApp).build()
     private val firebaseFriendsDb = FriendsFirebaseDao()
 
-    fun getAll() = firebaseFriendsDb.getAll()
 }

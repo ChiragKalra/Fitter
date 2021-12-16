@@ -1,9 +1,13 @@
 package com.bruhascended.fitapp.ui.friends
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,6 +26,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.ui.friends.AuthHelper.AuthState
+import com.bruhascended.fitapp.ui.theme.FitAppTheme
 
 class FriendsFragment : Fragment() {
 
@@ -28,14 +34,26 @@ class FriendsFragment : Fragment() {
 
     private val viewModel: FriendsViewModel by viewModels()
 
+    private fun Context.showShortToast(
+        @StringRes
+        stringRes: Int
+    ) {
+        Toast.makeText(
+            this,
+            getString(stringRes),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         authHelper = AuthHelper(this, viewModel)
         val view = ComposeView(requireContext()).apply {
             setContent {
-                Root()
+                FitAppTheme {
+                    Root()
+                }
             }
         }
         return view
@@ -106,6 +124,7 @@ class FriendsFragment : Fragment() {
 
     @Composable
     fun SetUsername() {
+        val context = LocalContext.current
         Column(modifier = Modifier.padding(16.dp)) {
             var name by remember { mutableStateOf(authHelper.previousUsername ?: "") }
             if (name.isNotEmpty()) {
@@ -122,7 +141,15 @@ class FriendsFragment : Fragment() {
             )
             Button(
                 onClick = {
-                    authHelper.setUsername(name)
+                    if (authHelper.isValidUsername(name)) {
+                        authHelper.setUsername(name) { successful ->
+                            if (!successful) {
+                                context.showShortToast(R.string.username_taken)
+                            }
+                        }
+                    } else {
+                        context.showShortToast(R.string.invalid_username)
+                    }
                 },
                 modifier = Modifier
             ) {
@@ -148,14 +175,19 @@ class FriendsFragment : Fragment() {
 
     @Composable
     fun Friends() {
+        val context = LocalContext.current
         Column(modifier = Modifier.padding(16.dp)) {
             Button(
-                onClick = { viewModel.friendRepository.getAll() },
+                onClick = {
+                      startActivity(
+                          Intent(context, AddFriendsActivity::class.java)
+                      )
+                },
                 modifier = Modifier
                     .fillMaxWidth(),
             ) {
                 Text(
-                    text = stringResource(R.string.friend_requests),
+                    text = stringResource(R.string.add_friends),
                     modifier = Modifier.align(Alignment.Top)
                 )
             }

@@ -183,5 +183,14 @@
     <string name="select_a_username">Select a username</string>
     <string name="setting_up_profile">Setting up your profile.</string>
     <string name="signing_in">Signing In with Google.</string>
+    <string name="add_friends">Add Friends</string>
+    <string name="title_activity_add_friends">AddFriendsActivity</string>
+    <string name="send_request">Send a friend request.</string>
+    <string name="deny_request">Deny Request</string>
+    <string name="accept_request">Accept Request</string>
+    <string name="username_taken">Username Taken!</string>
+    <string name="invalid_username">Invalid Username</string>
+    <string name="no_requests">No Requests</string>
+    <string name="request_sent">Request Sent!</string>
 </resources>
 

@@ -25,6 +25,11 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
         <activity
+            android:name=".ui.friends.AddFriendsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_add_friends"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.settings.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".ui.main.MainActivity" />
@@ -78,9 +83,9 @@
         </activity>
         <activity
             android:name=".ui.main.MainActivity"
+            android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:exported="true">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
