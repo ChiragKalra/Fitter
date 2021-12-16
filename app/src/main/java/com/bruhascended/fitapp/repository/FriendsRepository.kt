@@ -1,8 +1,6 @@
 package com.bruhascended.fitapp.repository
 
-import android.app.Application
 import com.bruhascended.db.friends.entities.DailyStats
-import com.bruhascended.db.friends.entities.Friend
 import com.bruhascended.db.friends.entities.MonthlyStats
 import com.bruhascended.db.friends.entities.WeeklyStats
 import com.bruhascended.fitapp.firebase.FriendsFirebaseDao
@@ -17,9 +15,7 @@ class FriendsRepository {
         private var repository: FriendsRepository? = null
     }
 
-    class Delegate(
-        private val app: Application
-    ) {
+    class Delegate {
         operator fun getValue(thisRef: Any?, property: KProperty<*>): FriendsRepository {
             if (repository == null) {
                 repository = FriendsRepository()

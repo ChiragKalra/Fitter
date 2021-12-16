@@ -1,6 +1,5 @@
 package com.bruhascended.fitapp.repository
 
-import android.app.Application
 import com.bruhascended.fitapp.firebase.UsersFirebaseDao
 import kotlin.reflect.KProperty
 
@@ -10,9 +9,7 @@ class UsersRepository {
         private var repository: UsersRepository? = null
     }
 
-    class Delegate(
-        private val app: Application
-    ) {
+    class Delegate {
         operator fun getValue(thisRef: Any?, property: KProperty<*>): UsersRepository {
             if (repository == null) {
                 repository = UsersRepository()

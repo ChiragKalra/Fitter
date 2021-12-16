@@ -7,7 +7,7 @@ import com.bruhascended.fitapp.repository.UsersRepository
 
 class FriendsViewModel (mApp: Application) : AndroidViewModel(mApp) {
 
-    val friendRepository by FriendsRepository.Delegate(mApp)
-    val usersRepository by UsersRepository.Delegate(mApp)
+    val friendRepository by FriendsRepository.Delegate()
+    val usersRepository by UsersRepository.Delegate()
 
 }
