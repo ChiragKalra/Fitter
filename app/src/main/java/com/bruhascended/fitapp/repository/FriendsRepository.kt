@@ -29,7 +29,7 @@ class FriendsRepository {
     fun flowFriendsStatistics(
         userUid: String,
         timePeriod: TimePeriod,
-        sortBy: Statistic = Statistic.CaloriesBurnt,
+        sortBy: Statistic = Statistic.TimeActive,
         callback: (list: List<FriendStatistics>) -> Unit
     ) {
         firebaseFriendsDb.flowFriendsDailyActivity(userUid) { rawStats ->
@@ -44,8 +44,6 @@ class FriendsRepository {
                 }
             }.sortedByDescending {
                 when(sortBy) {
-                    Statistic.CaloriesBurnt ->
-                        it.totalCalories.toFloat()
                     Statistic.DistanceCovered ->
                         it.totalDistance
                     Statistic.StepsTaken ->
