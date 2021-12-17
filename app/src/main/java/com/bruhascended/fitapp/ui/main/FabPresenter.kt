@@ -26,11 +26,12 @@ class FabPresenter(
     var areMiniFabsVisible = false
 
     // onClick destinations
-    private var fabDetails: MutableList<FabInfo>
+    private var fabDetails: MutableSet<FabInfo>
+    private var addFriendsFab: FabInfo
 
     init {
         binding.fabsLayout.apply {
-            fabDetails = mutableListOf(
+            fabDetails = mutableSetOf(
                 FabInfo(
                     CaptureFoodActivity::class.java,
                     captureFoodButton,
@@ -42,16 +43,15 @@ class FabPresenter(
                     textFood,
                 )
             )
-            if (FirebaseAuth.getInstance().uid != null) {
-                fabDetails.add(
-                    FabInfo(
-                        AddFriendsActivity::class.java,
-                        addFriendsButton,
-                        textFriends,
-                    )
+            addFriendsFab = FabInfo(
+                    AddFriendsActivity::class.java,
+                    addFriendsButton,
+                    textFriends,
                 )
-            }
+            fabDetails.add(addFriendsFab)
         }
+
+        toggleAddFriendsFab()
     }
 
     fun setupFABs() {
@@ -90,10 +90,21 @@ class FabPresenter(
         }
     }
 
+    private fun toggleAddFriendsFab() {
+        if (FirebaseAuth.getInstance().uid != null) {
+            fabDetails.add(addFriendsFab)
+        } else {
+            fabDetails.remove(addFriendsFab)
+            addFriendsFab.buttonView.isVisible = false
+            addFriendsFab.descriptionView.isVisible = false
+        }
+    }
+
     private fun setupEntryAndExit() {
         binding.fabsLayout.apply {
             // on show FAB buttons
             binding.addActionButton.setOnClickListener {
+                toggleAddFriendsFab()
                 areMiniFabsVisible = true
                 binding.addActionButton.animateRotation(135f).animateFadeOut()
                 cancelActionButton.animateRotation(135f).animateFadeIn(1f)

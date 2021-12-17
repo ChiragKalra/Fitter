@@ -13,46 +13,57 @@ import com.google.firebase.database.ktx.getValue
 class FriendsFirebaseDao {
 	private val reference = FirebaseDatabase.getInstance(FIREBASE_URL).getReference("users")
 
-	private fun extractFriend(uid: String, snapshot: DataSnapshot): Friend {
-		val ref = snapshot.child(uid)
-		val username = ref.child("username").getValue<String>()!!
-		val daily = with(
-			ref.child("daily").getValue<HashMap<String, Int>>()!!
-		) {
-			DailyStats(
-				totalSteps = this["steps"]!!,
-				totalCalories = this["calories"]!!,
-				totalDuration = this["duration"]!!,
-				totalDistance = this["distance"]!!/1000f,
+	fun String.toUsernameSet(): MutableSet<String> {
+		return split(',')
+			.filter { it.isNotBlank() }
+			.toMutableSet()
+	}
+
+	private fun extractFriends(usernames: MutableSet<String>, snapshot: DataSnapshot): MutableList<Friend> {
+		val friends = snapshot.children.filter {
+			it.child("username").getValue<String>() in usernames
+		}.map { ref ->
+			val username = ref.child("username").getValue<String>()!!
+			val uid = ref.key!!
+			val daily = with(
+				ref.child("daily").getValue<HashMap<String, Int>>()!!
+			) {
+				DailyStats(
+					totalSteps = this["steps"]!!,
+					totalCalories = this["calories"]!!,
+					totalDuration = this["duration"]!!,
+					totalDistance = this["distance"]!! / 1000f,
+				)
+			}
+			val weekly = with(
+				ref.child("weekly").getValue<HashMap<String, Int>>()!!
+			) {
+				WeeklyStats(
+					totalSteps = this["steps"]!!,
+					totalCalories = this["calories"]!!,
+					totalDuration = this["duration"]!!,
+					totalDistance = this["distance"]!! / 1000f,
+				)
+			}
+			val monthly = with(
+				ref.child("monthly").getValue<HashMap<String, Int>>()!!
+			) {
+				MonthlyStats(
+					totalSteps = this["steps"]!!,
+					totalCalories = this["calories"]!!,
+					totalDuration = this["duration"]!!,
+					totalDistance = this["distance"]!! / 1000f,
+				)
+			}
+			Friend(
+				uid = uid,
+				username = username,
+				dailyActivity = daily,
+				weeklyActivity = weekly,
+				monthlyActivity = monthly,
 			)
 		}
-		val weekly = with(
-			ref.child("weekly").getValue<HashMap<String, Int>>()!!
-		) {
-			WeeklyStats(
-				totalSteps = this["steps"]!!,
-				totalCalories = this["calories"]!!,
-				totalDuration = this["duration"]!!,
-				totalDistance = this["distance"]!!/1000f,
-			)
-		}
-		val monthly = with(
-			ref.child("monthly").getValue<HashMap<String, Int>>()!!
-		) {
-			MonthlyStats(
-				totalSteps = this["steps"]!!,
-				totalCalories = this["calories"]!!,
-				totalDuration = this["duration"]!!,
-				totalDistance = this["distance"]!!/1000f,
-			)
-		}
-		return Friend(
-			uid = uid,
-			username = username,
-			dailyActivity = daily,
-			weeklyActivity = weekly,
-			monthlyActivity = monthly,
-		)
+		return friends.toMutableList()
 	}
 
 	private var previousListener: ValueEventListener? = null
@@ -63,13 +74,14 @@ class FriendsFirebaseDao {
 		}
 		previousListener = object: ValueEventListener {
 			override fun onDataChange(snapshot: DataSnapshot) {
-				val friendsUid = snapshot.child(userUid).child("friends")
-					.getValue<List<String>>() ?: return
-				val list = mutableListOf<Friend>()
-				for (uid in friendsUid) {
-					list.add(extractFriend(uid, snapshot))
+				val usernamesStr = snapshot.child(userUid).child("friends")
+					.getValue<String>() ?: return
+				val mUsername = snapshot.child(userUid).child("username")
+					.getValue<String>() ?: return
+				val usernames = usernamesStr.toUsernameSet().apply {
+					add(mUsername)
 				}
-				callback(list)
+				callback(extractFriends(usernames, snapshot))
 			}
 			override fun onCancelled(error: DatabaseError) {}
 		}
