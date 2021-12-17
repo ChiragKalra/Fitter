@@ -175,22 +175,6 @@ class FriendsFragment : Fragment() {
 
     @Composable
     fun Friends() {
-        val context = LocalContext.current
-        Column(modifier = Modifier.padding(16.dp)) {
-            Button(
-                onClick = {
-                      startActivity(
-                          Intent(context, AddFriendsActivity::class.java)
-                      )
-                },
-                modifier = Modifier
-                    .fillMaxWidth(),
-            ) {
-                Text(
-                    text = stringResource(R.string.add_friends),
-                    modifier = Modifier.align(Alignment.Top)
-                )
-            }
-        }
+
     }
 }
