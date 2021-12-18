@@ -5,13 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,11 +21,7 @@ import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.ui.dashboard.components.ConcentricCircles
 import com.bruhascended.fitapp.ui.dashboard.components.OverViewCard
 import com.bruhascended.fitapp.ui.settings.SettingsActivity
-import com.bruhascended.fitapp.util.getCurrentAccount
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.bruhascended.fitapp.util.getWeekList
 
 
 class DashboardFragment : Fragment() {
@@ -42,23 +35,17 @@ class DashboardFragment : Fragment() {
     ): View {
 
         val intent = Intent(activity, SettingsActivity::class.java)
-
         val view = ComposeView(requireContext())
         view.apply {
             setContent {
 
-                /**
-                 * only to visualize animation, to be removed later
-                 */
-
-                var value by remember {
-                    mutableStateOf(0f)
+                var stepsLIst by remember {
+                    mutableStateOf(getWeekList(context))
                 }
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    delay(1000)
-                    value = 100f
-                }
+                viewModel.data?.observe(viewLifecycleOwner, {
+                    stepsLIst = viewModel.getLastWeekSteps(it, stepsLIst)
+                })
 
                 LazyColumn(
                     modifier = Modifier
@@ -66,30 +53,18 @@ class DashboardFragment : Fragment() {
                         .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
                     item {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            IconButton(onClick = {
-                                startActivity(intent)
-                            }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_settings),
-                                    contentDescription = "settings"
-                                )
-                            }
-                        }
+                        TopBar(intent)
                     }
 
                     item {
-                        ConcentricCircles(outerCircleDiameter, value)
+                        ConcentricCircles(outerCircleDiameter)
                     }
 
                     items(count = 3) {
-                        OverViewCard(value)
+                        OverViewCard(stepsLIst, context) // for steps
                     }
+
 
                     item {
                         Spacer(
@@ -102,6 +77,23 @@ class DashboardFragment : Fragment() {
             }
         }
         return view
+    }
+
+    @Composable
+    private fun TopBar(intent: Intent) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            IconButton(onClick = {
+                startActivity(intent)
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_settings),
+                    contentDescription = "settings"
+                )
+            }
+        }
     }
 
 }

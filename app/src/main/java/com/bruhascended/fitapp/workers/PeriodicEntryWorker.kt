@@ -89,7 +89,7 @@ fun performPeriodicSync(
     val estimatedStepSource = FitBuilder.estimatedStepSource
 
     val readRequest = DataReadRequest.Builder()
-        .bucketByTime(30, TimeUnit.MINUTES)
+        .bucketByTime(1, TimeUnit.DAYS)
         .aggregate(DataType.TYPE_CALORIES_EXPENDED)
         .aggregate(estimatedStepSource)
         .aggregate(DataType.TYPE_DISTANCE_DELTA)

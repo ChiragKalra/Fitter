@@ -1,10 +1,13 @@
 package com.bruhascended.fitapp.ui.dashboard.components
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,26 +20,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bruhascended.fitapp.R
+import com.bruhascended.fitapp.util.BarGraphData
 
 @Composable
-fun OverViewCard(value: Float) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .background(Color.White)
-            .padding(16.dp)
+fun OverViewCard(data: List<BarGraphData>, context: Context) {
+    Card(
+        elevation = 6.dp,
+        backgroundColor = Color.White,
+        shape = RoundedCornerShape(10.dp)
     ) {
-        FirstRow("Steps")
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            FirstRow("Energy Burned")
 
-        Text(
-            text = "Last 7 days",
-            fontSize = 12.sp,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+            Text(
+                text = "Last 7 days",
+                fontSize = 12.sp,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
 
-        ThirdRow(value)
+            ThirdRow(data, context)
+        }
     }
+
     Spacer(modifier = Modifier.size(24.dp))
 }
 
@@ -61,7 +70,7 @@ fun FirstRow(title: String) {
 }
 
 @Composable
-fun ThirdRow(value: Float) {
+fun ThirdRow(data: List<BarGraphData>, context: Context) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -69,7 +78,7 @@ fun ThirdRow(value: Float) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         FirstOfThirdRow()
-        BarGraph(height = value)
+        BarGraph(data, context)
     }
 }
 
@@ -87,10 +96,4 @@ fun FirstOfThirdRow() {
             fontSize = 12.sp
         )
     }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun OverViewCardPreview() {
-    OverViewCard(50f)
 }
