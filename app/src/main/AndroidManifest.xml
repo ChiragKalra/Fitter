@@ -25,7 +25,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
         <activity
-            android:name=".ui.friends.AddFriendsActivity"
+            android:name=".ui.addfriends.AddFriendsActivity"
             android:exported="false"
             android:label="@string/title_activity_add_friends"
             android:theme="@style/AppTheme.NoActionBar" />

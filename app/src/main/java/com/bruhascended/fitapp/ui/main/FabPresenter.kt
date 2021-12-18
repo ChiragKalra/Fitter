@@ -7,7 +7,7 @@ import androidx.core.view.isVisible
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
 import com.bruhascended.fitapp.ui.addFood.FoodSearchActivity
 import com.bruhascended.fitapp.ui.capturefood.CaptureFoodActivity
-import com.bruhascended.fitapp.ui.friends.AddFriendsActivity
+import com.bruhascended.fitapp.ui.addfriends.AddFriendsActivity
 import com.bruhascended.fitapp.util.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
@@ -50,8 +50,6 @@ class FabPresenter(
                 )
             fabDetails.add(addFriendsFab)
         }
-
-        toggleAddFriendsFab()
     }
 
     fun setupFABs() {

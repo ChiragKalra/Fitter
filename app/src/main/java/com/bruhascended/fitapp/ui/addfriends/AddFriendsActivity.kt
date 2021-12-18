@@ -1,4 +1,4 @@
-package com.bruhascended.fitapp.ui.friends
+package com.bruhascended.fitapp.ui.addfriends
 
 import android.content.Context
 import android.os.Bundle
@@ -7,24 +7,30 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Send
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.ui.theme.FitAppTheme
 
 class AddFriendsActivity : ComponentActivity() {
 
-	private val viewModel: FriendsViewModel by viewModels()
+	private val viewModel: AddFriendsViewModel by viewModels()
 	private lateinit var requestHelper: RequestHelper
 
 	private fun Context.showShortToast(
@@ -43,19 +49,51 @@ class AddFriendsActivity : ComponentActivity() {
 		requestHelper = RequestHelper(viewModel)
 		setContent {
 			FitAppTheme {
-				Root()
+				Screen()
 			}
 		}
 	}
 
 	@Preview(showBackground = true)
 	@Composable
+	fun Screen() {
+		Column {
+			TopAppBar(
+				title = {
+					Text(stringResource(R.string.add_friends))
+				},
+				navigationIcon = {
+					IconButton(
+						onClick = { finish() }
+					) {
+						Icon(
+							Icons.Filled.ArrowBack,
+							contentDescription = stringResource(R.string.back)
+						)
+					}
+				 },
+			)
+			Root()
+		}
+	}
+
+	@Composable
 	fun Root() {
 		var requests by remember { mutableStateOf<List<String>?>(null) }
 		requestHelper.onRequestsUpdate {
 			requests = it
 		}
-		LazyColumn {
+		LazyColumn (
+			verticalArrangement = Arrangement.Top,
+			horizontalAlignment = Alignment.CenterHorizontally,
+			modifier = Modifier
+				.padding(12.dp)
+		) {
+			item {
+				LabelText(
+					stringResource(R.string.send_request)
+				)
+			}
 			item {
 				SendRequestField()
 			}
@@ -68,11 +106,19 @@ class AddFriendsActivity : ComponentActivity() {
 				requests?.isEmpty() ?: true -> {
 					item {
 						Text(
-							stringResource(R.string.no_requests)
+							text =
+								stringResource(R.string.no_requests),
+							fontSize = 22.sp,
+							fontWeight = FontWeight.Light
 						)
 					}
 				}
 				else -> {
+					item {
+						LabelText(
+							stringResource(R.string.friend_requests)
+						)
+					}
 					items(requests!!) { username ->
 						RequestItem(
 							username = username,
@@ -84,11 +130,35 @@ class AddFriendsActivity : ComponentActivity() {
 	}
 
 	@Composable
+	fun LabelText(text: String) {
+		Text(
+			text = text,
+			textAlign = TextAlign.Left,
+			fontSize = 18.sp,
+			fontWeight = FontWeight.SemiBold,
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(start = 12.dp),
+		)
+	}
+
+	@Composable
 	fun RequestItem(username: String) {
-		Row {
+		Row (
+			modifier = Modifier
+				.padding(
+					horizontal = 12.dp,
+					vertical = 8.dp,
+				),
+			verticalAlignment = Alignment.CenterVertically,
+		) {
 			Text(
 				text = username,
-				modifier = Modifier.weight(1f)
+				modifier = Modifier
+					.weight(1f)
+					.padding(
+						horizontal = 8.dp,
+					),
 			)
 			IconButton(
 				onClick = {
@@ -116,15 +186,26 @@ class AddFriendsActivity : ComponentActivity() {
 	@Composable
 	fun SendRequestField() {
 		var username by remember { mutableStateOf("") }
-		Row {
+		Row (
+			modifier = Modifier
+				.padding(
+					top = 12.dp,
+					bottom = 32.dp,
+				),
+			verticalAlignment = Alignment.CenterVertically
+		) {
 			OutlinedTextField(
 				value = username,
+				placeholder = {
+					Text(stringResource(R.string.enter_username))
+				},
 				onValueChange = {
 					username = it
 				},
 				modifier = Modifier.weight(1f)
 			)
 			IconButton(
+				modifier = Modifier.size(48.dp),
 				onClick = {
 					requestHelper.sendRequest(username) { successful ->
 						if (successful) {

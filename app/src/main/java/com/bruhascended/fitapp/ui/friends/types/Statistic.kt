@@ -7,7 +7,7 @@ enum class Statistic(
 	@StringRes
 	val stringRes: Int
 ) {
-	DistanceCovered(R.string.distance),
-	StepsTaken(R.string.steps),
 	TimeActive(R.string.time_active),
+	StepsTaken(R.string.steps),
+	DistanceCovered(R.string.distance),
 }

@@ -1,9 +1,9 @@
-package com.bruhascended.fitapp.ui.friends
+package com.bruhascended.fitapp.ui.addfriends
 
 import com.google.firebase.auth.FirebaseAuth
 
 class RequestHelper(
-	private val viewModel: FriendsViewModel
+	private val viewModel: AddFriendsViewModel
 ) {
 	private var firebaseAuthUid = FirebaseAuth.getInstance().uid!!
 

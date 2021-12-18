@@ -116,14 +116,14 @@
     <string name="default_online_type">Gram(g)</string>
     <string name="move_min">min</string>
     <string name="km">km</string>
-    <string name="steps">steps</string>
-    <string name="back">back</string>
-    <string name="continue_text">continue</string>
+    <string name="steps">Steps</string>
+    <string name="back">Back</string>
+    <string name="continue_text">Continue</string>
     <string name="expand">expand</string>
     <string name="zero_gm">0 gm</string>
     <string name="search_result_placeholder">Search:</string>
     <string name="ok">OK</string>
-    <string name="google_auth">Google Sign In</string>
+    <string name="google_auth">Sign In with Google</string>
 
     <!-- Long Descriptions -->
     <string name="food_search">Food Search</string>
@@ -151,7 +151,7 @@
     <!-- Join -->
     <string name="to_join">%1$s - %2$s</string>
     <string name="calories">Calories</string>
-    <string name="distance">distance</string>
+    <string name="distance">Distance</string>
     <string name="submit">submit</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -185,15 +185,23 @@
     <string name="signing_in">Signing In with Google.</string>
     <string name="add_friends">Add Friends</string>
     <string name="title_activity_add_friends">AddFriendsActivity</string>
-    <string name="send_request">Send a friend request.</string>
+    <string name="send_request">Send a Request</string>
     <string name="deny_request">Deny Request</string>
     <string name="accept_request">Accept Request</string>
     <string name="username_taken">Username Taken!</string>
     <string name="invalid_username">Invalid Username</string>
-    <string name="no_requests">No Requests</string>
+    <string name="no_requests">No Requests!</string>
     <string name="request_sent">Request Sent!</string>
     <string name="time_active">Time Active</string>
     <string name="this_week">Weekly</string>
     <string name="monthly">Monthly</string>
+    <string name="username">Username</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="sort_by">Sort By:</string>
+    <string name="first_rank">First Rank</string>
+    <string name="second_rank">Second Rank</string>
+    <string name="third_rank">Third Rank</string>
+    <string name="fourth_rank">Fourth Rank</string>
+    <string name="fifth_rank">Fifth Rank</string>
 </resources>
 
