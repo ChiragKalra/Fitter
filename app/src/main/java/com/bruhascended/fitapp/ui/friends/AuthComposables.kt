@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bruhascended.fitapp.R
+import com.bruhascended.fitapp.ui.theme.White700
 
 
 fun Context.showShortToast(
@@ -40,7 +41,7 @@ fun GoogleAuth(onClick: () -> Unit) {
 			text = stringResource(id = R.string.sign_in_for_friends),
 			modifier = Modifier.padding(32.dp),
 			fontSize = 22.sp,
-			color = MaterialTheme.colors.primary
+			color = MaterialTheme.colors.onPrimary
 		)
 		Button(
 			onClick = onClick,
@@ -48,7 +49,8 @@ fun GoogleAuth(onClick: () -> Unit) {
 		) {
 			Text(
 				text = stringResource(R.string.google_auth),
-				modifier = Modifier.align(Alignment.Top)
+				modifier = Modifier.align(Alignment.Top),
+				color = White700
 			)
 		}
 	}
@@ -64,7 +66,8 @@ fun AuthorisingWithGoogle() {
 		Text(
 			text = stringResource(R.string.signing_in),
 			modifier = Modifier.padding(bottom = 8.dp),
-			style = MaterialTheme.typography.h5
+			style = MaterialTheme.typography.h5,
+			color = MaterialTheme.colors.onPrimary
 		)
 	}
 }
@@ -80,12 +83,21 @@ fun SetUsername(authHelper: AuthHelper) {
 		Text(
 			text = stringResource(R.string.select_a_username),
 			modifier = Modifier.padding(bottom = 8.dp),
-			style = MaterialTheme.typography.h5
+			style = MaterialTheme.typography.h5,
+			color = MaterialTheme.colors.onPrimary
 		)
 		OutlinedTextField(
 			value = name,
 			onValueChange = { name = it },
-			label = { Text(stringResource(R.string.username)) }
+			label = {
+				Text(
+					text = stringResource(R.string.username),
+					color = MaterialTheme.colors.onPrimary
+				)
+			},
+			colors = TextFieldDefaults.outlinedTextFieldColors(
+				textColor = MaterialTheme.colors.onPrimary
+			)
 		)
 		Button(
 			onClick = {
@@ -104,7 +116,8 @@ fun SetUsername(authHelper: AuthHelper) {
 		) {
 			Text(
 				text = stringResource(R.string.continue_text),
-				modifier = Modifier.align(Alignment.Top)
+				modifier = Modifier.align(Alignment.Top),
+				color = White700
 			)
 		}
 	}
@@ -120,7 +133,8 @@ fun SettingUpProfile() {
 		Text(
 			text = stringResource(R.string.setting_up_profile),
 			modifier = Modifier.padding(bottom = 8.dp),
-			style = MaterialTheme.typography.h5
+			style = MaterialTheme.typography.h5,
+			color = MaterialTheme.colors.onPrimary
 		)
 	}
 }

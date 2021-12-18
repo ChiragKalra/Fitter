@@ -1,12 +1,10 @@
 package com.bruhascended.fitapp.ui.friends
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,12 +34,13 @@ fun TimePeriodTabRow(
 		TimePeriod.values().forEach {
 			Tab(
 				selected = it == timePeriod,
-				onClick = { onUpdate(it) }
+				onClick = { onUpdate(it) },
+				modifier = Modifier
+					.background(MaterialTheme.colors.background)
 			) {
 				Text(
 					text = stringResource(it.stringRes),
 					fontSize = 24.sp,
-					fontWeight = FontWeight.Light,
 					modifier = Modifier
 						.padding(vertical = 12.dp),
 				)
@@ -65,16 +64,22 @@ fun StatisticTypeRow(
 		Text(
 			text = stringResource(R.string.sort_by),
 			fontSize = 18.sp,
-			fontWeight = FontWeight.SemiBold,
+			fontWeight = FontWeight.ExtraLight,
 			modifier = Modifier
 				.padding(horizontal = 32.dp, vertical = 12.dp),
+			color = MaterialTheme.colors.onSurface
 		)
 		Statistic.values().forEach {
 			Button(
 				onClick = { onUpdate(it) },
 				modifier = Modifier
 					.padding(4.dp),
-				shape = RoundedCornerShape(100)
+				shape = RoundedCornerShape(100),
+				colors = ButtonDefaults.buttonColors(
+					backgroundColor = if (statistic == it) MaterialTheme.colors.secondaryVariant
+											else MaterialTheme.colors.secondary,
+					contentColor = MaterialTheme.colors.primaryVariant
+				)
 			) {
 				Text(
 					text = stringResource(it.stringRes),
@@ -102,7 +107,8 @@ fun FriendStatisticsRow(
 				.weight(1f)
 				.padding(horizontal = 28.dp),
 			fontSize = 16.sp,
-			fontWeight = FontWeight.Bold,
+			fontWeight = FontWeight.SemiBold,
+			color = MaterialTheme.colors.onSurface,
 		)
 		StatisticText(statistic, statistics)
 	}
@@ -134,18 +140,17 @@ fun StatisticText(statistic: Statistic, statistics: FriendStatistics) {
 		},
 		modifier = Modifier
 			.padding(end = 36.dp),
-		fontSize = 16.sp
+		fontSize = 16.sp,
+		color = MaterialTheme.colors.onSurface,
 	)
 }
 
 @Composable
 fun Rank(rank: Int) {
 	val rankInfo = arrayOf(
-		R.drawable.rank_diamond to R.string.first_rank,
-		R.drawable.rank_platinum to R.string.second_rank,
-		R.drawable.rank_gold to R.string.third_rank,
-		R.drawable.rank_silver to R.string.fourth_rank,
-		R.drawable.rank_bronze to R.string.fifth_rank,
+		R.drawable.rank_gold to R.string.first_rank,
+		R.drawable.rank_silver to R.string.second_rank,
+		R.drawable.rank_bronze to R.string.third_rank,
 	)
 	if (rank <= rankInfo.size) {
 		Image(
@@ -163,7 +168,7 @@ fun Rank(rank: Int) {
 			textAlign = TextAlign.Center,
 			fontSize = 24.sp,
 			fontWeight = FontWeight.Black,
-			color = Color.Blue
+			color = MaterialTheme.colors.secondaryVariant
 		)
 	}
 }
