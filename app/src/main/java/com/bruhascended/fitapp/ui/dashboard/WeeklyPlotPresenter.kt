@@ -53,7 +53,7 @@ class WeeklyPlotPresenter (
         chart.setPinchZoom(false)
         chart.setBackgroundColor(color)
 
-        chart.setExtraOffsets(32f, 8f, 32f, 4f)
+        chart.setExtraOffsets(32f, 24f, 32f, 4f)
 
         // add data
         chart.data = data
@@ -128,8 +128,11 @@ class WeeklyPlotPresenter (
         return LineData(set1, set2)
     }
 
+    private var previousValues: FloatArray? = null
     fun generateCard(values: FloatArray?) {
         values ?: return
+        if (previousValues.contentEquals(values)) return
         setupChart(binding.lineChart, getData(values), mContext.getColor(R.color.white_900))
+        previousValues = values
     }
 }

@@ -142,7 +142,7 @@ class FoodSearchActivity : AppCompatActivity() {
         Toast.makeText(this, viewModel.getError(), Toast.LENGTH_SHORT).show()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.add_newfoodv2_items, menu)
         return true
     }
