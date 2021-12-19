@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.ui.theme.FitAppTheme
 
+
 class AddFriendsActivity : ComponentActivity() {
 
 	private val viewModel: AddFriendsViewModel by viewModels()
@@ -59,8 +60,12 @@ class AddFriendsActivity : ComponentActivity() {
 	fun Screen() {
 		Column {
 			TopAppBar(
+				backgroundColor = MaterialTheme.colors.background,
 				title = {
-					Text(stringResource(R.string.add_friends))
+					Text(
+						text = stringResource(R.string.add_friends),
+						color = MaterialTheme.colors.onPrimary
+					)
 				},
 				navigationIcon = {
 					IconButton(
@@ -68,7 +73,8 @@ class AddFriendsActivity : ComponentActivity() {
 					) {
 						Icon(
 							Icons.Filled.ArrowBack,
-							contentDescription = stringResource(R.string.back)
+							contentDescription = stringResource(R.string.back),
+							tint = MaterialTheme.colors.onPrimary
 						)
 					}
 				 },
@@ -106,10 +112,10 @@ class AddFriendsActivity : ComponentActivity() {
 				requests?.isEmpty() ?: true -> {
 					item {
 						Text(
-							text =
-								stringResource(R.string.no_requests),
+							text = stringResource(R.string.no_requests),
 							fontSize = 22.sp,
-							fontWeight = FontWeight.Light
+							fontWeight = FontWeight.Light,
+							color = MaterialTheme.colors.onPrimary
 						)
 					}
 				}
@@ -136,6 +142,7 @@ class AddFriendsActivity : ComponentActivity() {
 			textAlign = TextAlign.Left,
 			fontSize = 18.sp,
 			fontWeight = FontWeight.SemiBold,
+			color = MaterialTheme.colors.onPrimary,
 			modifier = Modifier
 				.fillMaxWidth()
 				.padding(start = 12.dp),
@@ -159,6 +166,7 @@ class AddFriendsActivity : ComponentActivity() {
 					.padding(
 						horizontal = 8.dp,
 					),
+				color = MaterialTheme.colors.onPrimary
 			)
 			IconButton(
 				onClick = {
@@ -167,7 +175,8 @@ class AddFriendsActivity : ComponentActivity() {
 			) {
 				Icon(
 					Icons.Rounded.Close,
-					contentDescription = stringResource(R.string.deny_request)
+					contentDescription = stringResource(R.string.deny_request),
+					tint = MaterialTheme.colors.onPrimary
 				)
 			}
 			IconButton(
@@ -177,7 +186,8 @@ class AddFriendsActivity : ComponentActivity() {
 			) {
 				Icon(
 					Icons.Rounded.Done,
-					contentDescription = stringResource(R.string.accept_request)
+					contentDescription = stringResource(R.string.accept_request),
+					tint = MaterialTheme.colors.onPrimary
 				)
 			}
 		}
@@ -196,16 +206,24 @@ class AddFriendsActivity : ComponentActivity() {
 		) {
 			OutlinedTextField(
 				value = username,
-				placeholder = {
-					Text(stringResource(R.string.enter_username))
+				label = {
+					Text(
+						stringResource(R.string.enter_username),
+						color = MaterialTheme.colors.onPrimary,
+					)
 				},
 				onValueChange = {
 					username = it
 				},
-				modifier = Modifier.weight(1f)
+				modifier = Modifier.weight(1f),
+				colors = TextFieldDefaults.outlinedTextFieldColors(
+					textColor = MaterialTheme.colors.onPrimary
+				)
 			)
 			IconButton(
-				modifier = Modifier.size(48.dp),
+				modifier = Modifier
+					.padding(horizontal = 12.dp)
+					.size(48.dp),
 				onClick = {
 					requestHelper.sendRequest(username) { successful ->
 						if (successful) {
@@ -219,7 +237,8 @@ class AddFriendsActivity : ComponentActivity() {
 			) {
 				Icon(
 					Icons.Rounded.Send,
-					contentDescription = stringResource(R.string.send_request)
+					contentDescription = stringResource(R.string.send_request),
+					tint = MaterialTheme.colors.onPrimary
 				)
 			}
 		}
