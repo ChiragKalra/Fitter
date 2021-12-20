@@ -6,7 +6,7 @@ import java.util.*
 import kotlin.math.abs
 
 
-@Entity
+@Entity(tableName = "activity_day_entries")
 data class DayEntry(
     @PrimaryKey
     var startTime: Long,

@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.bruhascended.classifier.ml.MobilenetV3LargeFoodClassifier
 import org.tensorflow.lite.DataType
-import org.tensorflow.lite.gpu.CompatibilityList
 import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
@@ -32,10 +31,6 @@ class ImageClassifier (
     private var imageProcessorIndian: ImageProcessor
 
     init {
-        val compatList = CompatibilityList()
-        val device = if (compatList.isDelegateSupportedOnThisDevice)
-            Model.Device.GPU else Model.Device.CPU
-
         val optionsCpu = Model.Options.Builder()
             .setNumThreads(6)
             .setDevice(Model.Device.CPU)
