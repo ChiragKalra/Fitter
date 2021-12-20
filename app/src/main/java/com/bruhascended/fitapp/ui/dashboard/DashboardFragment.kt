@@ -39,19 +39,15 @@ class DashboardFragment : Fragment() {
         val intent = Intent(activity, SettingsActivity::class.java)
         val view = ComposeView(requireContext())
         view.apply {
-            repo = PreferencesRepository(context)
+            val repo = PreferencesRepository(context)
+            val nutrientGoals = repo.nutritionGoalsFlow
+            val activityGoals = repo.activityGoalsFlow
             setContent {
-                val preferences by remember {
-                    mutableStateOf(repo.activityGoalsFlow)
-                }
                 val defaultList = getWeekList(context)
                 var energyExpLIst by remember {
                     mutableStateOf(defaultList)
                 }
                 var stepsLIst by remember {
-                    mutableStateOf(defaultList)
-                }
-                var energyTakenLIst by remember {
                     mutableStateOf(defaultList)
                 }
 
@@ -76,11 +72,22 @@ class DashboardFragment : Fragment() {
                     }
 
                     item {
-                        ConcentricCircles(outerCircleDiameter, goalsData, preferences)
+                        ConcentricCircles(
+                            outerCircleDiameter,
+                            goalsData,
+                            activityGoals,
+                            nutrientGoals
+                        )
                     }
 
                     item {
-                        OverViewCard(stepsLIst, context, "Steps", "steps", preferences.steps)
+                        OverViewCard(
+                            stepsLIst,
+                            context,
+                            "Steps",
+                            "steps",
+                            activityGoals.steps
+                        )
                     }
 
                     item {
@@ -89,7 +96,7 @@ class DashboardFragment : Fragment() {
                             context,
                             "Energy burned",
                             "Cal",
-                            preferences.calories
+                            activityGoals.calories
                         )
                     }
 

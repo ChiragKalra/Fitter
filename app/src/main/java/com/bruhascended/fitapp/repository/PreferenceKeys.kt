@@ -12,7 +12,8 @@ object PreferencesKeys {
         GOAL_CALORIE_BURN(PreferencesKeys.GOAL_CALORIE_BURN),
         GOAL_STEPS(PreferencesKeys.GOAL_STEPS),
         GOAL_DURATION(PreferencesKeys.GOAL_DURATION),
-        GOAL_DISTANCE(PreferencesKeys.GOAL_DISTANCE)
+        GOAL_DISTANCE(PreferencesKeys.GOAL_DISTANCE),
+        GOAL_CALORIE_CONSUMPTION(PreferencesKeys.GOAL_CALORIE_CONSUMPTION)
     }
 
     val GOAL_CALORIE_NET = intPreferencesKey("GOAL_CALORIE_NET")
@@ -25,10 +26,10 @@ object PreferencesKeys {
     val LAST_ACTIVITY_SYNC_TIME = longPreferencesKey("LAST_ACTIVITY_SYNC_TIME")
 
     // Food Goals
-    val GOAL_CALORIE_CONSUMPTION = intPreferencesKey("GOAL_CALORIE_CONSUMPTION")
-    val GOAL_PROTEIN = doublePreferencesKey("GOAL_PROTEIN")
-    val GOAL_CARBS = doublePreferencesKey("GOAL_CARBS")
-    val GOAL_FAT = doublePreferencesKey("GOAL_FAT")
+    val GOAL_CALORIE_CONSUMPTION = longPreferencesKey("GOAL_CALORIE_CONSUMPTION")
+    val GOAL_PROTEIN = longPreferencesKey("GOAL_PROTEIN")
+    val GOAL_CARBS = longPreferencesKey("GOAL_CARBS")
+    val GOAL_FAT = longPreferencesKey("GOAL_FAT")
 
     // Activity Goals
     val GOAL_CALORIE_BURN = longPreferencesKey("GOAL_CALORIE_BURN")

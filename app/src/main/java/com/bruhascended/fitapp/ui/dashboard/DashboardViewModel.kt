@@ -1,6 +1,7 @@
 package com.bruhascended.fitapp.ui.dashboard
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
@@ -97,7 +98,7 @@ class DashboardViewModel(mApp: Application) : AndroidViewModel(mApp) {
             val diff = 7 - steps.size
             val list = mutableListOf<BarGraphData>()
             for (i in 1..diff) {
-                val date = Date(startDate.time + ((i - 1) * 86400000))
+                val date = Date(endDate.time + ((i - 1) * 86400000))
                 list.add(BarGraphData(startTime = date))
             }
             return list

@@ -11,7 +11,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.bruhascended.fitapp.R
-import com.bruhascended.fitapp.repository.PreferencesKeys
 import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.settings.SettingsDataStore
 import com.bruhascended.fitapp.util.*
@@ -30,6 +29,7 @@ class MainFragment : PreferenceFragmentCompat() {
     private var stepsPref: EditTextPreference? = null
     private var durationPref: EditTextPreference? = null
     private var distancePref: EditTextPreference? = null
+    private var consumedPref: EditTextPreference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +40,7 @@ class MainFragment : PreferenceFragmentCompat() {
         stepsPref = findPreference("GOAL_STEPS")
         durationPref = findPreference("GOAL_DURATION")
         distancePref = findPreference("GOAL_DISTANCE")
+        consumedPref = findPreference("GOAL_CALORIE_CONSUMPTION")
 
         setUpEditPrefs()
         setUpResultLaunchers()
@@ -64,32 +65,42 @@ class MainFragment : PreferenceFragmentCompat() {
     }
 
     private fun setUpEditPrefs() {
+        val userActivityGoals = repo.activityGoalsFlow
+        val userNutrientGoals = repo.nutritionGoalsFlow
+
         energyPref?.setOnBindEditTextListener {
             it.apply {
                 inputType = InputType.TYPE_CLASS_NUMBER
                 setText("")
-                hint = repo.getPreference(PreferencesKeys.GOAL_CALORIE_BURN).toString()
+                hint = userActivityGoals.calories.toString()
             }
         }
         stepsPref?.setOnBindEditTextListener {
             it.apply {
                 inputType = InputType.TYPE_CLASS_NUMBER
                 setText("")
-                hint = repo.getPreference(PreferencesKeys.GOAL_STEPS).toString()
+                hint = userActivityGoals.steps.toString()
             }
         }
         durationPref?.setOnBindEditTextListener {
             it.apply {
                 inputType = InputType.TYPE_CLASS_NUMBER
                 setText("")
-                hint = repo.getPreference(PreferencesKeys.GOAL_DURATION).toString()
+                hint = userActivityGoals.duration.toString()
             }
         }
         distancePref?.setOnBindEditTextListener {
             it.apply {
                 inputType = InputType.TYPE_CLASS_NUMBER
                 setText("")
-                hint = repo.getPreference(PreferencesKeys.GOAL_DISTANCE).toString()
+                hint = userActivityGoals.distance.toString()
+            }
+        }
+        consumedPref?.setOnBindEditTextListener {
+            it.apply {
+                inputType = InputType.TYPE_CLASS_NUMBER
+                setText("")
+                hint = userNutrientGoals.calories.toString()
             }
         }
     }

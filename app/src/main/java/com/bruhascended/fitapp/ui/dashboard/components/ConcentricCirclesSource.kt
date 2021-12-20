@@ -25,35 +25,39 @@ import com.bruhascended.fitapp.repository.PreferencesRepository
 @Composable
 fun ConcentricCircles(
     canvasSize: Dp = 300.dp,
-    goalsData: DayEntry,
-    activityGoalsFlow: PreferencesRepository.ActivityPreferences
+    dayData: DayEntry,
+    activityGoals: PreferencesRepository.ActivityPreferences,
+    nutrientGoals: PreferencesRepository.NutritionPreferences
 ) {
-
     val strokeWidth = canvasSize.value / 5f
     val sSize = Size(300.dp.value, 300.dp.value)
     val animSpeed = 1200
     val sweepCalories by animateFloatAsState(
-        targetValue = getTarget(activityGoalsFlow.calories, goalsData.totalCalories),
+        targetValue = getTarget(activityGoals.calories, dayData.totalCalories),
         animationSpec = tween(animSpeed)
     )
     val sweepSteps by animateFloatAsState(
-        targetValue = getTarget(activityGoalsFlow.steps, goalsData.totalSteps.toFloat()),
+        targetValue = getTarget(activityGoals.steps, dayData.totalSteps.toFloat()),
         animationSpec = tween(animSpeed)
     )
     val sweepDistance by animateFloatAsState(
-        targetValue = getTarget(activityGoalsFlow.distance, goalsData.totalDistance.toFloat()),
+        targetValue = getTarget(activityGoals.distance, dayData.totalDistance.toFloat()),
         animationSpec = tween(animSpeed)
     )
     val sweepDuration by animateFloatAsState(
-        targetValue = getTarget(activityGoalsFlow.duration, goalsData.totalDuration.toFloat()),
+        targetValue = getTarget(activityGoals.duration, dayData.totalDuration.toFloat()),
         animationSpec = tween(animSpeed)
     )
     val sweepConsumed by animateFloatAsState(
-        targetValue = 360f,
+        targetValue = getTarget(nutrientGoals.calories, 1500f),
         animationSpec = tween(animSpeed)
     )
     val animateList = mutableListOf(
-        sweepCalories, sweepConsumed, sweepDistance, sweepDuration, sweepSteps
+        sweepDistance,
+        sweepDuration,
+        sweepConsumed,
+        sweepCalories,
+        sweepSteps // todo order to be determined by user
     )
     Column(
         modifier = Modifier

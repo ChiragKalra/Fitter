@@ -19,7 +19,13 @@ import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.util.BarGraphData
 
 @Composable
-fun OverViewCard(data: List<BarGraphData>, context: Context, s: String, unit: String?, goal: Long) {
+fun OverViewCard(
+    data: List<BarGraphData>,
+    context: Context,
+    s: String,
+    unit: String?,
+    repo: Long
+) {
     Card(
         elevation = 6.dp,
         backgroundColor = Color.White,
@@ -38,7 +44,7 @@ fun OverViewCard(data: List<BarGraphData>, context: Context, s: String, unit: St
                 modifier = Modifier.padding(bottom = 18.dp)
             )
 
-            ThirdRow(data, context, unit,goal)
+            ThirdRow(data, context, unit,repo)
         }
     }
 

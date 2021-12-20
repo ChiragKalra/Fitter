@@ -26,10 +26,10 @@ class PreferencesRepository(
     }
 
     data class NutritionPreferences(
-        var calories: Int,
-        var proteins: Double,
-        var fats: Double,
-        var carbs: Double,
+        var calories: Long,
+        var proteins: Long,
+        var fats: Long,
+        var carbs: Long,
     )
 
     data class ActivityPreferences(
@@ -42,7 +42,6 @@ class PreferencesRepository(
     data class UserStats(
         var syncEnabled: Boolean
     )
-
 
 
     private val dataStore = context.dataStore
@@ -75,32 +74,33 @@ class PreferencesRepository(
                 }
             }.map { preferences ->
                 ActivityPreferences(
-                    preferences[PreferencesKeys.GOAL_CALORIE_BURN] ?: 2600L,
+                    preferences[PreferencesKeys.GOAL_CALORIE_BURN] ?: 3000L,
                     preferences[PreferencesKeys.GOAL_DISTANCE] ?: 1000L,
                     preferences[PreferencesKeys.GOAL_STEPS] ?: 5000L,
                     preferences[PreferencesKeys.GOAL_DURATION] ?: 60L * 60L * 1000L,
                 )
             }.first()
     }
-//
-//
-//    val nutritionGoalsFlow: Flow<NutritionPreferences> = dataStore.data
-//        .catch { exception ->
-//            // dataStore.data throws an IOException when an error is encountered when reading data
-//            if (exception is IOException) {
-//                Log.e(TAG, "Error reading preferences.", exception)
-//                emit(emptyPreferences())
-//            } else {
-//                throw exception
-//            }
-//        }.map { preferences ->
-//            NutritionPreferences(
-//                preferences[PreferencesKeys.GOAL_CALORIE_CONSUMPTION] ?: 1800,
-//                preferences[PreferencesKeys.GOAL_PROTEIN] ?: 100.0,
-//                preferences[PreferencesKeys.GOAL_FAT] ?: 100.0,
-//                preferences[PreferencesKeys.GOAL_CARBS] ?: 100.0,
-//            )
-//        }
+
+    val nutritionGoalsFlow: NutritionPreferences = runBlocking {
+        dataStore.data
+            .catch { exception ->
+                // dataStore.data throws an IOException when an error is encountered when reading data
+                if (exception is IOException) {
+                    Log.e(TAG, "Error reading preferences.", exception)
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }.map { preferences ->
+                NutritionPreferences(
+                    preferences[PreferencesKeys.GOAL_CALORIE_CONSUMPTION] ?: 2600L,
+                    preferences[PreferencesKeys.GOAL_PROTEIN] ?: 60L,
+                    preferences[PreferencesKeys.GOAL_FAT] ?: 60L,
+                    preferences[PreferencesKeys.GOAL_CARBS] ?: 250L,
+                )
+            }.first()
+    }
 
 
     fun <T> updatePreference(key: Preferences.Key<T>, value: T) {

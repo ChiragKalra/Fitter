@@ -46,4 +46,13 @@
             app:title="Duration" />
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="Daily Nutrient Goals">
+        <EditTextPreference
+            app:dialogIcon="@drawable/ic_consumed"
+            app:dialogMessage="The following will be used as your daily calories consumed goal"
+            app:icon="@drawable/ic_consumed"
+            app:key="GOAL_CALORIE_CONSUMPTION"
+            app:title="Energy Consumed" />
+    </PreferenceCategory>
+
 </PreferenceScreen>
