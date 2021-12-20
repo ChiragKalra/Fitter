@@ -19,24 +19,49 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.bruhascended.db.activity.entities.DayEntry
+import com.bruhascended.fitapp.repository.PreferencesRepository
 
 @Composable
-fun ConcentricCircles(canvasSize: Dp = 300.dp, indicatorValue: Float = 0f) {
-    val strokeWidth = canvasSize.value / 4f
+fun ConcentricCircles(
+    canvasSize: Dp = 300.dp,
+    goalsData: DayEntry,
+    activityGoalsFlow: PreferencesRepository.ActivityPreferences
+) {
+
+    val strokeWidth = canvasSize.value / 5f
     val sSize = Size(300.dp.value, 300.dp.value)
-
-    val sweepAngle by animateFloatAsState(
-        targetValue = indicatorValue,
-        animationSpec = tween(1000)
+    val animSpeed = 1200
+    val sweepCalories by animateFloatAsState(
+        targetValue = getTarget(activityGoalsFlow.calories, goalsData.totalCalories),
+        animationSpec = tween(animSpeed)
     )
-
+    val sweepSteps by animateFloatAsState(
+        targetValue = getTarget(activityGoalsFlow.steps, goalsData.totalSteps.toFloat()),
+        animationSpec = tween(animSpeed)
+    )
+    val sweepDistance by animateFloatAsState(
+        targetValue = getTarget(activityGoalsFlow.distance, goalsData.totalDistance.toFloat()),
+        animationSpec = tween(animSpeed)
+    )
+    val sweepDuration by animateFloatAsState(
+        targetValue = getTarget(activityGoalsFlow.duration, goalsData.totalDuration.toFloat()),
+        animationSpec = tween(animSpeed)
+    )
+    val sweepConsumed by animateFloatAsState(
+        targetValue = 360f,
+        animationSpec = tween(animSpeed)
+    )
+    val animateList = mutableListOf(
+        sweepCalories, sweepConsumed, sweepDistance, sweepDuration, sweepSteps
+    )
     Column(
         modifier = Modifier
             .size(canvasSize)
             .padding(4.dp)
             .drawBehind {
                 backgroundProgressCircle(strokeWidth, sSize)
-                foregroundProgressCircle(strokeWidth, sSize, sweepAngle)
+                foregroundProgressCircle(strokeWidth, sSize, animateList)
             },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -44,41 +69,75 @@ fun ConcentricCircles(canvasSize: Dp = 300.dp, indicatorValue: Float = 0f) {
     }
 }
 
-fun DrawScope.foregroundProgressCircle(strokeWidth: Float, sSize: Size, sweepAngle: Float) {
+fun getTarget(goal: Long, curr: Float): Float {
+    val perc = curr / goal
+    return if (perc <= 1) perc * 360f
+    else 360f
+}
+
+fun DrawScope.foregroundProgressCircle(
+    strokeWidth: Float,
+    sSize: Size,
+    animateList: MutableList<Float>
+) {
     drawArc(
         Color.Blue,
-        -90f, sweepAngle, false,
+        -90f, animateList[0], false,
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = (size / 3f),
+        ), size = (size / 5f),
         topLeft = Offset(
-            x = (size.width - (size.width / 3f)) / 2f,
-            y = (size.height - (size.height / 3f)) / 2f,
+            x = (size.width - (size.width / 5f)) / 2f,
+            y = (size.height - (size.height / 5f)) / 2f,
         )
     )
     drawArc(
         Color.Magenta,
-        -90f, sweepAngle, false,
+        -90f, animateList[1], false,
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = (size / 3f) * 1.6f,
+        ), size = (size / 5f) * 1.8f,
         topLeft = Offset(
-            x = (size.width - (size.width / 3f) * 1.6f) / 2f,
-            y = (size.height - (size.height / 3f) * 1.6f) / 2f,
+            x = (size.width - (size.width / 5f) * 1.8f) / 2f,
+            y = (size.height - (size.height / 5f) * 1.8f) / 2f,
         )
     )
     drawArc(
         Color.Green,
-        -90f, sweepAngle, false,
+        -90f, animateList[2], false,
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = (size / 3f) * 2.2f,
+        ), size = (size / 5f) * 2.6f,
         topLeft = Offset(
-            x = (size.width - (size.width / 3f) * 2.2f) / 2f,
-            y = (size.height - (size.height / 3f) * 2.2f) / 2f,
+            x = (size.width - (size.width / 5f) * 2.6f) / 2f,
+            y = (size.height - (size.height / 5f) * 2.6f) / 2f,
+        )
+    )
+    drawArc(
+        Color.Blue,
+        -90f, animateList[3], false,
+        style = Stroke(
+            width = strokeWidth,
+            cap = StrokeCap.Round
+        ), size = (size / 5f) * 3.4f,
+        topLeft = Offset(
+            x = (size.width - (size.width / 5f) * 3.4f) / 2f,
+            y = (size.height - (size.height / 5f) * 3.4f) / 2f,
+        )
+    )
+    drawArc(
+        Color.Green,
+        -90f, animateList[4], false,
+        style = Stroke(
+            width = strokeWidth,
+            cap = StrokeCap.Round
+        ), size = (size / 5f) * 4.2f,
+        topLeft = Offset(
+            x = (size.width - (size.width / 5f) * 4.2f) / 2f,
+            y = (size.height - (size.height / 5f) * 4.2f) / 2f,
         )
     )
 }
@@ -90,10 +149,10 @@ fun DrawScope.backgroundProgressCircle(strokeWidth: Float, sSize: Size) {
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = (size / 3f),
+        ), size = (size / 5f),
         topLeft = Offset(
-            x = (size.width - (size.width / 3f)) / 2f,
-            y = (size.height - (size.height / 3f)) / 2f,
+            x = (size.width - (size.width / 5f)) / 2f,
+            y = (size.height - (size.height / 5f)) / 2f,
         )
     )
     drawArc(
@@ -102,10 +161,10 @@ fun DrawScope.backgroundProgressCircle(strokeWidth: Float, sSize: Size) {
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = (size / 3f) * 1.6f,
+        ), size = (size / 5f) * 1.8f,
         topLeft = Offset(
-            x = (size.width - (size.width / 3f) * 1.6f) / 2f,
-            y = (size.height - (size.height / 3f) * 1.6f) / 2f,
+            x = (size.width - (size.width / 5f) * 1.8f) / 2f,
+            y = (size.height - (size.height / 5f) * 1.8f) / 2f,
         )
     )
     drawArc(
@@ -114,10 +173,34 @@ fun DrawScope.backgroundProgressCircle(strokeWidth: Float, sSize: Size) {
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = (size / 3f) * 2.2f,
+        ), size = (size / 5f) * 2.6f,
         topLeft = Offset(
-            x = (size.width - (size.width / 3f) * 2.2f) / 2f,
-            y = (size.height - (size.height / 3f) * 2.2f) / 2f,
+            x = (size.width - (size.width / 5f) * 2.6f) / 2f,
+            y = (size.height - (size.height / 5f) * 2.6f) / 2f,
+        )
+    )
+    drawArc(
+        Color.Blue.copy(alpha = 0.2f),
+        0f, 360f, false,
+        style = Stroke(
+            width = strokeWidth,
+            cap = StrokeCap.Round
+        ), size = (size / 5f) * 3.4f,
+        topLeft = Offset(
+            x = (size.width - (size.width / 5f) * 3.4f) / 2f,
+            y = (size.height - (size.height / 5f) * 3.4f) / 2f,
+        )
+    )
+    drawArc(
+        Color.Green.copy(alpha = 0.2f),
+        0f, 360f, false,
+        style = Stroke(
+            width = strokeWidth,
+            cap = StrokeCap.Round
+        ), size = (size / 5f) * 4.2f,
+        topLeft = Offset(
+            x = (size.width - (size.width / 5f) * 4.2f) / 2f,
+            y = (size.height - (size.height / 5f) * 4.2f) / 2f,
         )
     )
 }

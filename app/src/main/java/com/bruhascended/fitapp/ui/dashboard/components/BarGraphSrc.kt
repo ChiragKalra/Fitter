@@ -28,20 +28,18 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import com.bruhascended.fitapp.util.BarGraphData
 import java.text.DateFormat
-import java.util.*
 
-val menMaxCalories = 3000f   //todo
-val currentEnergyBurGoal = 2500f  //todo
+val diff = 1000f // defining height of bar after goal
 
 @Composable
-fun BarGraph(data: List<BarGraphData>, context: Context,unit:String?) {
+fun BarGraph(data: List<BarGraphData>, context: Context, unit: String?, goal: Long) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .drawBehind {
                 val height = 60.dp.toPx()
                 val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
-                var goalHeight = currentEnergyBurGoal / menMaxCalories
+                var goalHeight = goal / (goal + diff)
                 goalHeight = if (goalHeight <= 1f) (1f - goalHeight) * height
                 else height
 
@@ -57,7 +55,7 @@ fun BarGraph(data: List<BarGraphData>, context: Context,unit:String?) {
     ) {
         items(items = data, itemContent = { item ->
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Bar(item, context = context, unit ?: "")
+                Bar(item, context = context, unit ?: "", goal)
                 Text(text = item.x, fontSize = 12.sp)
             }
         })
@@ -66,7 +64,7 @@ fun BarGraph(data: List<BarGraphData>, context: Context,unit:String?) {
 
 
 @Composable
-fun Bar(item: BarGraphData, context: Context, unit: String) {
+fun Bar(item: BarGraphData, context: Context, unit: String, goal: Long) {
     var offset by remember {
         mutableStateOf(Offset(x = 0f, y = 0f))
     }
@@ -75,7 +73,7 @@ fun Bar(item: BarGraphData, context: Context, unit: String) {
         mutableStateOf(0f)
     }
 
-    val perc = item.height / menMaxCalories
+    val perc = item.height / (goal + diff)
 
     val y by animateFloatAsState(
         targetValue = height, animationSpec = tween(500)

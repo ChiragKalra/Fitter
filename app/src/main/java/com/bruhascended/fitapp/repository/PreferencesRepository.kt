@@ -63,25 +63,25 @@ class PreferencesRepository(
             )
         }
 
-//    val activityGoalsFlow: ActivityPreferences = runBlocking {
-//        dataStore.data
-//            .catch { exception ->
-//                // dataStore.data throws an IOException when an error is encountered when reading data
-//                if (exception is IOException) {
-//                    Log.e(TAG, "Error reading preferences.", exception)
-//                    emit(emptyPreferences())
-//                } else {
-//                    throw exception
-//                }
-//            }.map { preferences ->
-//                ActivityPreferences(
-//                    preferences[PreferencesKeys.GOAL_CALORIE_BURN] ?: 200,
-//                    preferences[PreferencesKeys.GOAL_DISTANCE] ?: 1000.0,
-//                    preferences[PreferencesKeys.GOAL_STEPS] ?: 3000,
-//                    preferences[PreferencesKeys.GOAL_DURATION] ?: 60 * 60 * 1000L,
-//                )
-//            }.first()
-//    }
+    val activityGoalsFlow: ActivityPreferences = runBlocking {
+        dataStore.data
+            .catch { exception ->
+                // dataStore.data throws an IOException when an error is encountered when reading data
+                if (exception is IOException) {
+                    Log.e(TAG, "Error reading preferences.", exception)
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }.map { preferences ->
+                ActivityPreferences(
+                    preferences[PreferencesKeys.GOAL_CALORIE_BURN] ?: 2600L,
+                    preferences[PreferencesKeys.GOAL_DISTANCE] ?: 1000L,
+                    preferences[PreferencesKeys.GOAL_STEPS] ?: 5000L,
+                    preferences[PreferencesKeys.GOAL_DURATION] ?: 60L * 60L * 1000L,
+                )
+            }.first()
+    }
 //
 //
 //    val nutritionGoalsFlow: Flow<NutritionPreferences> = dataStore.data

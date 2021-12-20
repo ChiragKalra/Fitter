@@ -2,7 +2,6 @@ package com.bruhascended.fitapp.ui.dashboard.components
 
 import android.content.Context
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -20,7 +19,7 @@ import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.util.BarGraphData
 
 @Composable
-fun OverViewCard(data: List<BarGraphData>, context: Context, s: String, unit: String?) {
+fun OverViewCard(data: List<BarGraphData>, context: Context, s: String, unit: String?, goal: Long) {
     Card(
         elevation = 6.dp,
         backgroundColor = Color.White,
@@ -39,7 +38,7 @@ fun OverViewCard(data: List<BarGraphData>, context: Context, s: String, unit: St
                 modifier = Modifier.padding(bottom = 18.dp)
             )
 
-            ThirdRow(data, context, unit)
+            ThirdRow(data, context, unit,goal)
         }
     }
 
@@ -67,7 +66,7 @@ fun FirstRow(title: String) {
 }
 
 @Composable
-fun ThirdRow(data: List<BarGraphData>, context: Context, unit: String?) {
+fun ThirdRow(data: List<BarGraphData>, context: Context, unit: String?, goal: Long) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -75,7 +74,7 @@ fun ThirdRow(data: List<BarGraphData>, context: Context, unit: String?) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         FirstOfThirdRow(data, unit)
-        BarGraph(data, context,unit)
+        BarGraph(data, context,unit,goal)
     }
 }
 

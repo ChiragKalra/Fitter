@@ -2,7 +2,6 @@ package com.bruhascended.fitapp.ui.dashboard
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +17,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.bruhascended.db.activity.entities.DayEntry
 import com.bruhascended.fitapp.R
+import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.dashboard.components.ConcentricCircles
 import com.bruhascended.fitapp.ui.dashboard.components.OverViewCard
 import com.bruhascended.fitapp.ui.settings.SettingsActivity
@@ -28,6 +29,7 @@ import com.bruhascended.fitapp.util.getWeekList
 class DashboardFragment : Fragment() {
     private val outerCircleDiameter = 250.dp
     private val viewModel: DashboardViewModel by viewModels()
+    private lateinit var repo: PreferencesRepository
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +39,11 @@ class DashboardFragment : Fragment() {
         val intent = Intent(activity, SettingsActivity::class.java)
         val view = ComposeView(requireContext())
         view.apply {
+            repo = PreferencesRepository(context)
             setContent {
+                val preferences by remember {
+                    mutableStateOf(repo.activityGoalsFlow)
+                }
                 val defaultList = getWeekList(context)
                 var energyExpLIst by remember {
                     mutableStateOf(defaultList)
@@ -49,9 +55,14 @@ class DashboardFragment : Fragment() {
                     mutableStateOf(defaultList)
                 }
 
+                var goalsData by remember {
+                    mutableStateOf(DayEntry(0L))
+                }
+
                 viewModel.data?.observe(viewLifecycleOwner, {
                     energyExpLIst = viewModel.getLastWeekEnergyExp(it, energyExpLIst)
                     stepsLIst = viewModel.getLastWeekSteps(it, stepsLIst)
+                    goalsData = if (it.isNotEmpty()) it.last() else DayEntry(0L)
                 })
 
                 LazyColumn(
@@ -65,15 +76,21 @@ class DashboardFragment : Fragment() {
                     }
 
                     item {
-                        ConcentricCircles(outerCircleDiameter)
+                        ConcentricCircles(outerCircleDiameter, goalsData, preferences)
                     }
 
                     item {
-                        OverViewCard(stepsLIst, context, "Steps", "steps")
+                        OverViewCard(stepsLIst, context, "Steps", "steps", preferences.steps)
                     }
 
                     item {
-                        OverViewCard(energyExpLIst, context, "Energy burned","Cal")
+                        OverViewCard(
+                            energyExpLIst,
+                            context,
+                            "Energy burned",
+                            "Cal",
+                            preferences.calories
+                        )
                     }
 
                     item {
