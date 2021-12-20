@@ -2,28 +2,25 @@ package com.bruhascended.fitapp.ui.dashboard.components
 
 import android.content.Context
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.util.BarGraphData
 
 @Composable
-fun OverViewCard(data: List<BarGraphData>, context: Context) {
+fun OverViewCard(data: List<BarGraphData>, context: Context, s: String, unit: String?) {
     Card(
         elevation = 6.dp,
         backgroundColor = Color.White,
@@ -34,15 +31,15 @@ fun OverViewCard(data: List<BarGraphData>, context: Context) {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            FirstRow("Energy Burned")
+            FirstRow(s)
 
             Text(
                 text = "Last 7 days",
                 fontSize = 12.sp,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 18.dp)
             )
 
-            ThirdRow(data, context)
+            ThirdRow(data, context, unit)
         }
     }
 
@@ -70,26 +67,39 @@ fun FirstRow(title: String) {
 }
 
 @Composable
-fun ThirdRow(data: List<BarGraphData>, context: Context) {
+fun ThirdRow(data: List<BarGraphData>, context: Context, unit: String?) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        FirstOfThirdRow()
-        BarGraph(data, context)
+        FirstOfThirdRow(data, unit)
+        BarGraph(data, context,unit)
     }
 }
 
 @Composable
-fun FirstOfThirdRow() {
+fun FirstOfThirdRow(data: List<BarGraphData>, unit: String?) {
     Column(modifier = Modifier.fillMaxWidth(0.25f)) {
-        Text(
-            text = "127",
-            style = MaterialTheme.typography.h5,
-            fontWeight = FontWeight.Medium
-        )
+        Row {
+            Text(
+                modifier = Modifier
+                    .padding(end = 2.dp)
+                    .alignByBaseline(),
+                text = data.last().height.toInt().toString(),
+                style = MaterialTheme.typography.h5,
+                fontWeight = FontWeight.Medium
+            )
+            if (unit != null) {
+                Text(
+                    modifier = Modifier.alignByBaseline(),
+                    text = unit,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
 
         Text(
             text = "Today",

@@ -12,6 +12,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
+import com.bruhascended.fitapp.repository.PreferencesKeys
 import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.settings.SettingsActivity
 import com.bruhascended.fitapp.util.enqueueImmediateJob
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
     private fun immediateSync() {
         repo = PreferencesRepository(this)
         val syncEnabled =
-            repo.getPreference(PreferencesRepository.PreferencesKeys.SYNC_ENABLED).toString()
+            repo.getPreference(PreferencesKeys.SYNC_ENABLED).toString()
                 .toBooleanStrictOrNull() ?: false
         if (getCurrentAccount(this) != null && syncEnabled) {
             enqueueImmediateJob(this, PeriodicEntryWorker.WORK_NAME)

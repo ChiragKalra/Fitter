@@ -2,6 +2,7 @@ package com.bruhascended.fitapp.ui.dashboard
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,17 +34,23 @@ class DashboardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         val intent = Intent(activity, SettingsActivity::class.java)
         val view = ComposeView(requireContext())
         view.apply {
             setContent {
-
+                val defaultList = getWeekList(context)
+                var energyExpLIst by remember {
+                    mutableStateOf(defaultList)
+                }
                 var stepsLIst by remember {
-                    mutableStateOf(getWeekList(context))
+                    mutableStateOf(defaultList)
+                }
+                var energyTakenLIst by remember {
+                    mutableStateOf(defaultList)
                 }
 
                 viewModel.data?.observe(viewLifecycleOwner, {
+                    energyExpLIst = viewModel.getLastWeekEnergyExp(it, energyExpLIst)
                     stepsLIst = viewModel.getLastWeekSteps(it, stepsLIst)
                 })
 
@@ -61,10 +68,13 @@ class DashboardFragment : Fragment() {
                         ConcentricCircles(outerCircleDiameter)
                     }
 
-                    items(count = 3) {
-                        OverViewCard(stepsLIst, context) // for steps
+                    item {
+                        OverViewCard(stepsLIst, context, "Steps", "steps")
                     }
 
+                    item {
+                        OverViewCard(energyExpLIst, context, "Energy burned","Cal")
+                    }
 
                     item {
                         Spacer(

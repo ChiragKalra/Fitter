@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
+import com.bruhascended.fitapp.repository.PreferencesKeys
 import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.util.*
 import com.google.android.gms.fitness.Fitness
@@ -40,7 +41,7 @@ class PeriodicEntryWorker(private val context: Context, params: WorkerParameters
             Log.d("periodic_eyo", "${e.message}")
             return Result.retry()
         }
-        if (repo.getPreference(PreferencesRepository.PreferencesKeys.SYNC_ENABLED).toString()
+        if (repo.getPreference(PreferencesKeys.SYNC_ENABLED).toString()
                 .toBooleanStrictOrNull() == true
         )
             enqueueRepeatedJob(context, WORK_NAME)
@@ -55,7 +56,7 @@ fun performPeriodicSync(
     val activityEntryRepository: ActivityEntryRepository by ActivityEntryRepository.Delegate(context)
 
     val lastSyncStartTime =
-        repo.getPreference(PreferencesRepository.PreferencesKeys.LAST_PERIODIC_SYNC_TIME) as Long?
+        repo.getPreference(PreferencesKeys.LAST_PERIODIC_SYNC_TIME) as Long?
 
     val isWorkImmediate = isWorkImmediate(context, PeriodicEntryWorker.WORK_NAME)
     if (lastSyncStartTime != null && !isWorkImmediate) {
@@ -112,7 +113,7 @@ fun performPeriodicSync(
                 insertPeriodicEntriesToDb(entries, activityEntryRepository)
                 if (!isWorkImmediate) {
                     repo.updatePreference(
-                        PreferencesRepository.PreferencesKeys.LAST_PERIODIC_SYNC_TIME,
+                        PreferencesKeys.LAST_PERIODIC_SYNC_TIME,
                         startTime
                     )
                 }

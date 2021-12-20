@@ -1,8 +1,10 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="Service">
 
         <Preference
+            app:icon="@drawable/googleg_standard_color_18"
             app:key="SIGNED_IN"
             app:title="Google fit"
             app:useSimpleSummaryProvider="true" />
@@ -12,6 +14,36 @@
             app:summaryOff="Sync off"
             app:summaryOn="Sync on"
             app:title="Sync fit data periodically" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Daily Activity Goals">
+        <EditTextPreference
+            app:dialogIcon="@drawable/ic_steps"
+            app:dialogMessage="The following will be used as your daily steps goal"
+            app:icon="@drawable/ic_steps"
+            app:key="GOAL_STEPS"
+            app:title="Steps" />
+
+        <EditTextPreference
+            app:dialogIcon="@drawable/ic_distance"
+            app:dialogMessage="The following will be used as your daily distance covered goal"
+            app:icon="@drawable/ic_distance"
+            app:key="GOAL_DISTANCE"
+            app:title="Distance" />
+
+        <EditTextPreference
+            app:dialogIcon="@drawable/ic_energy_burn"
+            app:dialogMessage="The following will be used as your daily energy expended goal"
+            app:icon="@drawable/ic_energy_burn"
+            app:key="GOAL_CALORIE_BURN"
+            app:title="Energy Expended" />
+
+        <EditTextPreference
+            app:dialogIcon="@drawable/ic_duration"
+            app:dialogMessage="The following will be used as your daily duration goal"
+            app:icon="@drawable/ic_duration"
+            app:key="GOAL_DURATION"
+            app:title="Duration" />
     </PreferenceCategory>
 
 </PreferenceScreen>
