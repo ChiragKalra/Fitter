@@ -2,6 +2,7 @@ package com.bruhascended.fitapp.ui.dashboard.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -17,19 +18,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bruhascended.db.activity.entities.DayEntry
 import com.bruhascended.fitapp.repository.PreferencesRepository
+import com.bruhascended.fitapp.ui.theme.*
+import com.bruhascended.fitapp.ui.theme.Green500
 
 @Composable
 fun ConcentricCircles(
-    canvasSize: Dp = 300.dp,
+    canvasSize: Dp,
     dayData: DayEntry,
     activityGoals: PreferencesRepository.ActivityPreferences,
     nutrientGoals: PreferencesRepository.NutritionPreferences
 ) {
-    val strokeWidth = canvasSize.value / 5f
+    val strokeWidth = canvasSize.value / 3.2f
     val sSize = Size(300.dp.value, 300.dp.value)
     val animSpeed = 1200
     val sweepCalories by animateFloatAsState(
@@ -40,24 +44,14 @@ fun ConcentricCircles(
         targetValue = getTarget(activityGoals.steps, dayData.totalSteps.toFloat()),
         animationSpec = tween(animSpeed)
     )
-    val sweepDistance by animateFloatAsState(
-        targetValue = getTarget(activityGoals.distance, dayData.totalDistance.toFloat()),
-        animationSpec = tween(animSpeed)
-    )
-    val sweepDuration by animateFloatAsState(
-        targetValue = getTarget(activityGoals.duration, dayData.totalDuration.toFloat()),
-        animationSpec = tween(animSpeed)
-    )
     val sweepConsumed by animateFloatAsState(
         targetValue = getTarget(nutrientGoals.calories, 1500f),
         animationSpec = tween(animSpeed)
     )
     val animateList = mutableListOf(
-        sweepDistance,
-        sweepDuration,
         sweepConsumed,
         sweepCalories,
-        sweepSteps // todo order to be determined by user
+        sweepSteps
     )
     Column(
         modifier = Modifier
@@ -84,126 +78,95 @@ fun DrawScope.foregroundProgressCircle(
     animateList: MutableList<Float>
 ) {
     drawArc(
-        Color.Blue,
+        Green200,
         -90f, animateList[0], false,
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = (size / 5f),
+        ), size = (size / 4f),
         topLeft = Offset(
-            x = (size.width - (size.width / 5f)) / 2f,
-            y = (size.height - (size.height / 5f)) / 2f,
+            x = (size.width - (size.width / 4f)) / 2f,
+            y = (size.height - (size.height / 4f)) / 2f,
         )
     )
     drawArc(
-        Color.Magenta,
+        Red200,
         -90f, animateList[1], false,
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = (size / 5f) * 1.8f,
+        ), size = (size / 4f) * 2f,
         topLeft = Offset(
-            x = (size.width - (size.width / 5f) * 1.8f) / 2f,
-            y = (size.height - (size.height / 5f) * 1.8f) / 2f,
+            x = (size.width - (size.width / 4f) * 2f) / 2f,
+            y = (size.height - (size.height / 4f) * 2f) / 2f,
         )
     )
     drawArc(
-        Color.Green,
+        Blue500,
         -90f, animateList[2], false,
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = (size / 5f) * 2.6f,
+        ), size = (size / 4f) * 3f,
         topLeft = Offset(
-            x = (size.width - (size.width / 5f) * 2.6f) / 2f,
-            y = (size.height - (size.height / 5f) * 2.6f) / 2f,
-        )
-    )
-    drawArc(
-        Color.Blue,
-        -90f, animateList[3], false,
-        style = Stroke(
-            width = strokeWidth,
-            cap = StrokeCap.Round
-        ), size = (size / 5f) * 3.4f,
-        topLeft = Offset(
-            x = (size.width - (size.width / 5f) * 3.4f) / 2f,
-            y = (size.height - (size.height / 5f) * 3.4f) / 2f,
-        )
-    )
-    drawArc(
-        Color.Green,
-        -90f, animateList[4], false,
-        style = Stroke(
-            width = strokeWidth,
-            cap = StrokeCap.Round
-        ), size = (size / 5f) * 4.2f,
-        topLeft = Offset(
-            x = (size.width - (size.width / 5f) * 4.2f) / 2f,
-            y = (size.height - (size.height / 5f) * 4.2f) / 2f,
+            x = (size.width - (size.width / 4f) * 3f) / 2f,
+            y = (size.height - (size.height / 4f) * 3f) / 2f,
         )
     )
 }
 
 fun DrawScope.backgroundProgressCircle(strokeWidth: Float, sSize: Size) {
     drawArc(
-        Color.Blue.copy(alpha = 0.2f),
+        Green200.copy(alpha = 0.2f),
         0f, 360f, false,
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = (size / 5f),
+        ), size = (size / 4f),
         topLeft = Offset(
-            x = (size.width - (size.width / 5f)) / 2f,
-            y = (size.height - (size.height / 5f)) / 2f,
+            x = (size.width - (size.width / 4f)) / 2f,
+            y = (size.height - (size.height / 4f)) / 2f,
         )
     )
     drawArc(
-        Color.Magenta.copy(alpha = 0.2f),
+        Red200.copy(alpha = 0.2f),
         0f, 360f, false,
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = (size / 5f) * 1.8f,
+        ), size = (size / 4f) * 2f,
         topLeft = Offset(
-            x = (size.width - (size.width / 5f) * 1.8f) / 2f,
-            y = (size.height - (size.height / 5f) * 1.8f) / 2f,
+            x = (size.width - (size.width / 4f) * 2f) / 2f,
+            y = (size.height - (size.height / 4f) * 2f) / 2f,
         )
     )
     drawArc(
-        Color.Green.copy(alpha = 0.2f),
+        Blue500.copy(alpha = 0.2f),
         0f, 360f, false,
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round
-        ), size = (size / 5f) * 2.6f,
+        ), size = (size / 4f) * 3f,
         topLeft = Offset(
-            x = (size.width - (size.width / 5f) * 2.6f) / 2f,
-            y = (size.height - (size.height / 5f) * 2.6f) / 2f,
+            x = (size.width - (size.width / 4f) * 3f) / 2f,
+            y = (size.height - (size.height / 4f) * 3f) / 2f,
         )
     )
-    drawArc(
-        Color.Blue.copy(alpha = 0.2f),
-        0f, 360f, false,
-        style = Stroke(
-            width = strokeWidth,
-            cap = StrokeCap.Round
-        ), size = (size / 5f) * 3.4f,
-        topLeft = Offset(
-            x = (size.width - (size.width / 5f) * 3.4f) / 2f,
-            y = (size.height - (size.height / 5f) * 3.4f) / 2f,
-        )
-    )
-    drawArc(
-        Color.Green.copy(alpha = 0.2f),
-        0f, 360f, false,
-        style = Stroke(
-            width = strokeWidth,
-            cap = StrokeCap.Round
-        ), size = (size / 5f) * 4.2f,
-        topLeft = Offset(
-            x = (size.width - (size.width / 5f) * 4.2f) / 2f,
-            y = (size.height - (size.height / 5f) * 4.2f) / 2f,
-        )
-    )
+}
+
+@Composable
+@Preview(showBackground = true)
+fun pp(){
+    val strokeWidth = 300.dp.value / 4f
+    val sSize = Size(300.dp.value, 300.dp.value)
+    Column(
+        modifier = Modifier
+            .size(300.dp)
+            .drawBehind {
+                backgroundProgressCircle(strokeWidth, sSize)
+            },
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+    }
 }

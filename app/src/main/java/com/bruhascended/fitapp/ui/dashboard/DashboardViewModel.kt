@@ -93,6 +93,15 @@ class DashboardViewModel(mApp: Application) : AndroidViewModel(mApp) {
         return steps
     }
 
+    fun getTodayLiveNutrition() = foodEntryRepository.loadLiveSeparator(
+        Calendar.getInstance().apply {
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR_OF_DAY, 0)
+        }.time
+    )
+
     private fun dataChecker(steps: MutableList<BarGraphData>): MutableList<BarGraphData>? {
         if (steps.size < 7) {
             val diff = 7 - steps.size

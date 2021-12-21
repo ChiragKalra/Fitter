@@ -6,28 +6,38 @@ import androidx.work.*
 import androidx.work.WorkInfo.*
 import com.bruhascended.fitapp.workers.ActivityEntryWorker
 import com.bruhascended.fitapp.workers.PeriodicEntryWorker
+import com.bruhascended.fitapp.workers.UpdateUserWorker
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-const val SYNC_INTERVAL = 2*60L // seconds
+const val SYNC_INTERVAL = 2 * 60L // seconds
 const val IMMEDIATE_TAG = "IMMEDIATE_SYNC"
 const val REPEATED_TAG = "REPEATED_SYNC"
 
 fun enqueueSyncJob(context: Context, NAME: String, delay: Long = 0) {
-    Log.d("baby", "$NAME enqueued")
+    Log.d("tomarbhai", "$NAME enqueued")
     val constraints = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.CONNECTED)
         .setRequiresBatteryNotLow(true)
         .build()
 
-    val workRequest: OneTimeWorkRequest.Builder = if (NAME == PeriodicEntryWorker.WORK_NAME)
-        OneTimeWorkRequestBuilder<PeriodicEntryWorker>()
-            .setConstraints(constraints)
-            .setInitialDelay(delay, TimeUnit.SECONDS)
-    else
-        OneTimeWorkRequestBuilder<ActivityEntryWorker>()
-            .setConstraints(constraints)
-            .setInitialDelay(delay, TimeUnit.SECONDS)
+    val workRequest: OneTimeWorkRequest.Builder = when (NAME) {
+        UpdateUserWorker.WORK_NAME -> {
+            OneTimeWorkRequestBuilder<UpdateUserWorker>()
+                .setConstraints(constraints)
+                .setInitialDelay(delay, TimeUnit.SECONDS)
+        }
+        PeriodicEntryWorker.WORK_NAME -> {
+            OneTimeWorkRequestBuilder<PeriodicEntryWorker>()
+                .setConstraints(constraints)
+                .setInitialDelay(delay, TimeUnit.SECONDS)
+        }
+        else -> {
+            OneTimeWorkRequestBuilder<ActivityEntryWorker>()
+                .setConstraints(constraints)
+                .setInitialDelay(delay, TimeUnit.SECONDS)
+        }
+    }
 
     if (delay == 0L) {
         workRequest.addTag(IMMEDIATE_TAG)

@@ -20,7 +20,7 @@ class PeriodicEntryWorker(private val context: Context, params: WorkerParameters
     CoroutineWorker(context, params) {
 
     companion object {
-        const val WORK_NAME = "PERIODIC_WORK"
+        const val WORK_NAME = "PERIODIC_ENTRY_WORK"
     }
 
     override suspend fun doWork(): Result {

@@ -20,7 +20,7 @@ class ActivityEntryWorker(val context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params) {
 
     companion object {
-        const val WORK_NAME = "ACTIVITY_WORK"
+        const val WORK_NAME = "ACTIVITY_ENTRY_WORK"
     }
 
     override suspend fun doWork(): Result {

@@ -37,7 +37,7 @@ import kotlin.math.floor
 
 
 class DashboardFragment : Fragment() {
-    private val outerCircleDiameter = 250.dp
+    private val outerCircleDiameter = 200.dp
     private val viewModel: DashboardViewModel by viewModels()
 
     override fun onCreateView(

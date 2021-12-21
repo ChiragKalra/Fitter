@@ -16,9 +16,11 @@ import com.bruhascended.fitapp.repository.PreferencesKeys
 import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.settings.SettingsActivity
 import com.bruhascended.fitapp.util.enqueueImmediateJob
+import com.bruhascended.fitapp.util.enqueueSyncJob
 import com.bruhascended.fitapp.util.getCurrentAccount
 import com.bruhascended.fitapp.workers.ActivityEntryWorker
 import com.bruhascended.fitapp.workers.PeriodicEntryWorker
+import com.bruhascended.fitapp.workers.UpdateUserWorker
 
 val runningQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
@@ -61,6 +63,9 @@ class MainActivity : AppCompatActivity() {
         if (getCurrentAccount(this) != null && syncEnabled) {
             enqueueImmediateJob(this, PeriodicEntryWorker.WORK_NAME)
             enqueueImmediateJob(this, ActivityEntryWorker.WORK_NAME)
+        }
+        if(getCurrentAccount(this) != null){
+            enqueueSyncJob(this,UpdateUserWorker.WORK_NAME)
         }
     }
 
