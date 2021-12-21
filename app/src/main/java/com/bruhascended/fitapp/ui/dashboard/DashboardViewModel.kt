@@ -98,10 +98,10 @@ class DashboardViewModel(mApp: Application) : AndroidViewModel(mApp) {
             val diff = 7 - steps.size
             val list = mutableListOf<BarGraphData>()
             for (i in 1..diff) {
-                val date = Date(endDate.time + ((i - 1) * 86400000))
+                val date = Date(endDate.time - ((i - 1) * 86400000))
                 list.add(BarGraphData(startTime = date))
             }
-            return list
+            return list.asReversed()
         } else return null
     }
 

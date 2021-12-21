@@ -5,11 +5,11 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
 import com.bruhascended.fitapp.repository.PreferencesKeys
@@ -37,14 +37,20 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragment) as NavHostFragment
         navController = navHostFragment.navController
-
-        binding.bottomNav.setupWithNavController(navController)
+        setupSmoothBottomMenu()
 
         // setup FloatingActionButtons
         fabPresenter = FabPresenter(this, binding)
         fabPresenter.setupFABs()
 
         immediateSync()
+    }
+
+    private fun setupSmoothBottomMenu() {
+        val popupMenu = PopupMenu(this,null)
+        popupMenu.inflate(R.menu.bottom_menu_items)
+        val menu = popupMenu.menu
+        binding.bottomNav.setupWithNavController(menu, navController)
     }
 
     private fun immediateSync() {

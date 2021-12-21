@@ -86,7 +86,7 @@
 
     <style name="LightTheme.AlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="colorPrimary">@color/blue_700</item>
-        <item name="colorOnSurface">@color/black_700</item>
+        <item name="colorOnSurface">@color/black_900</item>
         <item name="android:background">@color/white_700</item>
     </style>
 
@@ -220,7 +220,7 @@
     </style>
 
     <style name="DarkTheme.Menu" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
-        <item name="colorSurface">@color/white_700</item>
+        <item name="colorSurface">@color/black_700</item>
     </style>
 
     <style name="roundImageView">

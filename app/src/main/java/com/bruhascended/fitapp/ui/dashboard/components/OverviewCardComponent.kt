@@ -28,7 +28,7 @@ fun OverViewCard(
 ) {
     Card(
         elevation = 6.dp,
-        backgroundColor = Color.White,
+        backgroundColor = MaterialTheme.colors.surface,
         shape = RoundedCornerShape(10.dp)
     ) {
         Column(

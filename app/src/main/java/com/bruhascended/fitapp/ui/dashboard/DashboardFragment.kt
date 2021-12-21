@@ -5,13 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -23,13 +26,13 @@ import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.dashboard.components.ConcentricCircles
 import com.bruhascended.fitapp.ui.dashboard.components.OverViewCard
 import com.bruhascended.fitapp.ui.settings.SettingsActivity
+import com.bruhascended.fitapp.ui.theme.FitAppTheme
 import com.bruhascended.fitapp.util.getWeekList
 
 
 class DashboardFragment : Fragment() {
     private val outerCircleDiameter = 250.dp
     private val viewModel: DashboardViewModel by viewModels()
-    private lateinit var repo: PreferencesRepository
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,69 +46,72 @@ class DashboardFragment : Fragment() {
             val nutrientGoals = repo.nutritionGoalsFlow
             val activityGoals = repo.activityGoalsFlow
             setContent {
-                val defaultList = getWeekList(context)
-                var energyExpLIst by remember {
-                    mutableStateOf(defaultList)
-                }
-                var stepsLIst by remember {
-                    mutableStateOf(defaultList)
-                }
-
-                var goalsData by remember {
-                    mutableStateOf(DayEntry(0L))
-                }
-
-                viewModel.data?.observe(viewLifecycleOwner, {
-                    energyExpLIst = viewModel.getLastWeekEnergyExp(it, energyExpLIst)
-                    stepsLIst = viewModel.getLastWeekSteps(it, stepsLIst)
-                    goalsData = if (it.isNotEmpty()) it.last() else DayEntry(0L)
-                })
-
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    item {
-                        TopBar(intent)
+                FitAppTheme() {
+                    val defaultList = getWeekList(context)
+                    var energyExpLIst by remember {
+                        mutableStateOf(defaultList)
+                    }
+                    var stepsLIst by remember {
+                        mutableStateOf(defaultList)
                     }
 
-                    item {
-                        ConcentricCircles(
-                            outerCircleDiameter,
-                            goalsData,
-                            activityGoals,
-                            nutrientGoals
-                        )
+                    var goalsData by remember {
+                        mutableStateOf(DayEntry(0L))
                     }
 
-                    item {
-                        OverViewCard(
-                            stepsLIst,
-                            context,
-                            "Steps",
-                            "steps",
-                            activityGoals.steps
-                        )
-                    }
+                    viewModel.data?.observe(viewLifecycleOwner, {
+                        energyExpLIst = viewModel.getLastWeekEnergyExp(it, energyExpLIst)
+                        stepsLIst = viewModel.getLastWeekSteps(it, stepsLIst)
+                        goalsData = if (it.isNotEmpty()) it.last() else DayEntry(0L)
+                    })
 
-                    item {
-                        OverViewCard(
-                            energyExpLIst,
-                            context,
-                            "Energy burned",
-                            "Cal",
-                            activityGoals.calories
-                        )
-                    }
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp)
+                            .background(MaterialTheme.colors.background),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        item {
+                            TopBar(intent)
+                        }
 
-                    item {
-                        Spacer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(160.dp)
-                        )
+                        item {
+                            ConcentricCircles(
+                                outerCircleDiameter,
+                                goalsData,
+                                activityGoals,
+                                nutrientGoals
+                            )
+                        }
+
+                        item {
+                            OverViewCard(
+                                stepsLIst,
+                                context,
+                                "Steps",
+                                "steps",
+                                activityGoals.steps
+                            )
+                        }
+
+                        item {
+                            OverViewCard(
+                                energyExpLIst,
+                                context,
+                                "Energy burned",
+                                "Cal",
+                                activityGoals.calories
+                            )
+                        }
+
+                        item {
+                            Spacer(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(160.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -124,6 +130,7 @@ class DashboardFragment : Fragment() {
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_settings),
+                    tint = MaterialTheme.colors.onSurface,
                     contentDescription = "settings"
                 )
             }

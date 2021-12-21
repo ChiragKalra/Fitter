@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -90,7 +91,7 @@ fun Bar(item: BarGraphData, context: Context, unit: String, goal: Long) {
 
             Card(
                 elevation = 6.dp,
-                backgroundColor = Color.White,
+                backgroundColor = MaterialTheme.colors.primaryVariant,
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Column(Modifier.padding(vertical = 8.dp, horizontal = 16.dp)) {
