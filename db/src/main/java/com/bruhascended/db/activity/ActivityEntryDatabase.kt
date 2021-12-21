@@ -8,8 +8,7 @@ import com.bruhascended.db.activity.daos.ActivityEntryDao
 import com.bruhascended.db.activity.daos.DayEntryDao
 import com.bruhascended.db.activity.entities.ActivityEntry
 import com.bruhascended.db.activity.entities.DayEntry
-
-import java.util.Date
+import java.util.*
 
 
 @Database(
@@ -26,6 +25,8 @@ import java.util.Date
 abstract class ActivityEntryDatabase : RoomDatabase() {
     abstract fun entryManager(): ActivityEntryDao
     abstract fun dayEntryManager(): DayEntryDao
+
+    private fun Int.days() = this * 24 * 60 * 60 * 1000L
 
     fun getLiveDayRange(startDate: Date, endDate: Date): LiveData<List<DayEntry>> {
         return dayEntryManager().getTimeRangeLive(
@@ -46,16 +47,24 @@ abstract class ActivityEntryDatabase : RoomDatabase() {
     }
 
     fun getLiveDayEntryWeekly(date: Date): LiveData<List<DayEntry>> {
+        val weekStart = Calendar.getInstance().apply {
+            time = date
+            timeInMillis -= (get(Calendar.DAY_OF_WEEK) - 2).days()
+        }.time
         return dayEntryManager().getTimeRangeLive(
-            date.time - 7 * 24 * 60 * 60 * 1000L,
-            date.time + 1 * 24 * 60 * 60 * 1000L
+            weekStart.time,
+            date.time + 1.days()
         )
     }
 
     fun getLiveDayEntryMonthly(date: Date): LiveData<List<DayEntry>> {
+        val monthStart = Calendar.getInstance().apply {
+            time = date
+            set(Calendar.DAY_OF_MONTH, 1)
+        }.time
         return dayEntryManager().getTimeRangeLive(
-            date.time - 31 * 24 * 60 * 60 * 1000L,
-            date.time + 1 * 24 * 60 * 60 * 1000L
+            monthStart.time,
+            date.time + 1.days()
         )
     }
 

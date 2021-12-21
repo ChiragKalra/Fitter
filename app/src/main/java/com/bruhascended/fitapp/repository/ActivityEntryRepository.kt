@@ -39,6 +39,14 @@ class ActivityEntryRepository(
 
     private val db: ActivityEntryDatabase = ActivityEntryDatabaseFactory(context).build()
 
+    private val today
+        get() = Calendar.getInstance().apply {
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR_OF_DAY, 0)
+        }.time
+
     // periodic entry fun's
     fun insertDayEntries(periodicEntries: List<DayEntry>) =
         db.dayEntryManager().insertAll(periodicEntries)
@@ -97,23 +105,11 @@ class ActivityEntryRepository(
     }
 
     fun loadLastWeekDayEntries(): LiveData<List<DayEntry>> {
-        val date = Calendar.getInstance().apply {
-            set(Calendar.MILLISECOND, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.HOUR, 0)
-        }.time
-        return db.getLiveDayEntryWeekly(date)
+        return db.getLiveDayEntryWeekly(today)
     }
     
     fun loadLastMonthDayEntries(): LiveData<List<DayEntry>> {
-        val date = Calendar.getInstance().apply {
-            set(Calendar.MILLISECOND, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.HOUR, 0)
-        }.time
-        return db.getLiveDayEntryMonthly(date)
+        return db.getLiveDayEntryMonthly(today)
     }
 
     fun loadRangeDayEntries(startDate: Date, endDate: Date) =
