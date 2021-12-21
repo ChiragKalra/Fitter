@@ -7,6 +7,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.bruhascended.db.friends.entities.DailyStats
 import com.bruhascended.db.friends.entities.MonthlyStats
+import com.bruhascended.db.friends.entities.WeeklyStats
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.repository.FriendsRepository
 import com.bruhascended.fitapp.util.enqueueRepeatedJob
@@ -26,31 +27,44 @@ class UpdateUserWorker(private val context: Context, params: WorkerParameters) :
     }
 
     override suspend fun doWork(): Result {
-        val cal = Calendar.getInstance(TimeZone.getDefault()).apply {
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-            set(Calendar.SECOND, 59)
-            set(Calendar.MILLISECOND, 999)
-        }
-        val endDate = cal.time
-        val startDate = cal.apply {
-            set(Calendar.MILLISECOND, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.DAY_OF_MONTH, 1)
-        }.time
         var firebaseAuthUid = FirebaseAuth.getInstance().uid!!
         val friendsRepo by FriendsRepository.Delegate()
         val activityRepo by ActivityEntryRepository.Delegate(context)
         if (getCurrentAccount(context) != null) {
-            val data = activityRepo.loadRangeDayEntries(startDate, endDate).asFlow().first()
-            val monthlyStats = mutableListOf<MonthlyStats>()
-            data.forEach {
-                //val item = MonthlyStats(it.totalCalories.toInt(),it.)
-                //monthlyStats.add()
-            }
+            val monthlyData = activityRepo.loadLastMonthDayEntries().asFlow().first()
+            val weeklyData = activityRepo.loadLastWeekDayEntries().asFlow().first()
 
+            val dailyStats = DailyStats()
+            val weeklyStats = WeeklyStats()
+            val monthlyStats = MonthlyStats()
+
+            monthlyData.forEach {
+                val item = MonthlyStats(
+                    it.totalCalories.toInt(),
+                    (it.totalDuration / 60000f).toInt(),
+                    it.totalDistance.toFloat()*1000f,
+                    it.totalSteps
+                )
+                monthlyStats += item
+            }
+            weeklyData.forEach {
+                val item = WeeklyStats(
+                    it.totalCalories.toInt(),
+                    (it.totalDuration / 60000f).toInt(),
+                    it.totalDistance.toFloat()*1000f,
+                    it.totalSteps
+                )
+                weeklyStats += item
+            }
+            val today = weeklyData.last()
+            val item = DailyStats(
+                today.totalCalories.toInt(),
+                (today.totalDuration / 60000f).toInt(),
+                today.totalDistance.toFloat()*1000f,
+                today.totalSteps
+            )
+            dailyStats += item
+            friendsRepo.updateUserStatistics(firebaseAuthUid,dailyStats,weeklyStats,monthlyStats)
         }
         return Result.success()
     }

@@ -156,7 +156,7 @@ class DashboardFragment : Fragment() {
                 )
                 CurrentDayItem(
                     "km",
-                    stringFormatter(todayData.totalDistance.toFloat() / 1000f),
+                    stringFormatter(todayData.totalDistance.toFloat()),
                     painterResource(id = R.drawable.ic_distance),
                     Green500,
                     "Distance"
