@@ -47,7 +47,7 @@ class FoodJournalRecyclerAdapter (
 
     private var mOnItemClickListener: ((foodEntry: FoodEntry) -> Unit)? = null
 
-    private val preferencesRepo = PreferencesRepository(mContext)
+    private val prefRepo = PreferencesRepository(mContext)
 
     fun setOnItemClickListener (listener: ((foodEntry: FoodEntry) -> Unit)?) {
         mOnItemClickListener = listener
