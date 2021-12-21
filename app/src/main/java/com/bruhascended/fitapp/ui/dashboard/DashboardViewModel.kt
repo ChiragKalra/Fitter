@@ -1,7 +1,6 @@
 package com.bruhascended.fitapp.ui.dashboard
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
@@ -33,11 +32,14 @@ class DashboardViewModel(mApp: Application) : AndroidViewModel(mApp) {
 
     private val foodEntryRepository by FoodEntryRepository.Delegate(mApp)
     private val activityEntryRepository by ActivityEntryRepository.Delegate(mApp)
-    var data: LiveData<List<DayEntry>>? = null
+    var defaultNutrientData = com.bruhascended.db.food.entities.DayEntry(0L)
+    var activityData: LiveData<List<DayEntry>>? = null
+    var nutrientData: LiveData<com.bruhascended.db.food.entities.DayEntry?>? = null
 
     init {
         viewModelScope.launch {
-            data = getLastWeekDayEntry()
+            activityData = getLastWeekDayEntry()
+            nutrientData = getTodayLiveNutrition()
         }
     }
 
@@ -93,7 +95,7 @@ class DashboardViewModel(mApp: Application) : AndroidViewModel(mApp) {
         return steps
     }
 
-    fun getTodayLiveNutrition() = foodEntryRepository.loadLiveSeparator(
+    private fun getTodayLiveNutrition() = foodEntryRepository.loadLiveSeparator(
         Calendar.getInstance().apply {
             set(Calendar.MILLISECOND, 0)
             set(Calendar.SECOND, 0)

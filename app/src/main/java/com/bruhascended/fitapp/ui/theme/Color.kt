@@ -21,6 +21,7 @@ val Purple200 = Color(0xFFBB86FC)
 val Blue700 = Color(0xFF1459CC)
 val Blue500 = Color(0xFF4285F4)
 val Blue200 = Color(0xFF9BB4DD)
+val Blue100 = Color(0xFF84FFFF)
 
 val Red700 = Color(0xFF9E4141)
 val Red500 = Color(0xFFFF4444)
@@ -29,3 +30,7 @@ val Red200 = Color(0xFFFF7474)
 val Green700 = Color(0xFF237332)
 val Green500 = Color(0xFF18A118)
 val Green200 = Color(0xFF8DCA8D)
+
+val Yellow700 = Color(0xFFD1D100)
+val Yellow500 = Color(0xFFCDDC39)
+

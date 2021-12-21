@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -28,6 +27,7 @@ import com.bruhascended.db.activity.entities.DayEntry
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.dashboard.components.ConcentricCircles
+import com.bruhascended.fitapp.ui.dashboard.components.NutrientCard
 import com.bruhascended.fitapp.ui.dashboard.components.OverViewCard
 import com.bruhascended.fitapp.ui.settings.SettingsActivity
 import com.bruhascended.fitapp.ui.theme.*
@@ -61,15 +61,25 @@ class DashboardFragment : Fragment() {
                         mutableStateOf(defaultList)
                     }
 
-                    var todayData by remember {
+                    var todayActivityData by remember {
                         mutableStateOf(DayEntry(0L))
                     }
 
-                    viewModel.data?.observe(viewLifecycleOwner, {
-                        energyExpLIst = viewModel.getLastWeekEnergyExp(it, energyExpLIst)
-                        stepsLIst = viewModel.getLastWeekSteps(it, stepsLIst)
-                        todayData = if (it.isNotEmpty()) it.last() else DayEntry(0L)
-                    })
+                    var todayNutrientData by remember {
+                        mutableStateOf(com.bruhascended.db.food.entities.DayEntry(0L))
+                    }
+
+
+                    viewModel.apply {
+                        activityData?.observe(viewLifecycleOwner, {
+                            energyExpLIst = viewModel.getLastWeekEnergyExp(it, energyExpLIst)
+                            stepsLIst = viewModel.getLastWeekSteps(it, stepsLIst)
+                            todayActivityData = if (it.isNotEmpty()) it.last() else DayEntry(0L)
+                        })
+                        nutrientData?.observe(viewLifecycleOwner) {
+                            todayNutrientData = it ?: viewModel.defaultNutrientData
+                        }
+                    }
 
                     LazyColumn(
                         modifier = Modifier
@@ -86,14 +96,15 @@ class DashboardFragment : Fragment() {
                         item {
                             ConcentricCircles(
                                 outerCircleDiameter,
-                                todayData,
+                                todayActivityData,
+                                todayNutrientData,
                                 activityGoals,
                                 nutrientGoals
                             )
                         }
 
                         item {
-                            CurrentDayStats(todayData)
+                            CurrentDayStats(todayActivityData, todayNutrientData)
                         }
 
                         item {
@@ -119,6 +130,10 @@ class DashboardFragment : Fragment() {
                         }
 
                         item {
+                            NutrientCard(todayNutrientData)
+                        }
+
+                        item {
                             Spacer(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -133,7 +148,10 @@ class DashboardFragment : Fragment() {
     }
 
     @Composable
-    private fun CurrentDayStats(todayData: DayEntry) {
+    private fun CurrentDayStats(
+        todayData: DayEntry,
+        todayNutrientData: com.bruhascended.db.food.entities.DayEntry
+    ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(
                 Modifier
@@ -144,7 +162,7 @@ class DashboardFragment : Fragment() {
                     "Cal",
                     stringFormatter(todayData.totalCalories.toInt()),
                     painterResource(id = R.drawable.ic_energy_burn),
-                    Red500,
+                    Red200,
                     "Energy Burned"
                 )
                 CurrentDayItem(
@@ -155,26 +173,26 @@ class DashboardFragment : Fragment() {
                     "Steps"
                 )
                 CurrentDayItem(
-                    "km",
-                    stringFormatter(todayData.totalDistance.toFloat()),
-                    painterResource(id = R.drawable.ic_distance),
-                    Green500,
-                    "Distance"
+                    "Cal",
+                    stringFormatter(todayNutrientData.calories),
+                    painterResource(id = R.drawable.ic_consumed),
+                    Green200,
+                    "Energy Consumed"
                 )
             }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 CurrentDayItem(
-                    "Cal",
-                    stringFormatter(0f),
-                    painterResource(id = R.drawable.ic_consumed),
+                    "km",
+                    stringFormatter(todayData.totalDistance.toFloat()),
+                    painterResource(id = R.drawable.ic_distance),
                     MaterialTheme.colors.onSurface,
-                    "Energy Consumed"
+                    "Distance"
                 )
                 CurrentDayItem(
                     "min",
                     stringFormatter(todayData.totalDuration / 60000f),
                     painterResource(id = R.drawable.ic_duration),
-                    Purple200,
+                    MaterialTheme.colors.onSurface,
                     "Duration"
                 )
             }
@@ -182,7 +200,7 @@ class DashboardFragment : Fragment() {
     }
 
     private fun stringFormatter(data: Any): String {
-        val str = String.format("%.2f", data.toString().toFloat())
+        val str = String.format("%.1f", data.toString().toFloat())
         val data = str.toFloat()
         return if (ceil(data) == floor(data)) data.toInt().toString()
         else str

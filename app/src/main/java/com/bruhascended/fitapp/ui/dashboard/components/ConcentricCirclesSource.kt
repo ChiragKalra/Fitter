@@ -2,10 +2,8 @@ package com.bruhascended.fitapp.ui.dashboard.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -24,12 +21,12 @@ import androidx.compose.ui.unit.dp
 import com.bruhascended.db.activity.entities.DayEntry
 import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.theme.*
-import com.bruhascended.fitapp.ui.theme.Green500
 
 @Composable
 fun ConcentricCircles(
     canvasSize: Dp,
-    dayData: DayEntry,
+    todayActivityData: DayEntry,
+    todayNutrientData: com.bruhascended.db.food.entities.DayEntry,
     activityGoals: PreferencesRepository.ActivityPreferences,
     nutrientGoals: PreferencesRepository.NutritionPreferences
 ) {
@@ -37,15 +34,15 @@ fun ConcentricCircles(
     val sSize = Size(300.dp.value, 300.dp.value)
     val animSpeed = 1200
     val sweepCalories by animateFloatAsState(
-        targetValue = getTarget(activityGoals.calories, dayData.totalCalories),
+        targetValue = getTarget(activityGoals.calories, todayActivityData.totalCalories),
         animationSpec = tween(animSpeed)
     )
     val sweepSteps by animateFloatAsState(
-        targetValue = getTarget(activityGoals.steps, dayData.totalSteps.toFloat()),
+        targetValue = getTarget(activityGoals.steps, todayActivityData.totalSteps.toFloat()),
         animationSpec = tween(animSpeed)
     )
     val sweepConsumed by animateFloatAsState(
-        targetValue = getTarget(nutrientGoals.calories, 1500f),
+        targetValue = getTarget(nutrientGoals.calories, todayNutrientData.calories.toFloat()),
         animationSpec = tween(animSpeed)
     )
     val animateList = mutableListOf(

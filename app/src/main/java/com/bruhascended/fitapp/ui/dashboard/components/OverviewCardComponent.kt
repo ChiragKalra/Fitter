@@ -60,12 +60,12 @@ fun FirstRow(title: String) {
             fontWeight = FontWeight.SemiBold,
             style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onSurface
         )
-        Icon(
-            tint = MaterialTheme.colors.onSurface,
-            painter = painterResource(id = R.drawable.ic_arrow_forward),
-            contentDescription = "Click Here",
-            modifier = Modifier.size(12.dp)
-        )
+//        Icon(
+//            tint = MaterialTheme.colors.onSurface,
+//            painter = painterResource(id = R.drawable.ic_arrow_forward),
+//            contentDescription = "Click Here",
+//            modifier = Modifier.size(12.dp)
+//        )
     }
 }
 
