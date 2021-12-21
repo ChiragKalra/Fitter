@@ -1,12 +1,9 @@
 package com.bruhascended.fitapp.ui.dashboard.components
 
 import android.content.Context
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +21,8 @@ fun OverViewCard(
     context: Context,
     s: String,
     unit: String?,
-    repo: Long
+    repo: Long,
+    color: Color
 ) {
     Card(
         elevation = 6.dp,
@@ -39,16 +37,15 @@ fun OverViewCard(
             FirstRow(s)
 
             Text(
+                color = MaterialTheme.colors.onSurface,
                 text = "Last 7 days",
                 fontSize = 12.sp,
                 modifier = Modifier.padding(bottom = 18.dp)
             )
 
-            ThirdRow(data, context, unit,repo)
+            ThirdRow(data, context, unit, repo,color)
         }
     }
-
-    Spacer(modifier = Modifier.size(24.dp))
 }
 
 @Composable
@@ -60,19 +57,20 @@ fun FirstRow(title: String) {
     ) {
         Text(
             text = title,
-            fontWeight = FontWeight.Medium,
-            style = MaterialTheme.typography.subtitle1
+            fontWeight = FontWeight.SemiBold,
+            style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onSurface
         )
-        Image(
+        Icon(
+            tint = MaterialTheme.colors.onSurface,
             painter = painterResource(id = R.drawable.ic_arrow_forward),
             contentDescription = "Click Here",
-            Modifier.size(14.dp)
+            modifier = Modifier.size(12.dp)
         )
     }
 }
 
 @Composable
-fun ThirdRow(data: List<BarGraphData>, context: Context, unit: String?, goal: Long) {
+fun ThirdRow(data: List<BarGraphData>, context: Context, unit: String?, goal: Long,color:Color) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -80,7 +78,7 @@ fun ThirdRow(data: List<BarGraphData>, context: Context, unit: String?, goal: Lo
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         FirstOfThirdRow(data, unit)
-        BarGraph(data, context,unit,goal)
+        BarGraph(data, context, unit, goal,color)
     }
 }
 
@@ -89,24 +87,26 @@ fun FirstOfThirdRow(data: List<BarGraphData>, unit: String?) {
     Column(modifier = Modifier.fillMaxWidth(0.25f)) {
         Row {
             Text(
+                color = MaterialTheme.colors.onSurface,
                 modifier = Modifier
                     .padding(end = 2.dp)
                     .alignByBaseline(),
                 text = data.last().height.toInt().toString(),
-                style = MaterialTheme.typography.h5,
+                style = MaterialTheme.typography.h6,
                 fontWeight = FontWeight.Medium
             )
             if (unit != null) {
                 Text(
+                    color = MaterialTheme.colors.onSurface,
                     modifier = Modifier.alignByBaseline(),
                     text = unit,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
+                    fontSize = 12.sp
                 )
             }
         }
 
         Text(
+            color = MaterialTheme.colors.onSurface,
             text = "Today",
             fontSize = 12.sp
         )

@@ -11,12 +11,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -26,8 +30,10 @@ import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.dashboard.components.ConcentricCircles
 import com.bruhascended.fitapp.ui.dashboard.components.OverViewCard
 import com.bruhascended.fitapp.ui.settings.SettingsActivity
-import com.bruhascended.fitapp.ui.theme.FitAppTheme
+import com.bruhascended.fitapp.ui.theme.*
 import com.bruhascended.fitapp.util.getWeekList
+import kotlin.math.ceil
+import kotlin.math.floor
 
 
 class DashboardFragment : Fragment() {
@@ -55,14 +61,14 @@ class DashboardFragment : Fragment() {
                         mutableStateOf(defaultList)
                     }
 
-                    var goalsData by remember {
+                    var todayData by remember {
                         mutableStateOf(DayEntry(0L))
                     }
 
                     viewModel.data?.observe(viewLifecycleOwner, {
                         energyExpLIst = viewModel.getLastWeekEnergyExp(it, energyExpLIst)
                         stepsLIst = viewModel.getLastWeekSteps(it, stepsLIst)
-                        goalsData = if (it.isNotEmpty()) it.last() else DayEntry(0L)
+                        todayData = if (it.isNotEmpty()) it.last() else DayEntry(0L)
                     })
 
                     LazyColumn(
@@ -70,7 +76,8 @@ class DashboardFragment : Fragment() {
                             .fillMaxSize()
                             .padding(8.dp)
                             .background(MaterialTheme.colors.background),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(18.dp)
                     ) {
                         item {
                             TopBar(intent)
@@ -79,10 +86,14 @@ class DashboardFragment : Fragment() {
                         item {
                             ConcentricCircles(
                                 outerCircleDiameter,
-                                goalsData,
+                                todayData,
                                 activityGoals,
                                 nutrientGoals
                             )
+                        }
+
+                        item {
+                            CurrentDayStats(todayData)
                         }
 
                         item {
@@ -91,7 +102,8 @@ class DashboardFragment : Fragment() {
                                 context,
                                 "Steps",
                                 "steps",
-                                activityGoals.steps
+                                activityGoals.steps,
+                                Blue500
                             )
                         }
 
@@ -101,7 +113,8 @@ class DashboardFragment : Fragment() {
                                 context,
                                 "Energy burned",
                                 "Cal",
-                                activityGoals.calories
+                                activityGoals.calories,
+                                Red200
                             )
                         }
 
@@ -117,6 +130,90 @@ class DashboardFragment : Fragment() {
             }
         }
         return view
+    }
+
+    @Composable
+    private fun CurrentDayStats(todayData: DayEntry) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp), horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                CurrentDayItem(
+                    "Cal",
+                    stringFormatter(todayData.totalCalories.toInt()),
+                    painterResource(id = R.drawable.ic_energy_burn),
+                    Red500,
+                    "Energy Burned"
+                )
+                CurrentDayItem(
+                    "",
+                    stringFormatter(todayData.totalSteps),
+                    painterResource(id = R.drawable.ic_steps),
+                    Blue500,
+                    "Steps"
+                )
+                CurrentDayItem(
+                    "km",
+                    stringFormatter(todayData.totalDistance.toFloat() / 1000f),
+                    painterResource(id = R.drawable.ic_distance),
+                    Green500,
+                    "Distance"
+                )
+            }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                CurrentDayItem(
+                    "Cal",
+                    stringFormatter(0f),
+                    painterResource(id = R.drawable.ic_consumed),
+                    MaterialTheme.colors.onSurface,
+                    "Energy Consumed"
+                )
+                CurrentDayItem(
+                    "min",
+                    stringFormatter(todayData.totalDuration / 60000f),
+                    painterResource(id = R.drawable.ic_duration),
+                    Purple200,
+                    "Duration"
+                )
+            }
+        }
+    }
+
+    private fun stringFormatter(data: Any): String {
+        val str = String.format("%.2f", data.toString().toFloat())
+        val data = str.toFloat()
+        return if (ceil(data) == floor(data)) data.toInt().toString()
+        else str
+    }
+
+    @Composable
+    fun CurrentDayItem(
+        unit: String = "",
+        data: String,
+        painter: Painter,
+        color: Color,
+        description: String
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                painter = painter,
+                tint = color,
+                contentDescription = description,
+                modifier = Modifier
+                    .size(24.dp)
+                    .padding(bottom = 4.dp)
+            )
+            Text(
+                text = "$data $unit",
+                color = MaterialTheme.colors.onSurface,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
     }
 
     @Composable

@@ -27,13 +27,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
+import com.bruhascended.fitapp.ui.theme.Blue500
 import com.bruhascended.fitapp.util.BarGraphData
 import java.text.DateFormat
 
 val diff = 1000f // defining height of bar after goal
 
 @Composable
-fun BarGraph(data: List<BarGraphData>, context: Context, unit: String?, goal: Long) {
+fun BarGraph(data: List<BarGraphData>, context: Context, unit: String?, goal: Long,color: Color) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -45,8 +46,8 @@ fun BarGraph(data: List<BarGraphData>, context: Context, unit: String?, goal: Lo
                 else height
 
                 drawLine(
-                    color = Color.LightGray,
-                    strokeWidth = 4f,
+                    color = color,
+                    strokeWidth = 1f,
                     start = Offset(0f, goalHeight),
                     end = Offset(size.width, goalHeight),
                     pathEffect = pathEffect
@@ -56,8 +57,8 @@ fun BarGraph(data: List<BarGraphData>, context: Context, unit: String?, goal: Lo
     ) {
         items(items = data, itemContent = { item ->
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Bar(item, context = context, unit ?: "", goal)
-                Text(text = item.x, fontSize = 12.sp)
+                Bar(item, context = context, unit ?: "", goal,color)
+                Text(text = item.x, fontSize = 12.sp,color = MaterialTheme.colors.onSurface)
             }
         })
     }
@@ -65,7 +66,7 @@ fun BarGraph(data: List<BarGraphData>, context: Context, unit: String?, goal: Lo
 
 
 @Composable
-fun Bar(item: BarGraphData, context: Context, unit: String, goal: Long) {
+fun Bar(item: BarGraphData, context: Context, unit: String, goal: Long, color: Color) {
     var offset by remember {
         mutableStateOf(Offset(x = 0f, y = 0f))
     }
@@ -109,7 +110,7 @@ fun Bar(item: BarGraphData, context: Context, unit: String, goal: Long) {
 
     Canvas(modifier = Modifier
         .size(
-            width = 32.dp,
+            width = 36.dp,
             height = 60.dp
         )
         .onGloballyPositioned { coordinates ->
@@ -132,10 +133,10 @@ fun Bar(item: BarGraphData, context: Context, unit: String, goal: Long) {
             height = if (perc <= 1f) perc * size.height
             else size.height
             drawRect(
-                color = Color.Blue,
-                size = Size(width = size.width / 2f, height = y),
+                color = color,
+                size = Size(width = size.width / 3f, height = y),
                 topLeft = Offset(
-                    x = size.width / 4f,
+                    x = size.width / 3f,
                     y = size.height - y
                 )
             )
@@ -143,7 +144,7 @@ fun Bar(item: BarGraphData, context: Context, unit: String, goal: Long) {
                 val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
                 drawLine(
                     color = Color.LightGray,
-                    strokeWidth = 8f,
+                    strokeWidth = 1f,
                     start = Offset(size.width / 2f, 0f),
                     end = Offset(size.width / 2f, size.height),
                     pathEffect = pathEffect

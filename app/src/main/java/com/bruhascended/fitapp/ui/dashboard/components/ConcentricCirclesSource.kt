@@ -62,7 +62,6 @@ fun ConcentricCircles(
     Column(
         modifier = Modifier
             .size(canvasSize)
-            .padding(4.dp)
             .drawBehind {
                 backgroundProgressCircle(strokeWidth, sSize)
                 foregroundProgressCircle(strokeWidth, sSize, animateList)
