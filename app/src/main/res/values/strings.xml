@@ -178,8 +178,9 @@
 
     <!-- Google Auth Client Web ID -->
     <string name="web_client_id">
-        310941426439-jihgvogoiuea7fp5q01br98d3c3fm6cj.apps.googleusercontent.com
+        732058400173-2knu8t0lk9lfbscr3af86nqguh3tnlbv.apps.googleusercontent.com
     </string>
+
     <string name="select_a_username">Select a username</string>
     <string name="setting_up_profile">Setting up your profile.</string>
     <string name="signing_in">Signing In with Google.</string>
