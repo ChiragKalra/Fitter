@@ -103,10 +103,10 @@ class FoodJournalRecyclerAdapter (
                 calorie_count,
                 separatorInfo.calories.toString()
             )
-            // TODO: Set Using User Preference
             progressbarCalories.apply {
                 progress = 0f
-                progressMax = 1800f
+                progressMax =
+                    prefRepo.nutritionGoalsFlow.calories.toFloat()
                 setProgressWithAnimation(
                     separatorInfo.calories.toFloat(),
                     AnimationDuration.VERY_LONG.ms
@@ -126,8 +126,14 @@ class FoodJournalRecyclerAdapter (
                     NutrientType.Carbs -> progressbarCarbs
                     NutrientType.Fat -> progressbarFat
                 }.apply {
-                    // TODO: Set Using User Preference
-                    progressMax = 100f
+                    progressMax = when (type) {
+                        NutrientType.Protein ->
+                            prefRepo.nutritionGoalsFlow.proteins
+                        NutrientType.Carbs ->
+                            prefRepo.nutritionGoalsFlow.carbs
+                        NutrientType.Fat ->
+                            prefRepo.nutritionGoalsFlow.fats
+                    }.toFloat()
                     progress = 0f
                     setProgressWithAnimation(value.toFloat(), AnimationDuration.VERY_LONG.ms)
                 }

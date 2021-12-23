@@ -111,7 +111,6 @@ class ActivityJournalRecyclerAdapter (
                 calorie_count,
                 separatorInfo.totalCalories.toInt().toString()
             )
-            // TODO: Set Using User Preference
             progressbarCalories.apply {
                 progress = 0f
                 progressMax =
@@ -214,8 +213,10 @@ class ActivityJournalRecyclerAdapter (
             }
         }
 
-        root.setOnClickListener {
-            mOnItemClickListener?.invoke(entry)
+        if (mOnItemClickListener != null) {
+            root.setOnClickListener {
+                mOnItemClickListener?.invoke(entry)
+            }
         }
 
         var expanded = false
