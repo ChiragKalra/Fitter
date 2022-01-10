@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.bruhascended.db.activity.entities.DayEntry
 import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.theme.*
+import kotlin.math.absoluteValue
 
 @Composable
 fun ConcentricCircles(
@@ -31,7 +32,7 @@ fun ConcentricCircles(
     activityGoals: PreferencesRepository.ActivityPreferences,
     nutrientGoals: PreferencesRepository.NutritionPreferences
 ) {
-    val strokeWidth = canvasSize.value / 3.2f
+    var strokeWidth = canvasSize.value / 3.2f
     val sSize = Size(300.dp.value, 300.dp.value)
     val animSpeed = 1200
     val sweepCalories by animateFloatAsState(
@@ -75,7 +76,9 @@ fun DrawScope.foregroundProgressCircle(
     sSize: Size,
     animateList: MutableList<Float>
 ) {
+    val strokeWidth = size.width/10f
     Log.d("dbg_small","$strokeWidth $size")
+
     drawArc(
         Green200,
         -90f, animateList[0], false,
@@ -115,6 +118,7 @@ fun DrawScope.foregroundProgressCircle(
 }
 
 fun DrawScope.backgroundProgressCircle(strokeWidth: Float, sSize: Size) {
+    val strokeWidth = size.width/9f
     drawArc(
         Green200.copy(alpha = 0.2f),
         0f, 360f, false,
