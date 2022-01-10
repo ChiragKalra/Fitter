@@ -1,6 +1,5 @@
 package com.bruhascended.fitapp.ui.dashboard.components
 
-import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
@@ -12,17 +11,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.bruhascended.db.activity.entities.DayEntry
 import com.bruhascended.fitapp.repository.PreferencesRepository
-import com.bruhascended.fitapp.ui.theme.*
-import kotlin.math.absoluteValue
+import com.bruhascended.fitapp.ui.theme.Blue500
+import com.bruhascended.fitapp.ui.theme.Green200
+import com.bruhascended.fitapp.ui.theme.Red200
 
 @Composable
 fun ConcentricCircles(
@@ -32,8 +29,6 @@ fun ConcentricCircles(
     activityGoals: PreferencesRepository.ActivityPreferences,
     nutrientGoals: PreferencesRepository.NutritionPreferences
 ) {
-    var strokeWidth = canvasSize.value / 3.2f
-    val sSize = Size(300.dp.value, 300.dp.value)
     val animSpeed = 1200
     val sweepCalories by animateFloatAsState(
         targetValue = getTarget(activityGoals.calories, todayActivityData.totalCalories),
@@ -56,8 +51,8 @@ fun ConcentricCircles(
         modifier = Modifier
             .size(canvasSize)
             .drawBehind {
-                backgroundProgressCircle(strokeWidth, sSize)
-                foregroundProgressCircle(strokeWidth, sSize, animateList)
+                backgroundProgressCircle()
+                foregroundProgressCircle(animateList)
             },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -71,13 +66,8 @@ fun getTarget(goal: Long, curr: Float): Float {
     else 360f
 }
 
-fun DrawScope.foregroundProgressCircle(
-    strokeWidth: Float,
-    sSize: Size,
-    animateList: MutableList<Float>
-) {
+fun DrawScope.foregroundProgressCircle(animateList: MutableList<Float>) {
     val strokeWidth = size.width/10f
-    Log.d("dbg_small","$strokeWidth $size")
 
     drawArc(
         Green200,
@@ -117,7 +107,7 @@ fun DrawScope.foregroundProgressCircle(
     )
 }
 
-fun DrawScope.backgroundProgressCircle(strokeWidth: Float, sSize: Size) {
+fun DrawScope.backgroundProgressCircle() {
     val strokeWidth = size.width/9f
     drawArc(
         Green200.copy(alpha = 0.2f),
@@ -155,21 +145,4 @@ fun DrawScope.backgroundProgressCircle(strokeWidth: Float, sSize: Size) {
             y = (size.height - (size.height / 4f) * 3f) / 2f,
         )
     )
-}
-
-@Composable
-@Preview(showBackground = true)
-fun pp(){
-    val strokeWidth = 300.dp.value / 4f
-    val sSize = Size(300.dp.value, 300.dp.value)
-    Column(
-        modifier = Modifier
-            .size(300.dp)
-            .drawBehind {
-                backgroundProgressCircle(strokeWidth, sSize)
-            },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-    }
 }
