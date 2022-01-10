@@ -1,5 +1,6 @@
 package com.bruhascended.fitapp.ui.dashboard.components
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
@@ -74,6 +75,7 @@ fun DrawScope.foregroundProgressCircle(
     sSize: Size,
     animateList: MutableList<Float>
 ) {
+    Log.d("dbg_small","$strokeWidth $size")
     drawArc(
         Green200,
         -90f, animateList[0], false,
