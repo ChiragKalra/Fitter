@@ -1,5 +1,5 @@
 ## About
-FitApp is an android app for keeping track of calorie intake and calories burnt, while allowing the user to challenge their friends at various fitness tasks.
+Fitter is an android app for keeping track of calorie intake and calories burnt, while allowing the user to challenge their friends at various fitness tasks.
 
 ## Usage
 First beta will be out soon! (on GitHub releases and on the play store)
