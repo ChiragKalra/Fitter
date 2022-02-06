@@ -11,6 +11,8 @@ If you wish to add a feature to the app then pull request.
 
 For any queries contact me at chiragkalra5274@gmail.com.
 
+## Related Projects
+* Code used to generate the Indian Food Image Classifier: https://github.com/ChiragKalra/IndianFoodClassifier
 
 ## Owners
 Chirag Kalra: https://github.com/ChiragKalra
