@@ -268,6 +268,7 @@ class ActivityJournalRecyclerAdapter (
                 )
             DateSeparatedItem.ItemType.Item ->
                 holder.itemBinding?.presentItem(item.item!!, holder)
+            DateSeparatedItem.ItemType.Footer -> return
         }
     }
 }

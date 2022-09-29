@@ -227,6 +227,7 @@ class FoodJournalRecyclerAdapter (
                 )
             DateSeparatedItem.ItemType.Item ->
                 holder.itemBinding?.presentItem(item.item!!, holder)
+            else -> return
         }
     }
 }

@@ -5,21 +5,16 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 33
+    buildToolsVersion "33.0.0"
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    aaptOptions {
-        noCompress "tflite", "csv"
-    }
 
     buildTypes {
         release {
@@ -40,13 +35,17 @@ android {
     buildFeatures {
         mlModelBinding true
     }
+    androidResources {
+        noCompress 'tflite', 'csv'
+    }
+    namespace 'com.bruhascended.classifier'
 }
 
 dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    api 'androidx.core:core-ktx:1.5.0'
-    api 'androidx.appcompat:appcompat:1.3.0'
+    api 'androidx.core:core-ktx:1.9.0'
+    api 'androidx.appcompat:appcompat:1.5.1'
 
     testImplementation 'junit:junit:4.13.2'
 
