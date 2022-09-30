@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.db.food.entities.Entry
 import com.bruhascended.db.food.entities.Food
+import com.bruhascended.db.food.entities.FoodEntry
 import com.bruhascended.db.food.types.NutrientType
 import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.repository.FoodEntryRepository
@@ -90,5 +91,9 @@ class SharedActivityViewModel(application: Application) : AndroidViewModel(appli
 
     fun insertData(food: Food, entry: Entry) {
         CoroutineScope(IO).launch { db.writeEntry(food, entry) }
+    }
+
+    fun deleteData(foodEntry: FoodEntry) {
+        CoroutineScope(IO).launch { db.deleteEntry(foodEntry) }
     }
 }
