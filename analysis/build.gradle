@@ -51,7 +51,7 @@ dependencies {
 
     api 'org.tensorflow:tensorflow-lite-support:0.1.0'
     api 'org.tensorflow:tensorflow-lite-metadata:0.1.0'
-    api 'org.tensorflow:tensorflow-lite-gpu:2.3.0'
+    api 'org.tensorflow:tensorflow-lite-gpu:2.6.0'
 
     api 'com.google.dagger:dagger:2.34.1'
 }

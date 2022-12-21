@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.getValue
+import java.util.Calendar
 
 class FriendsFirebaseDao {
 	private val reference = FirebaseDatabase.getInstance(FIREBASE_URL).getReference("users")
@@ -135,5 +136,6 @@ class FriendsFirebaseDao {
 					"distance" to monthlyStats.totalDistance
 				)
 			)
+		userRef.child("updated").setValue(Calendar.getInstance().timeInMillis)
 	}
 }
