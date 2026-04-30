@@ -12,7 +12,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.db.R.string.*
 import com.bruhascended.db.activity.entities.ActivityEntry
-import com.bruhascended.db.activity.entities.PeriodicEntry
+import com.bruhascended.db.activity.entities.DayEntry
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemActivityEntryBinding
 import com.bruhascended.fitapp.databinding.ItemFooterBinding
@@ -38,8 +38,8 @@ class ActivityJournalRecyclerAdapter (
         var layoutNutrientsWrapHeight =
             root.context.resources.getDimension(R.dimen.activity_details_height).toInt()
         var lastItemObserver: Observer<HashSet<Long>>? = null
-        var separatorInfoObserver: Observer<PeriodicEntry>? = null
-        var liveSeparatorInfo: LiveData<PeriodicEntry>? = null
+        var separatorInfoObserver: Observer<DayEntry?>? = null
+        var liveSeparatorInfo: LiveData<DayEntry?>? = null
         var isLastItemBg = false
     }
 
@@ -93,26 +93,26 @@ class ActivityJournalRecyclerAdapter (
     private fun ItemSeparatorActivityentryBinding.presentSeparator(
         separator: Date,
         holder: ActivityEntryItemHolder,
-        livePeriodicEntry: LiveData<PeriodicEntry>,
+        liveDayEntry: LiveData<DayEntry?>,
     ) {
         holder.separatorInfoObserver?.apply {
             holder.liveSeparatorInfo?.removeObserver(this)
         }
 
-        holder.separatorInfoObserver = Observer<PeriodicEntry> {
+        holder.separatorInfoObserver = Observer<DayEntry?> {
             val separatorInfo = it ?: return@Observer
 
             textviewDate.text = DateTimePresenter(mContext, separator.time).fullDate
 
             textviewCalories.text = mContext.getString(
                 calorie_count,
-                separatorInfo.totalCalories.toString()
+                separatorInfo.totalCalories.toInt().toString()
             )
             // TODO: Set Using User Preference
             progressbarCalories.apply {
                 progress = 0f
                 progressMax = 1800f
-                setProgressWithAnimation(separatorInfo.totalCalories.toFloat())
+                setProgressWithAnimation(separatorInfo.totalCalories)
             }
 
             separatorInfo.also { info ->
@@ -159,7 +159,7 @@ class ActivityJournalRecyclerAdapter (
             }
         }
 
-        holder.liveSeparatorInfo = livePeriodicEntry
+        holder.liveSeparatorInfo = liveDayEntry
         holder.separatorInfoObserver?.apply {
             holder.liveSeparatorInfo?.observeForever(this)
         }

@@ -1,7 +1,7 @@
 package com.bruhascended.fitapp.repository
 
-import android.app.Application
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -9,7 +9,7 @@ import androidx.paging.PagingData
 import com.bruhascended.db.activity.ActivityEntryDatabase
 import com.bruhascended.db.activity.ActivityEntryDatabaseFactory
 import com.bruhascended.db.activity.entities.ActivityEntry
-import com.bruhascended.db.activity.entities.PeriodicEntry
+import com.bruhascended.db.activity.entities.DayEntry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -40,13 +40,14 @@ class ActivityEntryRepository(
     private val db: ActivityEntryDatabase = ActivityEntryDatabaseFactory(context).build()
 
     // periodic entry fun's
-    fun insertPeriodicEntries(periodicEntries: List<PeriodicEntry>) =
-        db.insertPeriodicEntries(periodicEntries)
+    fun insertDayEntries(periodicEntries: List<DayEntry>) =
+        db.dayEntryManager().insertAll(periodicEntries)
 
-    fun insertPeriodicEntry(periodicEntry: PeriodicEntry) = db.insertPeriodicEntry(periodicEntry)
+    fun insertDayEntry(dayEntry: DayEntry) =
+        db.dayEntryManager().insert(dayEntry)
 
-    fun findPeriodicEntryByStartTime(timeInMillis: Long) =
-        db.findPeriodicEntryByStartTime(timeInMillis)
+    fun findDayEntryByStartTime(timeInMillis: Long) =
+        db.dayEntryManager().findByStartTime(timeInMillis)
 
     // activity entry fun's
     fun writeEntry(entry: ActivityEntry) = db.entryManager().insert(entry)
@@ -70,7 +71,7 @@ class ActivityEntryRepository(
 
     private fun loadLiveActivityEntries() = db.entryManager().loadAllLive()
 
-    fun loadLiveSeparatorAt(date: Date) = db.getLivePeriodicEntryOf(date)
+    fun loadLiveSeparatorAt(date: Date) = db.getLiveDayEntryOf(date)
 
     fun loadLiveLastItems(): MutableLiveData<HashSet<Long>> {
         val liveLastIds = MutableLiveData<HashSet<Long>>()
@@ -94,4 +95,31 @@ class ActivityEntryRepository(
         }
         return liveLastIds
     }
+
+    fun loadLastWeekDayEntries(): LiveData<List<DayEntry>> {
+        val date = Calendar.getInstance().apply {
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR, 0)
+        }.time
+        return db.getLiveDayEntryWeekly(date)
+    }
+    
+    fun loadLastMonthDayEntries(): LiveData<List<DayEntry>> {
+        val date = Calendar.getInstance().apply {
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.HOUR, 0)
+        }.time
+        return db.getLiveDayEntryMonthly(date)
+    }
+
+    fun loadRangeDayEntries(startDate: Date, endDate: Date) =
+        db.getLiveDayRange(startDate, endDate)
+
+    fun loadRangeTotalEntry(startDate: Date, endDate: Date) =
+        db.getLiveTotal(startDate, endDate)
+
 }

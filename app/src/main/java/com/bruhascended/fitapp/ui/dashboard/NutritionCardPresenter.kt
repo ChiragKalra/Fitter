@@ -61,8 +61,10 @@ class NutritionCardPresenter (
         }
     }
 
-
+    private var previousValue: DayEntry? = null
     fun generateCard(values: DayEntry) {
+        if (previousValue == values) return
         binding.presentSeparator(values)
+        previousValue = values
     }
 }

@@ -20,20 +20,21 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:text="@string/log_weight"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/add_weight_button"
         app:layout_constraintTop_toTopOf="@id/add_weight_button"
         app:layout_constraintBottom_toBottomOf="@id/add_weight_button"
         android:layout_marginEnd="12dp" />
 
     <TextView
-        android:id="@+id/text_workout"
+        android:id="@+id/text_friends"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:text="@string/add_new_workout"
-        app:layout_constraintEnd_toStartOf="@id/add_workout_button"
-        app:layout_constraintTop_toTopOf="@id/add_workout_button"
-        app:layout_constraintBottom_toBottomOf="@id/add_workout_button"
+        android:text="@string/add_friends"
+        app:layout_constraintEnd_toStartOf="@id/add_friends_button"
+        app:layout_constraintTop_toTopOf="@id/add_friends_button"
+        app:layout_constraintBottom_toBottomOf="@id/add_friends_button"
         android:layout_marginEnd="12dp" />
 
     <TextView
@@ -64,21 +65,22 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/log_weight"
         android:elevation="5dp"
+        android:visibility="gone"
         android:id="@+id/add_weight_button"
         android:src="@drawable/ic_monitor_weight"
         android:layout_marginBottom="16dp"
         android:theme="?miniFabStyle"
-        app:layout_constraintBottom_toTopOf="@id/add_workout_button"
+        app:layout_constraintBottom_toTopOf="@id/add_friends_button"
         app:layout_constraintEnd_toEndOf="@id/cancel_action_button"
         app:layout_constraintStart_toStartOf="@id/cancel_action_button"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/add_new_workout"
+        android:contentDescription="@string/add_friends"
         android:elevation="5dp"
-        android:id="@+id/add_workout_button"
-        android:src="@drawable/ic_workout"
+        android:id="@+id/add_friends_button"
+        android:src="@drawable/ic_person_add"
         android:layout_marginBottom="16dp"
         android:theme="?miniFabStyle"
         app:layout_constraintBottom_toTopOf="@id/add_food_button"

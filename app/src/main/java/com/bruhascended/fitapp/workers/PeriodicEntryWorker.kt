@@ -108,7 +108,7 @@ fun performPeriodicSync(
     try {
         if (result.status.isSuccess) {
             runBlocking {
-                val entries = dumpPeriodicEntryBuckets(result.buckets)
+                val entries = dumpDayEntryBuckets(result.buckets)
                 insertPeriodicEntriesToDb(entries, activityEntryRepository)
                 if (!isWorkImmediate) {
                     repo.updatePreference(

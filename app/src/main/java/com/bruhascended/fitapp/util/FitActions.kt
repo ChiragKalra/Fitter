@@ -3,7 +3,7 @@ package com.bruhascended.fitapp.util
 import android.content.Context
 import android.util.Log
 import com.bruhascended.db.activity.entities.ActivityEntry
-import com.bruhascended.db.activity.entities.PeriodicEntry
+import com.bruhascended.db.activity.entities.DayEntry
 import com.bruhascended.db.activity.types.ActivityType
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.ui.addworkout.ActivitiesMap
@@ -15,9 +15,6 @@ import com.google.android.gms.fitness.data.Bucket
 import com.google.android.gms.fitness.data.DataSource
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
@@ -39,8 +36,8 @@ object FitBuilder {
     }
 }
 
-fun dumpPeriodicEntryBuckets(buckets: List<Bucket>): MutableList<PeriodicEntry> {
-    val periodicEntriesList = mutableListOf<PeriodicEntry>()
+fun dumpDayEntryBuckets(buckets: List<Bucket>): MutableList<DayEntry> {
+    val periodicEntriesList = mutableListOf<DayEntry>()
     for (bucket in buckets) {
         var calories: Float = 0f
         var steps: Int = 0
@@ -73,7 +70,7 @@ fun dumpPeriodicEntryBuckets(buckets: List<Bucket>): MutableList<PeriodicEntry> 
                 }
             }
         }
-        val entry = PeriodicEntry(
+        val entry = DayEntry(
             bucket.getStartTime(TimeUnit.MILLISECONDS),
             calories,
             duration,
@@ -149,15 +146,15 @@ fun insertActivityEntriesToDb(
 }
 
 fun insertPeriodicEntriesToDb(
-    periodicEntriesList: MutableList<PeriodicEntry>,
+    periodicEntriesList: MutableList<DayEntry>,
     repository: ActivityEntryRepository
 ) {
     for (entry in periodicEntriesList) {
-        val periodicEntry: PeriodicEntry? = findPeriodicEntry(entry, repository)
+        val periodicEntry: DayEntry? = findDayEntry(entry, repository)
         if (periodicEntry != null) {
             entry.startTime = periodicEntry.startTime
         }
-        repository.insertPeriodicEntry(entry)
+        repository.insertDayEntry(entry)
     }
 }
 
@@ -166,8 +163,8 @@ fun findActivity(entry: ActivityEntry, repository: ActivityEntryRepository): Act
     return activityEntry
 }
 
-fun findPeriodicEntry(entry: PeriodicEntry, repository: ActivityEntryRepository): PeriodicEntry? {
-    val periodicEntry: PeriodicEntry? = repository.findPeriodicEntryByStartTime(entry.startTime)
+fun findDayEntry(entry: DayEntry, repository: ActivityEntryRepository): DayEntry? {
+    val periodicEntry: DayEntry? = repository.findDayEntryByStartTime(entry.startTime)
     return periodicEntry
 }
 

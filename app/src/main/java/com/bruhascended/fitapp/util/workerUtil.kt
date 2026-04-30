@@ -9,7 +9,7 @@ import com.bruhascended.fitapp.workers.PeriodicEntryWorker
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-const val SYNC_INTERVAL = 3L // seconds
+const val SYNC_INTERVAL = 2*60L // seconds
 const val IMMEDIATE_TAG = "IMMEDIATE_SYNC"
 const val REPEATED_TAG = "REPEATED_SYNC"
 

@@ -80,7 +80,7 @@
         animals for both the humans and the animals for both the humans and the animals for both the
         humans and the animals for both the humans and the animals for both the humans and the
         animals for both the humans and the animals for both the humans and the animals for both the
-        humans and the animals for both the humans and the animals for both the humans and the animals
+        humans and the animals for both the humans and the animFals for both the humans and the animals
         for both the humans and the animals for both the humans and the animals for both the humans
         and the animals for both the humans and the animals for both the humans and the animals for
         both the humans and the animals for both the humans and the animals for both the humans and
@@ -99,7 +99,7 @@
     <string name="food">Food</string>
     <string name="activity">Activity</string>
     <string name="dashboard">Dashboard</string>
-    <string name="challenges">Challenges</string>
+    <string name="friends">Friends</string>
     <string name="journal">Journal</string>
     <string name="add_new">Add New</string>
     <string name="settings">Settings</string>
@@ -116,16 +116,18 @@
     <string name="default_online_type">Gram(g)</string>
     <string name="move_min">min</string>
     <string name="km">km</string>
-    <string name="steps">steps</string>
-    <string name="back">back</string>
-    <string name="continue_text">continue</string>
+    <string name="steps">Steps</string>
+    <string name="back">Back</string>
+    <string name="continue_text">Continue</string>
     <string name="expand">expand</string>
     <string name="zero_gm">0 gm</string>
     <string name="search_result_placeholder">Search:</string>
     <string name="ok">OK</string>
+    <string name="google_auth">Sign In with Google</string>
 
     <!-- Long Descriptions -->
     <string name="food_search">Food Search</string>
+    <string name="calories_burnt">Calories Burnt</string>
     <string name="food_details">Food Details</string>
     <string name="choose_activity">Choose Activity</string>
     <string name="custom_food">Add Custom Food</string>
@@ -144,12 +146,12 @@
     <string name="quantity_type_hint">Quantity Type</string>
     <string name="default_quantity">1.0</string>
     <string name="quantity_hint">Quantity</string>
+    <string name="sign_in_for_friends">Sign in with Google to see what your friends are up to.</string>
 
     <!-- Join -->
     <string name="to_join">%1$s - %2$s</string>
-    <string name="actvity">Actvity</string>
     <string name="calories">Calories</string>
-    <string name="distance">distance</string>
+    <string name="distance">Distance</string>
     <string name="submit">submit</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -172,5 +174,34 @@
     <string name="service">Service</string>
     <string name="calories_consumed">Calories Consumed</string>
     <string name="more">More</string>
+    <string name="friend_requests">Requests</string>
+
+    <!-- Google Auth Client Web ID -->
+    <string name="web_client_id">
+        310941426439-jihgvogoiuea7fp5q01br98d3c3fm6cj.apps.googleusercontent.com
+    </string>
+    <string name="select_a_username">Select a username</string>
+    <string name="setting_up_profile">Setting up your profile.</string>
+    <string name="signing_in">Signing In with Google.</string>
+    <string name="add_friends">Add Friends</string>
+    <string name="title_activity_add_friends">AddFriendsActivity</string>
+    <string name="send_request">Send a Request</string>
+    <string name="deny_request">Deny Request</string>
+    <string name="accept_request">Accept Request</string>
+    <string name="username_taken">Username Taken!</string>
+    <string name="invalid_username">Invalid Username</string>
+    <string name="no_requests">No Requests!</string>
+    <string name="request_sent">Request Sent!</string>
+    <string name="time_active">Time Active</string>
+    <string name="this_week">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="username">Username</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="sort_by">Sort By:</string>
+    <string name="first_rank">First Rank</string>
+    <string name="second_rank">Second Rank</string>
+    <string name="third_rank">Third Rank</string>
+    <string name="fourth_rank">Fourth Rank</string>
+    <string name="fifth_rank">Fifth Rank</string>
 </resources>
 

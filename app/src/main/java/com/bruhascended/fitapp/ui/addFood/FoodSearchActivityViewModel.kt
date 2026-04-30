@@ -39,7 +39,7 @@ class FoodSearchActivityViewModel(application: Application) : AndroidViewModel(a
     fun searchConsumedFood(query: String): LiveData<List<Food>> = db.searchConsumedFood(query)
 
     private fun processData(hints: List<Hint>?) {
-        food_hints_list.postValue(hints)
+        food_hints_list.postValue(hints!!)
     }
 
     fun getError() = error.value

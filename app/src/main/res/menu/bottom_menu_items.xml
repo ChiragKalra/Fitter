@@ -5,11 +5,11 @@
         android:icon="@drawable/ic_dashboard"
         android:title="@string/dashboard" />
     <item
-        android:id="@+id/challengesFragment"
-        android:icon="@drawable/ic_challenges"
-        android:title="@string/challenges" />
-    <item
         android:id="@+id/journalFragment"
         android:icon="@drawable/ic_journal"
         android:title="@string/journal" />
+    <item
+        android:id="@+id/friendsFragment"
+        android:icon="@drawable/ic_friends"
+        android:title="@string/friends" />
 </menu>

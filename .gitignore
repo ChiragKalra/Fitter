@@ -12,3 +12,4 @@ app/release
 app/libs/
 classifier/libs/
 api/src/main/java/com/bruhascended/api/Private.kt
+/app/google-services.json

@@ -25,37 +25,43 @@
         android:background="@drawable/bg_plot_card">
 
         <!-- Calories -->
-        <com.mikhaellopez.circularprogressbar.CircularProgressBar
-            android:id="@+id/progressbar_calories"
-            android:layout_width="118dp"
-            android:layout_height="118dp"
-            android:layout_margin="8dp"
-            app:layout_constraintTop_toTopOf="parent"
+
+
+        <LinearLayout
+            android:id="@+id/calorie_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@id/layout_nutrient_labels"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/layout_nutrient_labels"
-            app:layout_constraintBottom_toBottomOf="@id/textview_calories"
+            app:layout_constraintTop_toTopOf="parent" >
 
-            app:cpb_progress="75"
-            app:cpb_background_progressbar_color="?trackbarBackgroundColor"
-            app:cpb_background_progressbar_width="8dp"
-            app:cpb_progress_direction="to_left"
-            app:cpb_progressbar_color="?colorControlBlue"
-            app:cpb_progressbar_width="12dp"
-            app:cpb_round_border="true" />
+            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                android:id="@+id/progressbar_calories"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
 
-        <TextView
-            android:id="@+id/textview_calories"
-            tools:text="1200 kcal"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/progressbar_calories"
-            app:layout_constraintBottom_toBottomOf="@id/progressbar_calories"
-            app:layout_constraintStart_toStartOf="@id/progressbar_calories"
-            app:layout_constraintEnd_toEndOf="@id/progressbar_calories"/>
+                app:cpb_background_progressbar_color="?trackbarBackgroundColor"
+                app:cpb_background_progressbar_width="8dp"
+                app:cpb_progress="0"
+                app:cpb_progress_direction="to_left"
+                app:cpb_progressbar_color="?colorControlBlue"
+                app:cpb_progressbar_width="12dp"
+                app:cpb_round_border="true" />
 
+            <TextView
+                android:layout_marginStart="8dp"
+                android:id="@+id/textview_calories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="1200 kcal"/>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/layout_nutrient_labels"
@@ -66,7 +72,7 @@
             android:layout_marginTop="16dp"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
-            app:layout_constraintTop_toBottomOf="@id/progressbar_calories"
+            app:layout_constraintTop_toBottomOf="@id/calorie_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 

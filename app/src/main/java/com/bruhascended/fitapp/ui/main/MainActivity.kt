@@ -42,8 +42,8 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.dashboardFragment,
-                R.id.challengesFragment,
-                R.id.journalFragment
+                R.id.journalFragment,
+                R.id.friendsFragment,
             )
         )
         binding.bottomNav.setupWithNavController(navController)
@@ -58,8 +58,11 @@ class MainActivity : AppCompatActivity() {
         // setup FloatingActionButtons
         fabPresenter = FabPresenter(this, binding)
         fabPresenter.setupFABs()
+    }
 
+    override fun onStart() {
         immediateSync()
+        super.onStart()
     }
 
     private fun immediateSync() {
@@ -78,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         else super.onBackPressed()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.overflow_menu_item, menu)
         return true
     }

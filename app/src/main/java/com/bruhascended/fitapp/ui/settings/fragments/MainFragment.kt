@@ -2,6 +2,7 @@ package com.bruhascended.fitapp.ui.settings.fragments
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
@@ -110,6 +111,7 @@ class MainFragment : PreferenceFragmentCompat() {
                     setUpSyncAndPreferences()
                 } else {
                     // todo here flow was interrupted
+                    Log.e("Epic", it.resultCode.toString())
                 }
             }
     }

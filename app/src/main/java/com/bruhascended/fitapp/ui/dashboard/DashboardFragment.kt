@@ -34,6 +34,10 @@ class DashboardFragment : Fragment() {
             requireContext(),
             layoutInflater
         )
+        val activityCardGen = ActivityCardPresenter(
+            requireContext(),
+            layoutInflater
+        )
 
         cardGens = WeeklyCardType.values().map {
             WeeklyPlotPresenter(
@@ -45,6 +49,7 @@ class DashboardFragment : Fragment() {
 
         // add cards to root
         binding.contentLayout.addView(nutritionCardGen.view)
+        binding.contentLayout.addView(activityCardGen.view)
 
         for (cardGen in cardGens) {
             binding.contentLayout.addView(cardGen.view)
@@ -70,25 +75,62 @@ class DashboardFragment : Fragment() {
                     } ?: DayEntry(day)
                     pro.add(got)
                 }
-                cardGen.generateCard(
-                    pro.map { entry ->
-                        when (cardGen.plotType) {
-                            WeeklyCardType.WeeklyCaloriesConsumed ->
-                                entry.calories.toFloat()
-                            WeeklyCardType.WeeklyProteinsConsumed ->
-                                entry.nutrientInfo[NutrientType.Protein]?.toFloat() ?: 0f
-                            WeeklyCardType.WeeklyCarbsConsumed ->
-                                entry.nutrientInfo[NutrientType.Carbs]?.toFloat() ?: 0f
-                            WeeklyCardType.WeeklyFatsConsumed ->
-                                entry.nutrientInfo[NutrientType.Fat]?.toFloat() ?: 0f
-                        }
-                    }.toFloatArray()
-                )
+                if (cardGen.plotType in arrayOf(
+                        WeeklyCardType.WeeklyFatsConsumed,
+                        WeeklyCardType.WeeklyProteinsConsumed,
+                        WeeklyCardType.WeeklyCarbsConsumed,
+                        WeeklyCardType.WeeklyCaloriesConsumed,
+                )) {
+                    cardGen.generateCard(
+                        pro.map { entry ->
+                            when (cardGen.plotType) {
+                                WeeklyCardType.WeeklyCaloriesConsumed ->
+                                    entry.calories.toFloat()
+                                WeeklyCardType.WeeklyProteinsConsumed ->
+                                    entry.nutrientInfo[NutrientType.Protein]?.toFloat() ?: 0f
+                                WeeklyCardType.WeeklyCarbsConsumed ->
+                                    entry.nutrientInfo[NutrientType.Carbs]?.toFloat() ?: 0f
+                                else ->
+                                    entry.nutrientInfo[NutrientType.Fat]?.toFloat() ?: 0f
+                            }
+                        }.toFloatArray()
+                    )
+                }
+            }
+        }
+
+        viewModel.getLastWeekActivityEntries().observeForever {
+            val pro = it.toTypedArray()
+            for (cardGen in cardGens) {
+                if (cardGen.plotType in arrayOf(
+                        WeeklyCardType.WeeklyCaloriesBurnt,
+                        WeeklyCardType.WeeklyDistanceCovered,
+                        WeeklyCardType.WeeklyStepsTaken,
+                        WeeklyCardType.WeeklyActiveTime,
+                )) {
+                    cardGen.generateCard(
+                        pro.map { entry ->
+                            when (cardGen.plotType) {
+                                WeeklyCardType.WeeklyCaloriesBurnt ->
+                                    entry.totalCalories
+                                WeeklyCardType.WeeklyDistanceCovered ->
+                                    entry.totalDistance.toFloat()
+                                WeeklyCardType.WeeklyStepsTaken ->
+                                    entry.totalSteps.toFloat()
+                                else ->
+                                    entry.totalDuration / (60 * 1000f)
+                            }
+                        }.toFloatArray()
+                    )
+                }
             }
         }
 
         viewModel.getTodayLiveNutrition().observeForever {
             nutritionCardGen.generateCard(it ?: return@observeForever)
+        }
+        viewModel.getTodayLiveActivity().observeForever {
+            activityCardGen.generateCard(it ?: return@observeForever)
         }
     }
 

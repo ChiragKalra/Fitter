@@ -11,13 +11,13 @@
         android:label="@string/dashboard"
         tools:layout="@layout/fragment_dashboard" />
     <fragment
-        android:id="@+id/challengesFragment"
-        android:name="com.bruhascended.fitapp.ui.challenges.ChallengesFragment"
-        android:label="@string/challenges"
-        tools:layout="@layout/fragment_challenges" />
-    <fragment
         android:id="@+id/journalFragment"
         android:name="com.bruhascended.fitapp.ui.journal.JournalFragment"
         android:label="@string/journal"
         tools:layout="@layout/fragment_journal" />
+    <fragment
+        android:id="@+id/friendsFragment"
+        android:name="com.bruhascended.fitapp.ui.friends.FriendsFragment"
+        android:label="@string/friends"
+        tools:layout="@layout/fragment_friends" />
 </navigation>
