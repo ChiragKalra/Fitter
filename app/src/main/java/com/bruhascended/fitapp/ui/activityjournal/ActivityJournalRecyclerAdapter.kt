@@ -17,6 +17,7 @@ import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemActivityEntryBinding
 import com.bruhascended.fitapp.databinding.ItemFooterBinding
 import com.bruhascended.fitapp.databinding.ItemSeparatorActivityentryBinding
+import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.util.*
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -42,6 +43,8 @@ class ActivityJournalRecyclerAdapter (
         var liveSeparatorInfo: LiveData<DayEntry?>? = null
         var isLastItemBg = false
     }
+
+    private val prefRepo = PreferencesRepository(mContext)
 
     private var mOnItemClickListener: ((foodEntry: ActivityEntry) -> Unit)? = null
 
@@ -108,10 +111,10 @@ class ActivityJournalRecyclerAdapter (
                 calorie_count,
                 separatorInfo.totalCalories.toInt().toString()
             )
-            // TODO: Set Using User Preference
             progressbarCalories.apply {
                 progress = 0f
-                progressMax = 1800f
+                progressMax =
+                    prefRepo.activityGoalsFlow.calories.toFloat()
                 setProgressWithAnimation(separatorInfo.totalCalories)
             }
 
@@ -122,8 +125,8 @@ class ActivityJournalRecyclerAdapter (
                     timeInMins.toString()
                 )
                 progressbarMoveMin.apply {
-                    // TODO: Set Using User Preference
-                    progressMax = 60f
+                    progressMax =
+                        prefRepo.activityGoalsFlow.duration.toFloat()
                     progress = 0f
                     setProgressWithAnimation(timeInMins.toFloat(), AnimationDuration.VERY_LONG.ms)
                 }
@@ -135,7 +138,8 @@ class ActivityJournalRecyclerAdapter (
                 )
                 progressbarDistance.apply {
                     // TODO: Set Using User Preference
-                    progressMax = 1f
+                    progressMax =
+                        prefRepo.activityGoalsFlow.distance / 1000f
                     progress = 0f
                     setProgressWithAnimation(
                         info.totalDistance.toFloat(),
@@ -148,8 +152,8 @@ class ActivityJournalRecyclerAdapter (
                     info.totalSteps.toString()
                 )
                 progressbarSteps.apply {
-                    // TODO: Set Using User Preference
-                    progressMax = 5000f
+                    progressMax =
+                        prefRepo.activityGoalsFlow.steps.toFloat()
                     progress = 0f
                     setProgressWithAnimation(
                         info.totalSteps.toFloat(),
@@ -209,8 +213,10 @@ class ActivityJournalRecyclerAdapter (
             }
         }
 
-        root.setOnClickListener {
-            mOnItemClickListener?.invoke(entry)
+        if (mOnItemClickListener != null) {
+            root.setOnClickListener {
+                mOnItemClickListener?.invoke(entry)
+            }
         }
 
         var expanded = false
@@ -262,6 +268,7 @@ class ActivityJournalRecyclerAdapter (
                 )
             DateSeparatedItem.ItemType.Item ->
                 holder.itemBinding?.presentItem(item.item!!, holder)
+            DateSeparatedItem.ItemType.Footer -> return
         }
     }
 }

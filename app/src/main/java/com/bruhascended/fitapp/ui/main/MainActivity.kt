@@ -5,20 +5,22 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
+import com.bruhascended.fitapp.repository.PreferencesKeys
 import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.settings.SettingsActivity
 import com.bruhascended.fitapp.util.enqueueImmediateJob
+import com.bruhascended.fitapp.util.enqueueSyncJob
 import com.bruhascended.fitapp.util.getCurrentAccount
 import com.bruhascended.fitapp.workers.ActivityEntryWorker
 import com.bruhascended.fitapp.workers.PeriodicEntryWorker
+import com.bruhascended.fitapp.workers.UpdateUserWorker
 
 val runningQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
@@ -31,48 +33,39 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        setSupportActionBar(binding.toolbar)
 
         // initialise navController
+
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragment) as NavHostFragment
         navController = navHostFragment.navController
-
-        //setup bottomNav with navController
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.dashboardFragment,
-                R.id.journalFragment,
-                R.id.friendsFragment,
-            )
-        )
-        binding.bottomNav.setupWithNavController(navController)
-
-        //setup collapsing toolbar with navController
-        binding.collapsingToolbar.setupWithNavController(
-            binding.toolbar,
-            navController,
-            appBarConfiguration
-        )
+        setupSmoothBottomMenu()
 
         // setup FloatingActionButtons
         fabPresenter = FabPresenter(this, binding)
         fabPresenter.setupFABs()
+
+        immediateSync()
     }
 
-    override fun onStart() {
-        immediateSync()
-        super.onStart()
+    private fun setupSmoothBottomMenu() {
+        val popupMenu = PopupMenu(this,null)
+        popupMenu.inflate(R.menu.bottom_menu_items)
+        val menu = popupMenu.menu
+        binding.bottomNav.setupWithNavController(menu, navController)
     }
 
     private fun immediateSync() {
         repo = PreferencesRepository(this)
         val syncEnabled =
-            repo.getPreference(PreferencesRepository.PreferencesKeys.SYNC_ENABLED).toString()
+            repo.getPreference(PreferencesKeys.SYNC_ENABLED).toString()
                 .toBooleanStrictOrNull() ?: false
         if (getCurrentAccount(this) != null && syncEnabled) {
             enqueueImmediateJob(this, PeriodicEntryWorker.WORK_NAME)
             enqueueImmediateJob(this, ActivityEntryWorker.WORK_NAME)
+        }
+        if(getCurrentAccount(this) != null){
+            enqueueSyncJob(this,UpdateUserWorker.WORK_NAME)
         }
     }
 
@@ -81,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         else super.onBackPressed()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.overflow_menu_item, menu)
         return true
     }

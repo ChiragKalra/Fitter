@@ -28,15 +28,7 @@ class ActivityJournalFragment: Fragment() {
         mAdaptor = ActivityJournalRecyclerAdapter(
             requireContext(),
             viewModel.lastItems
-        ).apply {
-            setOnItemClickListener {
-                ActionDialogPresenter(
-                    requireContext(),
-                    viewModel,
-                    it
-                ).show()
-            }
-        }
+        )
 
         binding.recyclerviewActivities.apply {
             layoutManager = LinearLayoutManager(requireContext())

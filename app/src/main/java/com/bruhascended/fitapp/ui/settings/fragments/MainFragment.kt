@@ -2,9 +2,11 @@ package com.bruhascended.fitapp.ui.settings.fragments
 
 import android.app.Activity
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -23,14 +25,24 @@ class MainFragment : PreferenceFragmentCompat() {
     private lateinit var repo: PreferencesRepository
     private var signInPreference: Preference? = null
     private var syncEnabledPreference: SwitchPreferenceCompat? = null
+    private var energyPref: EditTextPreference? = null
+    private var stepsPref: EditTextPreference? = null
+    private var durationPref: EditTextPreference? = null
+    private var distancePref: EditTextPreference? = null
+    private var consumedPref: EditTextPreference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         repo = PreferencesRepository((requireContext()))
         signInPreference = findPreference("SIGNED_IN")
         syncEnabledPreference = findPreference("SYNC_ENABLED")
+        energyPref = findPreference("GOAL_CALORIE_BURN")
+        stepsPref = findPreference("GOAL_STEPS")
+        durationPref = findPreference("GOAL_DURATION")
+        distancePref = findPreference("GOAL_DISTANCE")
+        consumedPref = findPreference("GOAL_CALORIE_CONSUMPTION")
 
-
+        setUpEditPrefs()
         setUpResultLaunchers()
         setUpSignInPreference()
         setUpSyncEnabled()
@@ -48,6 +60,47 @@ class MainFragment : PreferenceFragmentCompat() {
                     if (!isWorkScheduled(requireContext(), ActivityEntryWorker.WORK_NAME))
                         enqueueImmediateJob(requireContext(), ActivityEntryWorker.WORK_NAME)
                 }
+            }
+        }
+    }
+
+    private fun setUpEditPrefs() {
+        val userActivityGoals = repo.activityGoalsFlow
+        val userNutrientGoals = repo.nutritionGoalsFlow
+
+        energyPref?.setOnBindEditTextListener {
+            it.apply {
+                inputType = InputType.TYPE_CLASS_NUMBER
+                setText("")
+                hint = userActivityGoals.calories.toString()
+            }
+        }
+        stepsPref?.setOnBindEditTextListener {
+            it.apply {
+                inputType = InputType.TYPE_CLASS_NUMBER
+                setText("")
+                hint = userActivityGoals.steps.toString()
+            }
+        }
+        durationPref?.setOnBindEditTextListener {
+            it.apply {
+                inputType = InputType.TYPE_CLASS_NUMBER
+                setText("")
+                hint = userActivityGoals.duration.toString()
+            }
+        }
+        distancePref?.setOnBindEditTextListener {
+            it.apply {
+                inputType = InputType.TYPE_CLASS_NUMBER
+                setText("")
+                hint = userActivityGoals.distance.toString()
+            }
+        }
+        consumedPref?.setOnBindEditTextListener {
+            it.apply {
+                inputType = InputType.TYPE_CLASS_NUMBER
+                setText("")
+                hint = userNutrientGoals.calories.toString()
             }
         }
     }

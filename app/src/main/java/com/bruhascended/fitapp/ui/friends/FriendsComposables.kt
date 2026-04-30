@@ -3,12 +3,12 @@ package com.bruhascended.fitapp.ui.friends
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,37 +54,41 @@ fun StatisticTypeRow(
 	statistic: Statistic,
 	onUpdate: (statistic: Statistic) -> Unit
 ) {
-	Row (
+	LazyRow (
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.Center,
 		modifier = Modifier
 			.padding(12.dp)
 			.fillMaxWidth()
 	) {
-		Text(
-			text = stringResource(R.string.sort_by),
-			fontSize = 18.sp,
-			fontWeight = FontWeight.ExtraLight,
-			modifier = Modifier
-				.padding(horizontal = 32.dp, vertical = 12.dp),
-			color = MaterialTheme.colors.onSurface
-		)
-		Statistic.values().forEach {
-			Button(
-				onClick = { onUpdate(it) },
+		item {
+			Text(
+				text = stringResource(R.string.sort_by),
+				fontSize = 18.sp,
+				fontWeight = FontWeight.ExtraLight,
 				modifier = Modifier
-					.padding(4.dp),
-				shape = RoundedCornerShape(100),
-				colors = ButtonDefaults.buttonColors(
-					backgroundColor = if (statistic == it) MaterialTheme.colors.secondaryVariant
-											else MaterialTheme.colors.secondary,
-					contentColor = MaterialTheme.colors.primaryVariant
-				)
-			) {
-				Text(
-					text = stringResource(it.stringRes),
-					fontSize = 12.sp,
-				)
+					.padding(horizontal = 32.dp, vertical = 12.dp),
+				color = MaterialTheme.colors.onSurface
+			)
+		}
+		Statistic.values().forEach {
+			item {
+				Button(
+					onClick = { onUpdate(it) },
+					modifier = Modifier
+						.padding(4.dp),
+					shape = RoundedCornerShape(100),
+					colors = ButtonDefaults.buttonColors(
+						backgroundColor = if (statistic == it) MaterialTheme.colors.secondaryVariant
+						else MaterialTheme.colors.secondary,
+						contentColor = MaterialTheme.colors.primaryVariant
+					)
+				) {
+					Text(
+						text = stringResource(it.stringRes),
+						fontSize = 12.sp,
+					)
+				}
 			}
 		}
 	}

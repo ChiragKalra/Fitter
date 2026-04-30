@@ -32,5 +32,9 @@
     <color name="green_700">#2E7332</color>
     <color name="green_500">#18A118</color>
     <color name="green_200">#8DCA8D</color>
+    
+    <color name="circle_blue">#66ffff</color>
+    <color name="circle_green">#9CFF0B</color>
+    <color name="circle_yellow">#ffcc00</color>
 
 </resources>

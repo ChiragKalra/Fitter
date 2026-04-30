@@ -23,6 +23,7 @@ import com.bruhascended.fitapp.databinding.ActivityFoodDetailsBinding
 import com.bruhascended.fitapp.ui.addFood.adapters.CustomArrayAdapter
 import com.bruhascended.fitapp.ui.addFood.entities.MultiViewType
 import com.bruhascended.fitapp.ui.foodjournal.ActionDialogPresenter
+import com.bruhascended.fitapp.ui.foodjournal.ActionDialogPresenter.Companion.ACTION_EDIT_FOOD_ENTRY
 import com.bruhascended.fitapp.util.*
 import java.util.*
 
@@ -34,6 +35,8 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
     private val viewsLIst = mutableListOf<TextView>()
     private var millis: Long = 0
     private var foodQuantity = DEFAULT_QUANTITY
+    private var intentAction: String? = null
+    private var mFoodEntry: FoodEntry? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +58,11 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             if (item.resId == 0)
                 viewModel.setData(item.content as Hint)
             else viewModel.setDataFromDb(item.content as Food)
-        } else viewModel.setDataFromDb(foodEntry!!.food)
+        } else {
+            mFoodEntry = foodEntry
+            viewModel.setDataFromDb(foodEntry!!.food)
+        }
+        intentAction = itemIntent.action
 
         populateViewsList()
         setUpMealDropDown()
@@ -167,6 +174,9 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             MealType.getEnum(viewsLIst[3].text.toString(), this),
             millis
         )
+        if (intentAction == ACTION_EDIT_FOOD_ENTRY && mFoodEntry != null) {
+            viewModel.deleteData(mFoodEntry!!)
+        }
         viewModel.insertData(food, entry)
         setResult(Activity.RESULT_OK)
         finish()
