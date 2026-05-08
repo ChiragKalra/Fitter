@@ -22,6 +22,8 @@ android {
             useSupportLibrary true
         }
 
+        buildConfigField "String", "EDAMAM_API_KEY", "\"your_api_key_here\""
+        buildConfigField "String", "EDAMAM_API_ID", "\"your_api_id_here\""
     }
 
     buildTypes {
@@ -42,12 +44,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility "1.8"
+        targetCompatibility "1.8"
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     buildFeatures {
@@ -139,4 +141,11 @@ dependencies {
     implementation project(':api')
     implementation project(":analysis")
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+
+    configurations.all {
+        resolutionStrategy {
+            force 'androidx.lifecycle:lifecycle-viewmodel:2.4.0'
+            force 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
+        }
+    }
 }
