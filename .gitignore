@@ -1,15 +1,40 @@
 *.iml
-.gradle
+.gradle/
 /local.properties
 /.idea/
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+/build/
+**/build/
+/captures/
+.externalNativeBuild/
+.cxx/
 local.properties
+
+# Keystores and signing (never commit secrets)
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+
+# Firebase / Google services (contain API keys and OAuth client config)
+**/google-services.json
+GoogleService-Info.plist
+
+# Local secrets for Gradle or API keys
+secrets.properties
+apikey.properties
+
 app/release
 app/libs/
 classifier/libs/
 api/src/main/java/com/bruhascended/api/Private.kt
-/app/google-services.json
+
+# OS / editor junk and merge backups
+*~
+*.bak
+*.orig
+
+# JVM crash logs and heap dumps
+hs_err_pid*.log
+replay_pid*.log
+*.hprof
