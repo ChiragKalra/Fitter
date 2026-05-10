@@ -10,10 +10,13 @@ import com.bruhascended.db.activity.ActivityEntryDatabase
 import com.bruhascended.db.activity.ActivityEntryDatabaseFactory
 import com.bruhascended.db.activity.entities.ActivityEntry
 import com.bruhascended.db.activity.entities.DayEntry
+import androidx.health.connect.client.HealthConnectClient
+import com.bruhascended.fitapp.health.HealthConnectActivitySync
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.collections.HashSet
 import kotlin.reflect.KProperty
@@ -118,4 +121,34 @@ class ActivityEntryRepository(
     fun loadRangeTotalEntry(startDate: Date, endDate: Date) =
         db.getLiveTotal(startDate, endDate)
 
+    /**
+     * Replaces local activity aggregates and workout rows with Health Connect data.
+     */
+    suspend fun replaceFromHealthConnect(client: HealthConnectClient) =
+        withContext(Dispatchers.IO) {
+            val result = HealthConnectActivitySync.importActivity(client)
+            db.clearAllActivityData()
+            if (result.dayEntries.isNotEmpty()) {
+                db.dayEntryManager().insertAll(result.dayEntries)
+            }
+            if (result.activityEntries.isNotEmpty()) {
+                db.entryManager().insertAll(result.activityEntries)
+            }
+        }
+
+    fun upsertFromHcRecord(entry: ActivityEntry) {
+        val existing = entry.hcId?.let { db.entryManager().findByHcId(it) }
+        if (existing != null) {
+            entry.id = existing.id
+        }
+        db.entryManager().insert(entry)
+    }
+
+    fun deleteByHcId(hcId: String) {
+        db.entryManager().deleteByHcId(hcId)
+    }
+
+    fun clearAllActivityData() {
+        db.clearAllActivityData()
+    }
 }

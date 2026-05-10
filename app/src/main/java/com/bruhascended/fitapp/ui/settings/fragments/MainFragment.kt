@@ -14,10 +14,11 @@ import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.settings.SettingsDataStore
 import com.bruhascended.fitapp.util.*
-import com.bruhascended.fitapp.workers.ActivityEntryWorker
-import com.bruhascended.fitapp.workers.PeriodicEntryWorker
+import com.bruhascended.fitapp.workers.UpdateUserWorker
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.bruhascended.fitapp.health.HealthConnectSyncManager
+import androidx.health.connect.client.HealthConnectClient
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -51,14 +52,21 @@ class MainFragment : PreferenceFragmentCompat() {
             repo.userStatsFlow.collect {
                 if (!it.syncEnabled) {
                     // cancel all sync
-                    cancelWork(requireContext(), PeriodicEntryWorker.WORK_NAME)
-                    cancelWork(requireContext(), ActivityEntryWorker.WORK_NAME)
+                    cancelWork(requireContext(), UpdateUserWorker.WORK_NAME)
                 } else {
                     // do immediate sync
-                    if (!isWorkScheduled(requireContext(), PeriodicEntryWorker.WORK_NAME))
-                        enqueueImmediateJob(requireContext(), PeriodicEntryWorker.WORK_NAME)
-                    if (!isWorkScheduled(requireContext(), ActivityEntryWorker.WORK_NAME))
-                        enqueueImmediateJob(requireContext(), ActivityEntryWorker.WORK_NAME)
+                    if (!isWorkScheduled(requireContext(), UpdateUserWorker.WORK_NAME))
+                        enqueueImmediateJob(requireContext(), UpdateUserWorker.WORK_NAME)
+                    
+                    // Trigger HC incremental sync immediately
+                    lifecycleScope.launch {
+                        try {
+                            val client = HealthConnectClient.getOrCreate(requireContext())
+                            HealthConnectSyncManager(requireContext()).sync(client)
+                        } catch (e: Exception) {
+                            Log.e("Settings", "HC sync failed", e)
+                        }
+                    }
                 }
             }
         }
@@ -116,7 +124,9 @@ class MainFragment : PreferenceFragmentCompat() {
             if (getCurrentAccount(requireContext()) == null) {
                 checkAndroidRunTimePermissions()
             } else {
-                signOut(requireContext())
+                GoogleSignIn.getClient(
+                    requireContext(), GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+                ).signOut()
                 setUpSyncEnabled()
                 setUpEmail()
             }
@@ -184,17 +194,12 @@ class MainFragment : PreferenceFragmentCompat() {
     }
 
     private fun checkOauthPermissions() {
-        if (isOauthPermissionsApproved(requireContext(), FitBuilder.fitnessOptions)) {
-            // todo perform fit actions
-        } else {
-            requestOauthPermissionsLauncher.launch(
-                GoogleSignIn.getClient(
-                    requireContext(), GoogleSignInOptions.Builder()
-                        .addExtension(FitBuilder.fitnessOptions)
-                        .requestEmail()
-                        .build()
-                ).signInIntent
-            )
-        }
+        requestOauthPermissionsLauncher.launch(
+            GoogleSignIn.getClient(
+                requireContext(), GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .build()
+            ).signInIntent
+        )
     }
 }

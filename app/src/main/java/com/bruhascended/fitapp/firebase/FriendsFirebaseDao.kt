@@ -27,16 +27,32 @@ class FriendsFirebaseDao {
 		"distance" to 0,
 	)
 
+	private fun intField(ref: DataSnapshot, key: String, default: Int): Int {
+		val v = ref.child(key).value ?: return default
+		return when (v) {
+			is Int -> v
+			is Long -> v.toInt()
+			is Double -> v.toInt()
+			else -> default
+		}
+	}
+
+	private fun statsFrom(ref: DataSnapshot): HashMap<String, Int> {
+		if (!ref.exists()) return defaultStatsPacket
+		return hashMapOf(
+			"steps" to intField(ref, "steps", defaultStatsPacket["steps"]!!),
+			"calories" to intField(ref, "calories", defaultStatsPacket["calories"]!!),
+			"duration" to intField(ref, "duration", defaultStatsPacket["duration"]!!),
+			"distance" to intField(ref, "distance", defaultStatsPacket["distance"]!!),
+		)
+	}
+
 	private fun extractFriends(usernames: MutableSet<String>, snapshot: DataSnapshot): MutableList<Friend> {
-		val friends = snapshot.children.filter {
-			it.child("username").getValue<String>() in usernames
-		}.map { ref ->
-			val username = ref.child("username").getValue<String>()!!
-			val uid = ref.key!!
-			val daily = with(
-				ref.child("daily").getValue<HashMap<String, Int>>()
-					?: defaultStatsPacket
-			) {
+		val friends = snapshot.children.mapNotNull { ref ->
+			val username = ref.child("username").getValue<String>() ?: return@mapNotNull null
+			if (username !in usernames) return@mapNotNull null
+			val uid = ref.key ?: return@mapNotNull null
+			val daily = with(statsFrom(ref.child("daily"))) {
 				DailyStats(
 					totalSteps = this["steps"]!!,
 					totalCalories = this["calories"]!!,
@@ -44,10 +60,7 @@ class FriendsFirebaseDao {
 					totalDistance = this["distance"]!! / 1000f,
 				)
 			}
-			val weekly = with(
-				ref.child("weekly").getValue<HashMap<String, Int>>()
-					?: defaultStatsPacket
-			) {
+			val weekly = with(statsFrom(ref.child("weekly"))) {
 				WeeklyStats(
 					totalSteps = this["steps"]!!,
 					totalCalories = this["calories"]!!,
@@ -55,10 +68,7 @@ class FriendsFirebaseDao {
 					totalDistance = this["distance"]!! / 1000f,
 				)
 			}
-			val monthly = with(
-				ref.child("monthly").getValue<HashMap<String, Int>>()
-					?: defaultStatsPacket
-			) {
+			val monthly = with(statsFrom(ref.child("monthly"))) {
 				MonthlyStats(
 					totalSteps = this["steps"]!!,
 					totalCalories = this["calories"]!!,

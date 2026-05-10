@@ -19,6 +19,7 @@ import com.bruhascended.fitapp.databinding.ActivityFoodSearchBinding
 import com.bruhascended.fitapp.ui.addFood.adapters.FoodSearchAdapter
 import com.bruhascended.fitapp.ui.addFood.entities.MultiViewType
 import com.bruhascended.fitapp.ui.capturefood.PredictionPresenter
+import com.bruhascended.fitapp.util.applyStatusBarPadding
 import com.bruhascended.fitapp.util.setupToolbar
 
 class FoodSearchActivity : AppCompatActivity() {
@@ -30,17 +31,23 @@ class FoodSearchActivity : AppCompatActivity() {
 
     companion object {
         const val KEY_FOOD_DATA = "FOOD_DATA"
+        /**
+         * String extra: prefilled search query (e.g. from Smart Capture).
+         * Passed to [FoodSearchActivityViewModel.getFoodsv2] / Edamam parser.
+         */
+        const val EXTRA_PREFILL_QUERY = "PREFILL_QUERY"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_food_search)
+        binding.appBarLayout.applyStatusBarPadding()
         setupToolbar(binding.toolbar, home = true)
 
         viewModel =
             ViewModelProvider(this).get(FoodSearchActivityViewModel::class.java)
         binding.viewModel = viewModel
-        binding.setLifecycleOwner { lifecycle }
+        binding.lifecycleOwner = this
 
         setUpResultContract()
         setUpRecyclerview()
@@ -51,20 +58,24 @@ class FoodSearchActivity : AppCompatActivity() {
             binding.searchBar.setQuery(it, false)
             onSearchCustomise(it)
         }
+        intent.getStringExtra(FoodSearchActivity.EXTRA_PREFILL_QUERY)?.let {
+            binding.searchBar.setQuery(it, false)
+            onSearchCustomise(it)
+        }
 
         viewModel.apply {
-            food_hints_list.observe({ lifecycle }) {
+            food_hints_list.observe(this@FoodSearchActivity) {
                 val food_hints_list = mutableListOf<MultiViewType>()
                 for (hint in it)
                     food_hints_list.add(MultiViewType(0, hint))
                 updateList(food_hints_list)
                 binding.searchingLayout.visibility = View.GONE
             }
-            loadHistory.observe({ lifecycle }) {
+            loadHistory.observe(this@FoodSearchActivity) {
                 for (food in it) loadCountList.add(MultiViewType(1, food))
                 updateList(loadCountList)
             }
-            error.observe({ lifecycle }) {
+            error.observe(this@FoodSearchActivity) {
                 handleError()
             }
         }
@@ -103,7 +114,7 @@ class FoodSearchActivity : AppCompatActivity() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (!newText.isNullOrEmpty()) {
-                    viewModel.searchConsumedFood("%$newText%").observe({ lifecycle }) {
+                    viewModel.searchConsumedFood("%$newText%").observe(this@FoodSearchActivity) {
                         val food_history_list = mutableListOf<MultiViewType>()
                         for (food in it) {
                             food_history_list.add(MultiViewType(1, food))

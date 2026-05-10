@@ -1,6 +1,7 @@
 package com.bruhascended.fitapp.ui.friends
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -39,16 +40,24 @@ class AuthHelper (
 			val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
 			try {
 				val account = task.getResult(ApiException::class.java)
-				firebaseAuthWithGoogle(account.idToken!!)
+				val idToken = account.idToken?.trim().orEmpty()
+				if (idToken.isEmpty()) {
+					Log.e(TAG, "Google Sign-In returned no idToken (check Web client ID in strings / Firebase console)")
+					authStateCallback?.invoke(AuthState.Unauthorised)
+					return@registerForActivityResult
+				}
+				firebaseAuthWithGoogle(idToken)
 			} catch (e: ApiException) {
+				Log.e(TAG, "Google Sign failed", e)
 				authStateCallback?.invoke(AuthState.Unauthorised)
 			}
 		}
 	}
 
 	init {
+		val webClientId = mFragment.getString(R.string.web_client_id).trim()
 		val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-			.requestIdToken(mFragment.getString(R.string.web_client_id))
+			.requestIdToken(webClientId)
 			.requestEmail()
 			.build()
 

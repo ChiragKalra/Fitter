@@ -11,4 +11,7 @@ interface CrossReferenceDao {
 
     @Delete
     fun delete (crossReference: CrossReference)
+
+    @Query("DELETE FROM crossreference")
+    fun deleteAll()
 }

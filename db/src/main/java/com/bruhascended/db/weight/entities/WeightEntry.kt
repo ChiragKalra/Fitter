@@ -10,6 +10,8 @@ data class WeightEntry (
     val weight: Double,
     val type: WeightType,
     val timeInMillis: Long,
+    /** Health Connect record ID for incremental sync (null for manual entries). */
+    val hcId: String? = null,
     @PrimaryKey(autoGenerate = true)
     var id: Long = -1,
 ): Serializable {

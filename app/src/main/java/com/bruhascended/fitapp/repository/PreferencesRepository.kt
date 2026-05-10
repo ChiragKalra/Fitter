@@ -30,6 +30,7 @@ class PreferencesRepository(
         var proteins: Long,
         var fats: Long,
         var carbs: Long,
+        var addedSugar: Long,
     )
 
     data class ActivityPreferences(
@@ -98,6 +99,7 @@ class PreferencesRepository(
                     preferences[PreferencesKeys.GOAL_PROTEIN] ?: 60L,
                     preferences[PreferencesKeys.GOAL_FAT] ?: 60L,
                     preferences[PreferencesKeys.GOAL_CARBS] ?: 250L,
+                    preferences[PreferencesKeys.GOAL_ADDED_SUGAR] ?: 50L,
                 )
             }.first()
     }

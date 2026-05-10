@@ -82,5 +82,6 @@ interface FoodDao {
     """)
     fun topNPaged (n: Int): PagingSource<Int, Food>
 
-
+    @Query("DELETE FROM food")
+    fun deleteAll()
 }

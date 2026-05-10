@@ -19,15 +19,28 @@ import com.bruhascended.fitapp.databinding.ActivityAddCustomFoodBinding
 import com.bruhascended.fitapp.repository.FoodEntryRepository
 import com.bruhascended.fitapp.ui.addFood.adapters.CustomArrayAdapter
 import com.bruhascended.fitapp.util.DateTimePresenter
+import com.bruhascended.fitapp.util.applyStatusBarPadding
 import com.bruhascended.fitapp.util.setupToolbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.math.roundToInt
 
 const val TIME = "time"
 
 class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
+    companion object {
+        const val EXTRA_DRAFT_FOOD_NAME = "DRAFT_FOOD_NAME"
+        const val EXTRA_DRAFT_QUANTITY = "DRAFT_QUANTITY"
+        const val EXTRA_DRAFT_QUANTITY_TYPE = "DRAFT_QUANTITY_TYPE"
+        const val EXTRA_DRAFT_CALORIES = "DRAFT_CALORIES"
+        const val EXTRA_DRAFT_CARBS = "DRAFT_CARBS"
+        const val EXTRA_DRAFT_FAT = "DRAFT_FAT"
+        const val EXTRA_DRAFT_PROTEIN = "DRAFT_PROTEIN"
+        const val EXTRA_DRAFT_ADDED_SUGAR = "DRAFT_ADDED_SUGAR"
+    }
+
     private lateinit var binding: ActivityAddCustomFoodBinding
     private val viewsLIst = mutableListOf<TextView>()
     private val nutritionViewsList = mutableListOf<TextView>()
@@ -36,6 +49,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_custom_food)
+        binding.appBarLayout.applyStatusBarPadding()
         setupToolbar(binding.toolbar, home = true)
 
         if (savedInstanceState?.get(TIME) == null)
@@ -46,6 +60,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         setUpMealDropDown()
         setUpQuantityTypeDropDown()
         setUpDatePickerDialog()
+        applySmartCaptureDraft()
 
         binding.submit.setOnClickListener {
             checkData()
@@ -88,6 +103,7 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             add(binding.content.textviewCarbs)    // 0
             add(binding.content.textviewFat)      // 1
             add(binding.content.textviewProtein)  // 2
+            add(binding.content.textviewAddedSugar) // 3
         }
     }
 
@@ -122,26 +138,26 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         val db by FoodEntryRepository.Delegate(application)
         val weightInfoMap = EnumMap<QuantityType, Double>(QuantityType::class.java)
         val nutrientInfoMap = EnumMap<NutrientType, Double>(NutrientType::class.java)
+        val calories = viewsLIst[1].text.toString().toDouble()
+        val quantity = viewsLIst[2].text.toString().toDouble()
 
         weightInfoMap[QuantityType.valueOf(viewsLIst[3].text.toString())] = 1.0
         for (value in NutrientType.values()) {
             nutritionViewsList.let {
                 if (!it[value.ordinal].text.isNullOrEmpty()) {
-                    nutrientInfoMap[value] = it[value.ordinal].text.toString().toDouble() /
-                            viewsLIst[2].text.toString().toDouble()
+                    nutrientInfoMap[value] = it[value.ordinal].text.toString().toDouble() / quantity
                 }
             }
         }
         val food = Food(
             viewsLIst[0].text.toString(),
-            viewsLIst[1].text.toString().toDouble() /
-                    viewsLIst[2].text.toString().toDouble(),
+            calories / quantity,
             weightInfoMap,
             nutrientInfoMap
         )
         val entry = Entry(
-            viewsLIst[1].text.toString().toInt(),
-            viewsLIst[2].text.toString().toDouble(),
+            calories.roundToInt(),
+            quantity,
             QuantityType.valueOf(viewsLIst[3].text.toString()),
             MealType.getEnum(viewsLIst[4].text.toString(), this),
             millis
@@ -187,6 +203,23 @@ class AddCustomFood : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 QuantityType.values()[it].toString()
             }
         ))
+    }
+
+    private fun applySmartCaptureDraft() {
+        val draftFoodName = intent.getStringExtra(EXTRA_DRAFT_FOOD_NAME) ?: return
+        binding.content.apply {
+            foodName.setText(draftFoodName)
+            quantity.setText(intent.getDoubleExtra(EXTRA_DRAFT_QUANTITY, 1.0).toString())
+            amountDropdown.setText(
+                intent.getStringExtra(EXTRA_DRAFT_QUANTITY_TYPE) ?: QuantityType.Serving.toString(),
+                false
+            )
+            textviewEnergy.setText(intent.getDoubleExtra(EXTRA_DRAFT_CALORIES, 0.0).toString())
+            textviewCarbs.setText(intent.getDoubleExtra(EXTRA_DRAFT_CARBS, 0.0).toString())
+            textviewFat.setText(intent.getDoubleExtra(EXTRA_DRAFT_FAT, 0.0).toString())
+            textviewProtein.setText(intent.getDoubleExtra(EXTRA_DRAFT_PROTEIN, 0.0).toString())
+            textviewAddedSugar.setText(intent.getDoubleExtra(EXTRA_DRAFT_ADDED_SUGAR, 0.0).toString())
+        }
     }
 
     private fun setUpMealDropDown() {

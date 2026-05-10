@@ -4,17 +4,28 @@
 
     <uses-feature
         android:name="android.hardware.camera.any"
-        android:required="true" />
+        android:required="false" />
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-    <uses-permission android:name="android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.health.READ_NUTRITION" />
+    <uses-permission android:name="android.permission.health.READ_TOTAL_CALORIES_BURNED" />
+    <uses-permission android:name="android.permission.health.READ_STEPS" />
+    <uses-permission android:name="android.permission.health.READ_DISTANCE" />
+    <uses-permission android:name="android.permission.health.READ_EXERCISE" />
+    <uses-permission android:name="android.permission.health.READ_WEIGHT" />
+
+    <queries>
+        <package android:name="com.sec.android.app.shealth" />
+        <package android:name="com.google.android.apps.healthdata" />
+        <package android:name="com.google.android.healthconnect.controller" />
+    </queries>
 
     <application
         android:allowBackup="true"
@@ -25,15 +36,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
-        <activity
-            android:name=".ui.addfriends.AddFriendsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_add_friends"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName=".ui.main.MainActivity" />
         <activity
             android:name=".ui.addFood.AddCustomFood"
             android:label="@string/custom_food"
@@ -59,6 +61,40 @@
                 android:value="com.bruhascended.fitapp.ui.main.MainActivity" />
         </activity>
         <activity
+            android:name=".ui.capturefood.SmartCaptureAnalysisActivity"
+            android:label="@string/smart_capture"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bruhascended.fitapp.ui.capturefood.CaptureFoodActivity" />
+        </activity>
+        <activity
+            android:name=".ui.capturefood.CaptureFoodActivity"
+            android:label="@string/smart_capture"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bruhascended.fitapp.ui.main.MainActivity" />
+        </activity>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+        <activity
+            android:name=".ui.addfriends.AddFriendsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_add_friends"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".ui.main.MainActivity" />
+        <activity
             android:name=".ui.logweight.LogWeightActivity"
             android:label="@string/log_weight"
             android:screenOrientation="portrait">
@@ -75,12 +111,18 @@
                 android:value="com.bruhascended.fitapp.ui.main.MainActivity" />
         </activity>
         <activity
-            android:name=".ui.capturefood.CaptureFoodActivity"
-            android:label="@string/capture_a_food_item"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.bruhascended.fitapp.ui.main.MainActivity" />
+            android:name=".ui.health.HealthConnectPermissionRationaleActivity"
+            android:exported="true"
+            android:label="@string/health_connect_rationale_title"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
+                <category android:name="android.intent.category.HEALTH_PERMISSIONS" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.main.MainActivity"

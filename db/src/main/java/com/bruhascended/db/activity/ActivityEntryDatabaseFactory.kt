@@ -16,6 +16,10 @@ class ActivityEntryDatabaseFactory (
     fun build() = Room.databaseBuilder(
         mContext, ActivityEntryDatabase::class.java, "ActivityEntries"
     ).apply {
+        addMigrations(
+            ActivityEntryDatabase.MIGRATION_1_2,
+            ActivityEntryDatabase.MIGRATION_2_3,
+        )
         if (mainThread) allowMainThreadQueries()
     }.build()
 }

@@ -179,8 +179,20 @@
                 android:textColor="?colorControlRed"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/textViewAddedSugar"
                 app:layout_constraintStart_toEndOf="@+id/textView4"
+                app:layout_constraintTop_toTopOf="@+id/textView4" />
+
+            <TextView
+                android:id="@+id/textViewAddedSugar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/added_sugar"
+                android:textColor="?colorControlBlue"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView2"
                 app:layout_constraintTop_toTopOf="@+id/textView4" />
 
             <TextView
@@ -221,6 +233,19 @@
                 app:layout_constraintStart_toStartOf="@+id/textView2"
                 app:layout_constraintTop_toBottomOf="@+id/textView2"
                 tools:text="15.05g" />
+
+            <TextView
+                android:id="@+id/textview_added_sugar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@{viewModel.nutrientDetails.addedSugar}"
+                android:textColorHint="@color/grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="@+id/textViewAddedSugar"
+                app:layout_constraintStart_toStartOf="@+id/textViewAddedSugar"
+                app:layout_constraintTop_toBottomOf="@+id/textViewAddedSugar"
+                tools:text="5.05g" />
 
             <TextView
                 android:id="@+id/textView"

@@ -5,7 +5,8 @@ import com.google.firebase.auth.FirebaseAuth
 class RequestHelper(
 	private val viewModel: AddFriendsViewModel
 ) {
-	private var firebaseAuthUid = FirebaseAuth.getInstance().uid!!
+	private val firebaseAuthUid: String
+		get() = checkNotNull(FirebaseAuth.getInstance().currentUser?.uid)
 
 	fun onRequestsUpdate(onUpdate: (requests: List<String>) -> Unit) {
 		viewModel.usersRepository.flowFriendRequests(firebaseAuthUid) {

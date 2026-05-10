@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.bruhascended.db.food.daos.*
 import com.bruhascended.db.food.entities.*
 import java.util.Date
@@ -16,7 +18,7 @@ import java.util.Date
         CrossReference::class,
         DayEntry::class
      ],
-    version = 1,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(
@@ -24,7 +26,7 @@ import java.util.Date
 )
 abstract class FoodEntryDatabase : RoomDatabase() {
 
-    protected abstract fun entryManager(): EntryDao
+    abstract fun entryManager(): EntryDao
 
     protected abstract fun crossRefManager(): CrossReferenceDao
 
@@ -72,4 +74,28 @@ abstract class FoodEntryDatabase : RoomDatabase() {
         )
     }
 
+    /**
+     * Wipes local food journal + aggregates. Used before re-import from Health Connect.
+     */
+    fun clearAllFoodData() {
+        runInTransaction {
+            crossRefManager().deleteAll()
+            entryManager().deleteAll()
+            foodManager().deleteAll()
+            dayEntryManager().deleteAll()
+        }
+    }
+
+    companion object {
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE entry ADD COLUMN hcId TEXT DEFAULT NULL")
+            }
+        }
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Re-align Room identity hash with current entities (no column changes).
+            }
+        }
+    }
 }

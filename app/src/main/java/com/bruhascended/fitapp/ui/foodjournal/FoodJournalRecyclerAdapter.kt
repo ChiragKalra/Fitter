@@ -112,6 +112,14 @@ class FoodJournalRecyclerAdapter (
                     AnimationDuration.VERY_LONG.ms
                 )
             }
+            textviewProteinGram.text = mContext.getString(R.string.zero_gm)
+            textviewCarbsGram.text = mContext.getString(R.string.zero_gm)
+            textviewFatGram.text = mContext.getString(R.string.zero_gm)
+            textviewAddedSugarGram.text = mContext.getString(R.string.zero_gm)
+            progressbarProtein.progress = 0f
+            progressbarCarbs.progress = 0f
+            progressbarFat.progress = 0f
+            progressbarAddedSugar.progress = 0f
 
             separatorInfo.nutrientInfo.forEach { (type, value) ->
                 if (type == null) return@forEach
@@ -119,12 +127,14 @@ class FoodJournalRecyclerAdapter (
                     NutrientType.Protein -> textviewProteinGram
                     NutrientType.Carbs -> textviewCarbsGram
                     NutrientType.Fat -> textviewFatGram
+                    NutrientType.AddedSugar -> textviewAddedSugarGram
                 }.text = QuantityType.Gram.toString(mContext, value)
 
                 when (type) {
                     NutrientType.Protein -> progressbarProtein
                     NutrientType.Carbs -> progressbarCarbs
                     NutrientType.Fat -> progressbarFat
+                    NutrientType.AddedSugar -> progressbarAddedSugar
                 }.apply {
                     progressMax = when (type) {
                         NutrientType.Protein ->
@@ -133,6 +143,8 @@ class FoodJournalRecyclerAdapter (
                             prefRepo.nutritionGoalsFlow.carbs
                         NutrientType.Fat ->
                             prefRepo.nutritionGoalsFlow.fats
+                        NutrientType.AddedSugar ->
+                            prefRepo.nutritionGoalsFlow.addedSugar
                     }.toFloat()
                     progress = 0f
                     setProgressWithAnimation(value.toFloat(), AnimationDuration.VERY_LONG.ms)
@@ -162,12 +174,17 @@ class FoodJournalRecyclerAdapter (
         textviewQuantity.text = entry.quantityType.toString(mContext, entry.quantity)
 
         val weight = entry.quantity * (food.weightInfo[entry.quantityType] ?: .0)
+        textviewProteinGram.text = mContext.getString(R.string.zero_gm)
+        textviewCarbsGram.text = mContext.getString(R.string.zero_gm)
+        textviewFatGram.text = mContext.getString(R.string.zero_gm)
+        textviewAddedSugarGram.text = mContext.getString(R.string.zero_gm)
         food.nutrientInfo.forEach { (type, value) ->
             if (type == null) return@forEach
             when (type) {
                 NutrientType.Protein -> textviewProteinGram
                 NutrientType.Carbs -> textviewCarbsGram
                 NutrientType.Fat -> textviewFatGram
+                NutrientType.AddedSugar -> textviewAddedSugarGram
             }.text = QuantityType.Gram.toString(mContext, value*weight)
         }
 

@@ -14,17 +14,21 @@ class FriendsViewModel (mApp: Application) : AndroidViewModel(mApp) {
     private val friendRepository by FriendsRepository.Delegate()
     val usersRepository by UsersRepository.Delegate()
 
-    private val firebaseAuthUid: String
-        get() = FirebaseAuth.getInstance().uid!!
-
     fun flowFriendStats(
         timePeriod: TimePeriod,
         statistic: Statistic,
         onUpdate: (stats: List<FriendStatistics>) -> Unit
-    ) = friendRepository.flowFriendsStatistics(
-            firebaseAuthUid,
+    ) {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid.isNullOrEmpty()) {
+            onUpdate(emptyList())
+            return
+        }
+        friendRepository.flowFriendsStatistics(
+            uid,
             timePeriod = timePeriod,
             sortBy = statistic,
-            onUpdate
+            onUpdate,
         )
+    }
 }

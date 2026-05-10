@@ -59,6 +59,11 @@ fun NutrientCard(todayNutrientData: DayEntry) {
                     dataFormatter(todayNutrientData.nutrientInfo[NutrientType.Fat]),
                     Blue100
                 )
+                NutrientItem(
+                    "Added sugar",
+                    dataFormatter(todayNutrientData.nutrientInfo[NutrientType.AddedSugar]),
+                    Color(0xFF38BDF8)
+                )
             }
         }
     }
@@ -73,7 +78,7 @@ fun NutrientItem(text: String, value: String,color:Color) {
         Text(
             color = MaterialTheme.colors.onSurface,
             text = text,
-            fontSize = 14.sp,
+            fontSize = 12.sp,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(bottom = 8.dp)
         )

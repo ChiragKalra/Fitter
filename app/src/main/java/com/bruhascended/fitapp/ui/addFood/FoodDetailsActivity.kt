@@ -23,7 +23,6 @@ import com.bruhascended.fitapp.databinding.ActivityFoodDetailsBinding
 import com.bruhascended.fitapp.ui.addFood.adapters.CustomArrayAdapter
 import com.bruhascended.fitapp.ui.addFood.entities.MultiViewType
 import com.bruhascended.fitapp.ui.foodjournal.ActionDialogPresenter
-import com.bruhascended.fitapp.ui.foodjournal.ActionDialogPresenter.Companion.ACTION_EDIT_FOOD_ENTRY
 import com.bruhascended.fitapp.util.*
 import java.util.*
 
@@ -41,12 +40,13 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_food_details)
+        binding.appBarLayout.applyStatusBarMarginTop()
         setupToolbar(binding.toolbar, home = true)
 
         viewModel =
             ViewModelProvider(this).get(SharedActivityViewModel::class.java)
         binding.content.viewModel = viewModel
-        binding.setLifecycleOwner { lifecycle }
+        binding.lifecycleOwner = this
 
         // all the intents are setUp here
         val itemIntent = intent
@@ -72,7 +72,7 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
 
         /* Nutritional values is only calculated after quantityTypeDropDown gets populated,
         thus the first point where viewModel.CalculateNutrientData is called */
-        viewModel.QuantityTYpeItems.observe({ lifecycle }) { it ->
+        viewModel.QuantityTYpeItems.observe(this) { it ->
             val amountArray = it.map { it.toString() }.toTypedArray()
             binding.content.amountDropdown.setAdapter(
                 CustomArrayAdapter(this, R.layout.item_dropdown, amountArray)
@@ -174,7 +174,7 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             MealType.getEnum(viewsLIst[3].text.toString(), this),
             millis
         )
-        if (intentAction == ACTION_EDIT_FOOD_ENTRY && mFoodEntry != null) {
+        if (intentAction == ActionDialogPresenter.ACTION_EDIT_FOOD_ENTRY && mFoodEntry != null) {
             viewModel.deleteData(mFoodEntry!!)
         }
         viewModel.insertData(food, entry)

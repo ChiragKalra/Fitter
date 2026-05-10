@@ -5,14 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.widget.ViewPager2
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.FragmentJournalBinding
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
-import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.bruhascended.fitapp.util.applyStatusBarPadding
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL as SCROLL_FLAG_SCROLL1
 
 
 class JournalFragment : Fragment() {
@@ -55,6 +51,7 @@ class JournalFragment : Fragment() {
             )
         }
         setupViewPager()
+        binding.root.applyStatusBarPadding()
 
         return binding.root
     }

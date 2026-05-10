@@ -13,6 +13,8 @@ data class Entry (
     val quantityType: QuantityType,
     val mealType: MealType,
     val timeInMillis: Long,
+    /** Health Connect record ID for incremental sync (null for manual entries). */
+    val hcId: String? = null,
     @PrimaryKey(autoGenerate = true)
     var entryId: Long? = null,
 ): Serializable {

@@ -15,8 +15,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.reflect.KProperty
+import androidx.health.connect.client.HealthConnectClient
+import com.bruhascended.fitapp.health.HealthConnectNutritionSync
 
 class FoodEntryRepository(
     mApp: Application
@@ -100,5 +103,42 @@ class FoodEntryRepository(
             }
         }
         return liveLastIds
+    }
+
+    /**
+     * Replaces local food journal with [NutritionRecord] data from Health Connect.
+     */
+    suspend fun replaceJournalFromHealthConnect(client: HealthConnectClient) =
+        withContext(Dispatchers.IO) {
+            val pairs = HealthConnectNutritionSync.fetchNutritionPairs(client)
+            db.clearAllFoodData()
+            for ((food, entry) in pairs) {
+                db.insertEntry(food, entry)
+            }
+        }
+
+    suspend fun upsertFromHcRecord(food: Food, entry: Entry) = withContext(Dispatchers.IO) {
+        val existingEntry = entry.hcId?.let { db.entryManager().findByHcId(it) }
+        if (existingEntry != null) {
+            val existingFoodEntry = db.loadFoodEntry().singleById(existingEntry.entryId!!)
+            if (existingFoodEntry != null) {
+                db.deleteEntry(existingFoodEntry)
+            }
+        }
+        db.insertEntry(food, entry)
+    }
+
+    suspend fun deleteByHcId(hcId: String) = withContext(Dispatchers.IO) {
+        val existingEntry = db.entryManager().findByHcId(hcId)
+        if (existingEntry != null) {
+            val existingFoodEntry = db.loadFoodEntry().singleById(existingEntry.entryId!!)
+            if (existingFoodEntry != null) {
+                db.deleteEntry(existingFoodEntry)
+            }
+        }
+    }
+
+    fun clearAllFoodData() {
+        db.clearAllFoodData()
     }
 }

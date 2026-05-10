@@ -23,6 +23,8 @@ abstract class CameraActivity: AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var camera: Camera
 
+    protected lateinit var imageCapture: ImageCapture
+
     protected abstract val cameraViewFinder: PreviewView
     protected abstract val imageAnalyzer: ImageAnalyzer
 
@@ -69,7 +71,7 @@ abstract class CameraActivity: AppCompatActivity() {
                     it.setSurfaceProvider(cameraViewFinder.surfaceProvider)
                 }
 
-            val imageCapture = ImageCapture.Builder()
+            imageCapture = ImageCapture.Builder()
                 .build()
 
             // Select back camera as a default

@@ -32,4 +32,7 @@ interface DayEntryDao {
 
     @Query("SELECT * FROM dayEntry")
     fun loadAllSync(): List<DayEntry>
+
+    @Query("DELETE FROM dayEntry")
+    fun deleteAll()
 }

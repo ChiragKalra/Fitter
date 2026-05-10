@@ -5,9 +5,10 @@ import android.content.Intent
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.bruhascended.fitapp.databinding.ActivityMainBinding
+import com.bruhascended.fitapp.health.SamsungHealthLauncher
 import com.bruhascended.fitapp.ui.addFood.FoodSearchActivity
-import com.bruhascended.fitapp.ui.capturefood.CaptureFoodActivity
 import com.bruhascended.fitapp.ui.addfriends.AddFriendsActivity
+import com.bruhascended.fitapp.ui.capturefood.CaptureFoodActivity
 import com.bruhascended.fitapp.util.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
@@ -18,36 +19,42 @@ class FabPresenter(
 ) {
 
     data class FabInfo(
-        val destination: Class<*>,
+        val destination: Class<out Activity>?,
         val buttonView: FloatingActionButton,
         val descriptionView: TextView,
+        val onClick: (() -> Unit)? = null,
     )
 
     var areMiniFabsVisible = false
 
-    // onClick destinations
-    private var fabDetails: MutableSet<FabInfo>
+    private var fabDetails: LinkedHashSet<FabInfo>
     private var addFriendsFab: FabInfo
 
     init {
         binding.fabsLayout.apply {
-            fabDetails = mutableSetOf(
+            fabDetails = linkedSetOf(
                 FabInfo(
-                    CaptureFoodActivity::class.java,
-                    captureFoodButton,
-                    textCapture,
+                    destination = CaptureFoodActivity::class.java,
+                    buttonView = smartCaptureButton,
+                    descriptionView = textSmartCapture,
                 ),
                 FabInfo(
-                    FoodSearchActivity::class.java,
-                    addFoodButton,
-                    textFood,
-                )
+                    destination = FoodSearchActivity::class.java,
+                    buttonView = addFoodButton,
+                    descriptionView = textFood,
+                ),
+                FabInfo(
+                    destination = null,
+                    buttonView = addSamsungHealthFoodButton,
+                    descriptionView = textSamsungHealth,
+                    onClick = { SamsungHealthLauncher.openLogFood(mActivity) },
+                ),
             )
             addFriendsFab = FabInfo(
-                    AddFriendsActivity::class.java,
-                    addFriendsButton,
-                    textFriends,
-                )
+                destination = AddFriendsActivity::class.java,
+                buttonView = addFriendsButton,
+                descriptionView = textFriends,
+            )
             fabDetails.add(addFriendsFab)
         }
     }
@@ -79,17 +86,22 @@ class FabPresenter(
     }
 
     private fun setupIntents() {
-        // attach destination intents to FABs
         for (fabInfo in fabDetails) {
             fabInfo.buttonView.setOnClickListener {
-                mActivity.startActivity(Intent(mActivity, fabInfo.destination))
+                fabInfo.onClick?.invoke()
+                    ?: run {
+                        val dest = fabInfo.destination
+                        if (dest != null) {
+                            mActivity.startActivity(Intent(mActivity, dest))
+                        }
+                    }
                 binding.fabsLayout.cancelActionButton.callOnClick()
             }
         }
     }
 
     private fun toggleAddFriendsFab() {
-        if (FirebaseAuth.getInstance().uid != null) {
+        if (FirebaseAuth.getInstance().currentUser?.uid != null) {
             fabDetails.add(addFriendsFab)
         } else {
             fabDetails.remove(addFriendsFab)
@@ -100,7 +112,6 @@ class FabPresenter(
 
     private fun setupEntryAndExit() {
         binding.fabsLayout.apply {
-            // on show FAB buttons
             binding.addActionButton.setOnClickListener {
                 toggleAddFriendsFab()
                 areMiniFabsVisible = true
@@ -112,7 +123,6 @@ class FabPresenter(
                     fabInfo.descriptionView.animateFadeUpIn(mActivity.toPxFloat(12))
                 }
             }
-            // on hide fab buttons
             cancelActionButton.setOnClickListener {
                 areMiniFabsVisible = false
                 binding.addActionButton.animateRotation(0f).animateFadeIn(1f)
@@ -123,7 +133,6 @@ class FabPresenter(
                     fabInfo.descriptionView.animateFadeDownOut(mActivity.toPxFloat(12))
                 }
             }
-            // hide FAB buttons on tap outside
             backgroundView.setOnClickListener {
                 cancelMiniFabs()
             }

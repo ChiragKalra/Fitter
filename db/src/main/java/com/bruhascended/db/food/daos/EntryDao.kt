@@ -36,4 +36,13 @@ interface EntryDao {
 
     @Query("SELECT * FROM entry WHERE LOWER(entryId) LIKE :key OR LOWER(entryId) LIKE :altKey ORDER BY entryId ASC")
     fun searchSync (key: String, altKey: String = "% $key"): List<Entry>
+
+    @Query("DELETE FROM entry")
+    fun deleteAll()
+
+    @Query("SELECT * FROM entry WHERE hcId LIKE :hcId LIMIT 1")
+    fun findByHcId(hcId: String): Entry?
+
+    @Query("DELETE FROM entry WHERE hcId LIKE :hcId")
+    fun deleteByHcId(hcId: String)
 }

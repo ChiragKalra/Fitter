@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AlertDialog
 import com.bruhascended.db.activity.entities.ActivityEntry
 import com.bruhascended.fitapp.R
-import com.bruhascended.fitapp.ui.addFood.FoodDetailsActivity
+import com.bruhascended.fitapp.ui.addworkout.AddWorkoutActivity
 
 class ActionDialogPresenter (
     private val mContext: Context,
@@ -24,7 +24,7 @@ class ActionDialogPresenter (
     private val dialog = AlertDialog.Builder(mContext).setItems(actions) { d, c ->
         when (c) {
             0, 1 -> mContext.startActivity(
-                Intent (mContext, FoodDetailsActivity::class.java).apply {
+                Intent(mContext, AddWorkoutActivity::class.java).apply {
                     action = if (c == 0) ACTION_EDIT_ACTIVITY_ENTRY else ACTION_COPY_ACTIVITY_ENTRY
                     putExtra(KEY_ACTIVITY_ENTRY, entry)
                 }

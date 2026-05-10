@@ -16,6 +16,10 @@ class WeightEntryDatabaseFactory (
     fun build() = Room.databaseBuilder(
         mContext, WeightEntryDatabase::class.java, "WeightEntries"
     ).apply {
+        addMigrations(
+            WeightEntryDatabase.MIGRATION_1_2,
+            WeightEntryDatabase.MIGRATION_2_3,
+        )
         if (mainThread) allowMainThreadQueries()
     }.build()
 }

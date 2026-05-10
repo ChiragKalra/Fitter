@@ -13,7 +13,8 @@ enum class NutrientType (
 ) {
     Carbs(carbs),
     Fat(fat),
-    Protein(protein);
+    Protein(protein),
+    AddedSugar(added_sugar);
 
     fun getString(context: Context) = context.getString(stringRes)
 }

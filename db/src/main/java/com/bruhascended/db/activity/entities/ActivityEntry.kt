@@ -13,6 +13,8 @@ data class ActivityEntry (
     val duration: Long? = null,
     val distance: Double? = null,
     val steps: Int? = null,
+    /** Health Connect record ID for incremental sync (null for manual entries). */
+    val hcId: String? = null,
     @PrimaryKey(autoGenerate = true)
     var id: Long? = null,
 ): Serializable {

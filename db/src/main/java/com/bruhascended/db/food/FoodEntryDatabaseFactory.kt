@@ -16,6 +16,10 @@ class FoodEntryDatabaseFactory (
     fun build() = Room.databaseBuilder(
         mContext, FoodEntryDatabase::class.java, "FoodEntries"
     ).apply {
+        addMigrations(
+            FoodEntryDatabase.MIGRATION_1_2,
+            FoodEntryDatabase.MIGRATION_2_3,
+        )
         if (mainThread) allowMainThreadQueries()
     }.build()
 }

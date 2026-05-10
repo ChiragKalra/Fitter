@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.CircularProgressIndicator
@@ -74,11 +75,13 @@ class FriendsFragment : Fragment() {
         var statistic by remember { mutableStateOf(Statistic.TimeActive) }
         var friendStats by remember { mutableStateOf(listOf<FriendStatistics>())}
 
-        viewModel.flowFriendStats(timePeriod, statistic) {
-            friendStats = it
+        LaunchedEffect(timePeriod, statistic) {
+            viewModel.flowFriendStats(timePeriod, statistic) {
+                friendStats = it
+            }
         }
 
-        Column {
+        Column(modifier = Modifier.statusBarsPadding()) {
             TimePeriodTabRow(
                 timePeriod = timePeriod,
                 onUpdate = {

@@ -16,6 +16,9 @@ interface DayEntryDao {
     @Delete
     fun delete (dayEntry: DayEntry)
 
+    @Query("DELETE FROM activity_day_entries")
+    fun deleteAll()
+
     @Query("SELECT * FROM activity_day_entries WHERE startTime LIKE :time")
     fun findByStartTime (time: Long): DayEntry?
 

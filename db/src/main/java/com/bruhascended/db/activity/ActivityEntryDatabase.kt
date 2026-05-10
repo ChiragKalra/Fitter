@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.bruhascended.db.activity.daos.ActivityEntryDao
 import com.bruhascended.db.activity.daos.DayEntryDao
 import com.bruhascended.db.activity.entities.ActivityEntry
@@ -16,7 +18,7 @@ import java.util.*
         ActivityEntry::class,
         DayEntry::class
     ],
-    version = 1,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(
@@ -81,5 +83,25 @@ abstract class ActivityEntryDatabase : RoomDatabase() {
 
     fun deleteDayEntry(dayEntry: DayEntry) {
         dayEntryManager().delete(dayEntry)
+    }
+
+    fun clearAllActivityData() {
+        runInTransaction {
+            entryManager().deleteAll()
+            dayEntryManager().deleteAll()
+        }
+    }
+
+    companion object {
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE activity_entry ADD COLUMN hcId TEXT DEFAULT NULL")
+            }
+        }
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Re-align Room identity hash with current entities (no column changes).
+            }
+        }
     }
 }

@@ -68,6 +68,25 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/previewWindow"/>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/smartCaptureButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:background="@drawable/bg_prediction"
+            android:elevation="10dp"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="12dp"
+            android:text="@string/smart_capture"
+            android:textSize="22sp"
+            app:icon="@drawable/ic_auto_awesome"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/previewWindow" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/flashlight_fab"
@@ -87,8 +106,7 @@
             android:layout_width="0dp"
             tools:listitem="@layout/item_food_prediction"
             android:layout_height="0dp"
-            android:layout_marginTop="4dp"
-            app:layout_constraintTop_toBottomOf="@id/previewWindow"
+            app:layout_constraintTop_toBottomOf="@id/smartCaptureButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>

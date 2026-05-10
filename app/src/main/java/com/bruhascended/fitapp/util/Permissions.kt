@@ -8,7 +8,6 @@ import androidx.core.app.ActivityCompat
 import com.bruhascended.fitapp.ui.main.runningQOrLater
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.fitness.FitnessOptions
 
 enum class permissions(val str: String) {
     FOREGROUND_LOCATION(android.Manifest.permission.ACCESS_FINE_LOCATION),
@@ -45,13 +44,7 @@ private fun checkSelf(context: Context, permission: String): Boolean {
     ) == PackageManager.PERMISSION_GRANTED
 }
 
-fun isOauthPermissionsApproved(context: Context, fitnessOptions: FitnessOptions): Boolean {
-    return GoogleSignIn.hasPermissions(getGoogleAccount(context, fitnessOptions), fitnessOptions)
-}
 
-fun getGoogleAccount(context: Context, fitnessOptions: FitnessOptions): GoogleSignInAccount {
-    return GoogleSignIn.getAccountForExtension(context, fitnessOptions)
-}
 
 fun getCurrentAccount(context: Context): GoogleSignInAccount? {
     return GoogleSignIn.getLastSignedInAccount(context)

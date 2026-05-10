@@ -21,6 +21,7 @@ data class FoodNutrientDetails(
     var Carbs: String? = null,
     var Fat: String? = null,
     var Protein: String? = null,
+    var AddedSugar: String? = null,
 )
 
 class SharedActivityViewModel(application: Application) : AndroidViewModel(application) {
@@ -84,6 +85,9 @@ class SharedActivityViewModel(application: Application) : AndroidViewModel(appli
             }
             nutrientInfo_map[NutrientType.Fat]?.let { it1 ->
                 nutrientDetailsUtil.Fat = QuantityType.Gram.toString(context, it * it1)
+            }
+            nutrientInfo_map[NutrientType.AddedSugar]?.let { it1 ->
+                nutrientDetailsUtil.AddedSugar = QuantityType.Gram.toString(context, it * it1)
             }
             NutrientDetails.postValue(nutrientDetailsUtil)
         }

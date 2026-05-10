@@ -16,8 +16,17 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
 
-        buildConfigField "String", "EDAMAM_API_KEY", "\"your_api_key_here\""
-        buildConfigField "String", "EDAMAM_API_ID", "\"your_api_id_here\""
+        def envFile = rootProject.file('.env')
+        def envProperties = new Properties()
+        if (envFile.exists()) {
+            envFile.withReader('UTF-8') { reader ->
+                envProperties.load(reader)
+            }
+        }
+        buildConfigField "String", "EDAMAM_API_KEY", "\"${envProperties.getProperty('EDAMAM_API_KEY', '')}\""
+        buildConfigField "String", "EDAMAM_API_ID", "\"${envProperties.getProperty('EDAMAM_API_ID', '')}\""
+        buildConfigField "String", "GEMINI_API_KEY", "\"${envProperties.getProperty('GEMINI_API_KEY', '')}\""
+        buildConfigField "String", "BRAVE_SEARCH_API_KEY", "\"${envProperties.getProperty('BRAVE_SEARCH_API_KEY', '')}\""
     }
 
     buildTypes {
@@ -34,6 +43,9 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
     namespace 'com.bruhascended.api'
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {

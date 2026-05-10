@@ -21,6 +21,9 @@ signing.properties
 GoogleService-Info.plist
 
 # Local secrets for Gradle or API keys
+.env
+.env.*
+!.env.example
 secrets.properties
 apikey.properties
 
@@ -28,6 +31,13 @@ app/release
 app/libs/
 classifier/libs/
 api/src/main/java/com/bruhascended/api/Private.kt
+
+# Kotlin/Gradle local state
+.kotlin/
+
+# Local ad-hoc screenshots
+/exhibit_a.png
+/exibhit_b.png
 
 # OS / editor junk and merge backups
 *~

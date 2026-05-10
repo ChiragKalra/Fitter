@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.work.*
 import androidx.work.WorkInfo.*
-import com.bruhascended.fitapp.workers.ActivityEntryWorker
-import com.bruhascended.fitapp.workers.PeriodicEntryWorker
 import com.bruhascended.fitapp.workers.UpdateUserWorker
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -21,23 +19,9 @@ fun enqueueSyncJob(context: Context, NAME: String, delay: Long = 0) {
         .setRequiresBatteryNotLow(true)
         .build()
 
-    val workRequest: OneTimeWorkRequest.Builder = when (NAME) {
-        UpdateUserWorker.WORK_NAME -> {
-            OneTimeWorkRequestBuilder<UpdateUserWorker>()
-                .setConstraints(constraints)
-                .setInitialDelay(delay, TimeUnit.SECONDS)
-        }
-        PeriodicEntryWorker.WORK_NAME -> {
-            OneTimeWorkRequestBuilder<PeriodicEntryWorker>()
-                .setConstraints(constraints)
-                .setInitialDelay(delay, TimeUnit.SECONDS)
-        }
-        else -> {
-            OneTimeWorkRequestBuilder<ActivityEntryWorker>()
-                .setConstraints(constraints)
-                .setInitialDelay(delay, TimeUnit.SECONDS)
-        }
-    }
+    val workRequest: OneTimeWorkRequest.Builder = OneTimeWorkRequestBuilder<UpdateUserWorker>()
+        .setConstraints(constraints)
+        .setInitialDelay(delay, TimeUnit.SECONDS)
 
     if (delay == 0L) {
         workRequest.addTag(IMMEDIATE_TAG)

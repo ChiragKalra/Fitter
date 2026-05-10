@@ -10,8 +10,14 @@ interface WeightEntryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert (weightEntry: WeightEntry): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(weightEntries: List<WeightEntry>): List<Long>
+
     @Delete
     fun delete (weightEntry: WeightEntry)
+
+    @Query("DELETE FROM weight_entry")
+    fun deleteAll()
 
     @Query("SELECT * FROM weight_entry WHERE id LIKE :id")
     fun findById (id: Long): WeightEntry?
@@ -30,4 +36,10 @@ interface WeightEntryDao {
 
     @Query("SELECT COUNT(id) FROM weight_entry")
     fun getLiveCount(): LiveData<Int>
+
+    @Query("SELECT * FROM weight_entry WHERE hcId LIKE :hcId LIMIT 1")
+    fun findByHcId(hcId: String): WeightEntry?
+
+    @Query("DELETE FROM weight_entry WHERE hcId LIKE :hcId")
+    fun deleteByHcId(hcId: String)
 }
