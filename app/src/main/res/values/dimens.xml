@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Match SmoothBottomBar height in activity_main.xml; used by Compose to avoid overlays. -->
+    <dimen name="main_bottom_nav_height">70dp</dimen>
     <dimen name="app_bar_height">120dp</dimen>
     <dimen name="fab_size">56dp</dimen>
     <dimen name="mini_fab_size">40dp</dimen>
     <dimen name="footer_height">96dp</dimen>
     <dimen name="activity_details_height">36dp</dimen>
     <dimen name="nutrient_details_height">36dp</dimen>
+    <dimen name="settings_card_inset_h">18dp</dimen>
+    <dimen name="settings_card_radius">14dp</dimen>
 </resources>

@@ -18,7 +18,7 @@ import java.util.Date
         CrossReference::class,
         DayEntry::class
      ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(
@@ -75,6 +75,25 @@ abstract class FoodEntryDatabase : RoomDatabase() {
     }
 
     /**
+     * Removes duplicate HC-import rows (same [Entry.hcId]) left by older importer runs.
+     * Keeps lowest [Entry.entryId] so foreign links stay deterministic; adjusts [DayEntry] via delete path.
+     */
+    fun dropDuplicateImportedHealthConnectRows() {
+        runInTransaction {
+            val HC = entryManager().loadAllSync().filter { !it.hcId.isNullOrBlank() }
+            val duplicates = HC.groupBy { it.hcId!! }.filter { (_, rows) -> rows.size > 1 }
+            for ((_, rows) in duplicates) {
+                val losers = rows.sortedBy { it.entryId ?: Long.MAX_VALUE }.drop(1)
+                for (row in losers) {
+                    val eid = row.entryId ?: continue
+                    val fe = loadFoodEntry().singleById(eid) ?: continue
+                    deleteEntry(fe)
+                }
+            }
+        }
+    }
+
+    /**
      * Wipes local food journal + aggregates. Used before re-import from Health Connect.
      */
     fun clearAllFoodData() {
@@ -95,6 +114,12 @@ abstract class FoodEntryDatabase : RoomDatabase() {
         val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 // Re-align Room identity hash with current entities (no column changes).
+            }
+        }
+
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Food ADD COLUMN displayTitle TEXT DEFAULT NULL")
             }
         }
     }

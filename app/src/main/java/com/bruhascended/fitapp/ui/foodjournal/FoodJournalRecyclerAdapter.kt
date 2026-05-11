@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.db.R.string.calorie_count
 import com.bruhascended.db.food.entities.DayEntry
 import com.bruhascended.db.food.entities.FoodEntry
+import com.bruhascended.db.food.entities.effectiveDisplayName
 import com.bruhascended.db.food.types.NutrientType
 import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.R
@@ -170,8 +171,13 @@ class FoodJournalRecyclerAdapter (
             calorie_count,
             entry.calories.toString()
         )
-        textviewFoodName.text = food.foodName
-        textviewQuantity.text = entry.quantityType.toString(mContext, entry.quantity)
+        textviewFoodName.text = food.effectiveDisplayName()
+        textviewQuantity.text =
+            if (entry.hcId != null) {
+                mContext.getString(R.string.food_journal_hc_quantity_placeholder)
+            } else {
+                entry.quantityType.toString(mContext, entry.quantity)
+            }
 
         val weight = entry.quantity * (food.weightInfo[entry.quantityType] ?: .0)
         textviewProteinGram.text = mContext.getString(R.string.zero_gm)

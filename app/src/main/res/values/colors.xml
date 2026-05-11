@@ -37,4 +37,6 @@
     <color name="circle_green">#9CFF0B</color>
     <color name="circle_yellow">#ffcc00</color>
 
+    <color name="settings_card_stroke">#20000000</color>
+
 </resources>

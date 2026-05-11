@@ -8,13 +8,9 @@ import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.health.connect.client.records.WeightRecord
 
-/** Health Connect read scopes used by Fitter (nutrition, activity, weight). */
+/** Health Connect read/write scopes used by Fitter. */
 object HealthConnectPermissions {
 
-    /**
-     * Order is stable so logs and debugging match the permission sheet grouping.
-     * Every entry here must have a matching `android.permission.health.READ_*` in the manifest.
-     */
     val readPermissions: Set<String> = linkedSetOf(
         HealthPermission.getReadPermission(NutritionRecord::class),
         HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class),
@@ -23,4 +19,18 @@ object HealthConnectPermissions {
         HealthPermission.getReadPermission(ExerciseSessionRecord::class),
         HealthPermission.getReadPermission(WeightRecord::class),
     )
+
+    val writePermissions: Set<String> = linkedSetOf(
+        HealthPermission.getWritePermission(NutritionRecord::class),
+    )
+
+    /**
+     * Always pass this to [androidx.health.connect.client.PermissionController] when opening the
+     * system sheet. Requesting [writePermissions] alone can show only Nutrition on some devices
+     * and is easy to misread as dropping activity/weight access even though [readPermissions] are
+     * still declared in the manifest.
+     */
+    val allPermissions: Set<String> = readPermissions + writePermissions
+
+    /** Every entry here needs matching `READ_*` or `WRITE_*` in AndroidManifest.xml. */
 }

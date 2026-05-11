@@ -2,6 +2,7 @@ package com.bruhascended.fitapp.util
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -9,8 +10,11 @@ import androidx.core.view.updatePadding
 
 /**
  * Adds status-bar insets to this view's padding. Preserves padding from XML/layout.
+ *
+ * Set [consumesTopStatusBarInset] when this view clears the overlap for the hierarchy below
+ * (avoids stacking top inset twice with edge-to-edge windows).
  */
-fun View.applyStatusBarPadding() {
+fun View.applyStatusBarPadding(consumesTopStatusBarInset: Boolean = false) {
     val baseLeft = paddingLeft
     val baseTop = paddingTop
     val baseRight = paddingRight
@@ -21,9 +25,15 @@ fun View.applyStatusBarPadding() {
             left = baseLeft + bars.left,
             top = baseTop + bars.top,
             right = baseRight + bars.right,
-            bottom = baseBottom + bars.bottom
+            bottom = baseBottom + bars.bottom,
         )
-        insets
+        if (consumesTopStatusBarInset) {
+            WindowInsetsCompat.Builder(insets)
+                .setInsets(WindowInsetsCompat.Type.statusBars(), Insets.of(bars.left, 0, bars.right, bars.bottom))
+                .build()
+        } else {
+            insets
+        }
     }
     requestApplyInsetsWhenReady()
 }

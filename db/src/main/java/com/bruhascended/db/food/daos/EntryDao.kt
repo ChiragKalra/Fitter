@@ -40,9 +40,9 @@ interface EntryDao {
     @Query("DELETE FROM entry")
     fun deleteAll()
 
-    @Query("SELECT * FROM entry WHERE hcId LIKE :hcId LIMIT 1")
+    @Query("SELECT * FROM entry WHERE hcId IS NOT NULL AND hcId = :hcId LIMIT 1")
     fun findByHcId(hcId: String): Entry?
 
-    @Query("DELETE FROM entry WHERE hcId LIKE :hcId")
+    @Query("DELETE FROM entry WHERE hcId IS NOT NULL AND hcId = :hcId")
     fun deleteByHcId(hcId: String)
 }

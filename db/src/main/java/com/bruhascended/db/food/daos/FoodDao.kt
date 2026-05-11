@@ -32,6 +32,8 @@ interface FoodDao {
         SELECT * FROM food 
         WHERE LOWER(foodName) 
         LIKE :key OR LOWER(foodName) LIKE :altKey 
+        OR LOWER(IFNULL(displayTitle,'')) LIKE :key
+        OR LOWER(IFNULL(displayTitle,'')) LIKE :altKey 
         ORDER BY foodName ASC
     """)
     fun searchPaged (key: String, altKey: String = "% $key"): PagingSource<Int, Food>
@@ -40,6 +42,8 @@ interface FoodDao {
         SELECT * FROM food 
         WHERE LOWER(foodName) 
         LIKE :key OR LOWER(foodName) LIKE :altKey 
+        OR LOWER(IFNULL(displayTitle,'')) LIKE :key
+        OR LOWER(IFNULL(displayTitle,'')) LIKE :altKey 
         ORDER BY foodName ASC
     """)
     fun searchLive (key: String, altKey: String = "% $key"): LiveData<List<Food>>
@@ -48,6 +52,8 @@ interface FoodDao {
         SELECT * FROM food 
         WHERE LOWER(foodName) 
         LIKE :key OR LOWER(foodName) LIKE :altKey 
+        OR LOWER(IFNULL(displayTitle,'')) LIKE :key
+        OR LOWER(IFNULL(displayTitle,'')) LIKE :altKey 
         ORDER BY foodName ASC
     """)
     fun searchSync (key: String, altKey: String = "% $key"): List<Food>

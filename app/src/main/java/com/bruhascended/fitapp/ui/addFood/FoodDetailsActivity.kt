@@ -16,6 +16,7 @@ import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.db.food.entities.Entry
 import com.bruhascended.db.food.entities.Food
 import com.bruhascended.db.food.entities.FoodEntry
+import com.bruhascended.db.food.entities.effectiveDisplayName
 import com.bruhascended.db.food.types.MealType
 import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.R
@@ -104,7 +105,7 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
 
     private fun setCopyToNow(foodEntry: FoodEntry) {
         foodEntry.let {
-            viewsLIst[0].text = it.food.foodName
+            viewsLIst[0].text = it.food.effectiveDisplayName()
             viewsLIst[1].text = it.entry.quantity.toString()
             viewsLIst[2].text = it.entry.quantityType.toString()
             foodQuantity = it.entry.quantity
@@ -175,9 +176,10 @@ class FoodDetailsActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
             millis
         )
         if (intentAction == ActionDialogPresenter.ACTION_EDIT_FOOD_ENTRY && mFoodEntry != null) {
-            viewModel.deleteData(mFoodEntry!!)
+            viewModel.replaceJournalEntry(mFoodEntry!!, food, entry)
+        } else {
+            viewModel.insertData(food, entry)
         }
-        viewModel.insertData(food, entry)
         setResult(Activity.RESULT_OK)
         finish()
     }

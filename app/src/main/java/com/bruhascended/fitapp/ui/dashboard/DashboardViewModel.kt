@@ -7,8 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.bruhascended.db.activity.entities.DayEntry
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.repository.FoodEntryRepository
+import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.util.BarGraphData
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import java.util.*
 
 
@@ -36,11 +39,22 @@ class DashboardViewModel(mApp: Application) : AndroidViewModel(mApp) {
     var activityData: LiveData<List<DayEntry>>? = null
     var nutrientData: LiveData<com.bruhascended.db.food.entities.DayEntry?>? = null
 
+    private val prefsRepository = PreferencesRepository(mApp.applicationContext)
+
+    val dashboardUiConfig: StateFlow<DashboardUiConfig> =
+        prefsRepository.dashboardUiConfigFlow.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = DashboardUiConfig.Default,
+        )
+
     init {
-        viewModelScope.launch {
-            activityData = getLastWeekDayEntry()
-            nutrientData = getTodayLiveNutrition()
-        }
+        activityData = getLastWeekDayEntry()
+        nutrientData = getTodayLiveNutrition()
+    }
+
+    fun saveDashboardLayout(order: List<DashboardSection>, hidden: Set<DashboardSection>) {
+        prefsRepository.updateDashboardUiConfig(order, hidden)
     }
 
     fun getLastWeekEnergyExp(

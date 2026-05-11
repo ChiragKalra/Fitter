@@ -236,4 +236,45 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- Settings: calmer hierarchy than default accent-heavy categories -->
+    <style name="Theme.Fitter.Settings" parent="AppTheme">
+        <item name="preferenceTheme">@style/ThemeOverlay.Fitter.Preference</item>
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+
+    <style name="ThemeOverlay.Fitter.Preference" parent="PreferenceThemeOverlay.v14.Material">
+        <item name="preferenceCategoryTitleTextAppearance">@style/TextAppearance.Fitter.Settings.Section</item>
+    </style>
+
+    <style name="TextAppearance.Fitter.Settings.Section" parent="TextAppearance.MaterialComponents.Overline">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:letterSpacing">0.06</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Fitter.Settings.Title" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.Fitter.Settings.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:lineSpacingExtra">2dp</item>
+    </style>
+
+    <style name="TextAppearance.Fitter.Settings.Overline" parent="TextAppearance.MaterialComponents.Overline">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.Fitter.Settings.Time" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
 </resources>

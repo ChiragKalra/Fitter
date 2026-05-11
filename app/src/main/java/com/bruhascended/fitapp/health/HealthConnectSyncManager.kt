@@ -4,20 +4,17 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.health.connect.client.HealthConnectClient
-import androidx.health.connect.client.changes.Change
 import androidx.health.connect.client.changes.DeletionChange
 import androidx.health.connect.client.changes.UpsertionChange
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.NutritionRecord
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.request.ChangesTokenRequest
-import androidx.health.connect.client.time.TimeRangeFilter
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.repository.FoodEntryRepository
 import com.bruhascended.fitapp.repository.PreferencesKeys
 import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.repository.WeightEntryRepository
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -34,6 +31,14 @@ class HealthConnectSyncManager(
         syncActivity(client)
         syncNutrition(client)
         syncWeight(client)
+        pushLocalNutritionExports(client)
+    }
+
+    private suspend fun pushLocalNutritionExports(client: HealthConnectClient) {
+        if (!HealthConnectNutritionExport.hasWriteNutrition(client)) return
+        val rows = foodRepo.loadAllFoodEntriesSync()
+        HealthConnectNutritionExport.syncAllEligibleEntries(client, preferencesRepository, rows)
+        Log.i(TAG, "Pushed local nutrition for ${rows.count { it.entry.hcId == null }} HC-eligible row(s)")
     }
 
     private suspend fun syncActivity(client: HealthConnectClient) {
@@ -78,6 +83,7 @@ class HealthConnectSyncManager(
     }
 
     private suspend fun syncNutrition(client: HealthConnectClient) {
+        ensureNutritionImporterSchemaBump()
         val savedToken = preferencesRepository.getPreference(PreferencesKeys.HC_CHANGES_TOKEN_NUTRITION)
         if (savedToken == null) {
             Log.i(TAG, "No nutrition token found, performing full sync")
@@ -114,6 +120,22 @@ class HealthConnectSyncManager(
                 preferencesRepository.updatePreference(PreferencesKeys.HC_CHANGES_TOKEN_NUTRITION, newToken)
             }
         }
+    }
+
+    /**
+     * When nutrition import semantics change, drop the HC changes token once so history is replaced
+     * via full [FoodEntryRepository.replaceJournalFromHealthConnect] on the next sync.
+     */
+    private fun ensureNutritionImporterSchemaBump() {
+        val raw = preferencesRepository.getPreference(PreferencesKeys.HC_NUTRITION_IMPORT_SCHEMA)
+        val current = raw as? Int ?: 0
+        if (current >= NUTRITION_IMPORT_SCHEMA_CURRENT) return
+        Log.i(TAG, "HC nutrition import schema ${current}->$NUTRITION_IMPORT_SCHEMA_CURRENT — full nutrition resync")
+        preferencesRepository.removePreference(PreferencesKeys.HC_CHANGES_TOKEN_NUTRITION)
+        preferencesRepository.updatePreference(
+            PreferencesKeys.HC_NUTRITION_IMPORT_SCHEMA,
+            NUTRITION_IMPORT_SCHEMA_CURRENT,
+        )
     }
 
     private suspend fun syncWeight(client: HealthConnectClient) {
@@ -153,5 +175,10 @@ class HealthConnectSyncManager(
                 preferencesRepository.updatePreference(PreferencesKeys.HC_CHANGES_TOKEN_WEIGHT, newToken)
             }
         }
+    }
+
+    private companion object {
+        /** Bumped when importer must wipe [PreferencesKeys.HC_CHANGES_TOKEN_NUTRITION]. */
+        private const val NUTRITION_IMPORT_SCHEMA_CURRENT = 3
     }
 }

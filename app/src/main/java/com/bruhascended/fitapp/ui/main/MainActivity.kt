@@ -1,16 +1,21 @@
 package com.bruhascended.fitapp.ui.main
 
+import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.PopupMenu
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -22,19 +27,31 @@ import com.bruhascended.fitapp.databinding.ActivityMainBinding
 import com.bruhascended.fitapp.health.HealthConnectPermissions
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.repository.FoodEntryRepository
-import com.bruhascended.fitapp.repository.PreferencesKeys
 import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.repository.WeightEntryRepository
 import com.bruhascended.fitapp.ui.settings.SettingsActivity
 import com.bruhascended.fitapp.util.enqueueSyncJob
-import com.bruhascended.fitapp.util.getCurrentAccount
 import com.bruhascended.fitapp.health.HealthConnectSyncManager
+import com.bruhascended.fitapp.reminders.MealReminderScheduler
 import com.bruhascended.fitapp.workers.UpdateUserWorker
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 val runningQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
 class MainActivity : AppCompatActivity() {
+
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) {
+                MealReminderScheduler.rescheduleAll(this)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                !shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)
+            ) {
+                offerOpenNotificationSettingsDialog()
+            }
+        }
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
@@ -70,12 +87,21 @@ class MainActivity : AppCompatActivity() {
 
         immediateSync()
         if (savedInstanceState == null) {
-            offerHealthConnectConnection(userInvoked = false)
+            binding.root.post {
+                offerHealthConnectConnection(userInvoked = false)
+            }
+            lifecycleScope.launch {
+                delay(750)
+                if (!isFinishing && !isDestroyed) {
+                    mealRemindersKickoff()
+                }
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
+        MealReminderScheduler.rescheduleAll(this)
         // Never launch the permission sheet from onResume — each return from the flow
         // would fire again and the system stacks GrantPermissionsActivity until MainActivity
         // is force-finished (see logcat: ActivityTaskManager force remove).
@@ -91,9 +117,64 @@ class MainActivity : AppCompatActivity() {
 
     private fun immediateSync() {
         repo = PreferencesRepository(this)
-        if (getCurrentAccount(this) != null) {
+        if (FirebaseAuth.getInstance().currentUser != null) {
             enqueueSyncJob(this, UpdateUserWorker.WORK_NAME)
         }
+    }
+
+    private fun mealRemindersKickoff() {
+        MealReminderScheduler.rescheduleAll(this)
+        promptNotificationPermissionIfNeeded()
+    }
+
+    private fun promptNotificationPermissionIfNeeded() {
+        if (!canShowHealthConnectUi()) return
+        if (NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+            MealReminderScheduler.rescheduleAll(this)
+            return
+        }
+        AlertDialog.Builder(this)
+            .setTitle(R.string.notifications_permission_title)
+            .setMessage(R.string.notifications_permission_message)
+            .setNegativeButton(R.string.notifications_permission_not_now, null)
+            .setPositiveButton(R.string.notifications_permission_allow) { _, _ ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                } else {
+                    openAppNotificationSettings()
+                }
+            }
+            .show()
+    }
+
+    private fun offerOpenNotificationSettingsDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.notifications_open_settings_title)
+            .setMessage(R.string.notifications_open_settings_message)
+            .setNegativeButton(R.string.notifications_permission_not_now, null)
+            .setPositiveButton(R.string.notifications_open_settings_button) { _, _ ->
+                openAppNotificationSettings()
+            }
+            .show()
+    }
+
+    private fun openAppNotificationSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+            }
+            runCatching { startActivity(intent) }.onFailure { openApplicationDetailsFallback() }
+        } else {
+            openApplicationDetailsFallback()
+        }
+    }
+
+    private fun openApplicationDetailsFallback() {
+        startActivity(
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", packageName, null)
+            },
+        )
     }
 
     /**
@@ -124,10 +205,19 @@ class MainActivity : AppCompatActivity() {
                     try {
                         val client = HealthConnectClient.getOrCreate(this@MainActivity)
                         val granted = client.permissionController.getGrantedPermissions()
-                        if (granted.containsAll(HealthConnectPermissions.readPermissions)) {
-                            syncHealthConnectData()
-                        } else if (canShowHealthConnectUi()) {
-                            showConnectHealthConnectPermissionDialog()
+                        when {
+                            granted.containsAll(HealthConnectPermissions.allPermissions) ->
+                                syncHealthConnectData()
+
+                            !granted.containsAll(HealthConnectPermissions.readPermissions) && canShowHealthConnectUi() ->
+                                showConnectHealthConnectPermissionDialog()
+
+                            granted.containsAll(HealthConnectPermissions.readPermissions) &&
+                                !granted.containsAll(HealthConnectPermissions.writePermissions) &&
+                                canShowHealthConnectUi() ->
+                                showHealthConnectWriteNutritionDialog()
+
+                            else -> Unit
                         }
                     } catch (e: Exception) {
                         Log.w(TAG, "Health Connect setup failed", e)
@@ -145,8 +235,30 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButton(R.string.health_connect_not_now, null)
             .setPositiveButton(R.string.health_connect_connect) { d, _ ->
                 d.dismiss()
-                val perms = HealthConnectPermissions.readPermissions
-                Log.i(TAG, "Health Connect launch: requesting ${perms.size} read permission(s)")
+                val perms = HealthConnectPermissions.allPermissions
+                Log.i(TAG, "Health Connect launch: requesting ${perms.size} permission(s) (read + nutrition write)")
+                window.decorView.post {
+                    if (!isFinishing && !isDestroyed) {
+                        try {
+                            healthPermissionLauncher.launch(perms)
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Health Connect permission launch failed", e)
+                        }
+                    }
+                }
+            }
+            .show()
+    }
+
+    private fun showHealthConnectWriteNutritionDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.health_connect_write_dialog_title)
+            .setMessage(R.string.health_connect_write_dialog_message)
+            .setNegativeButton(R.string.health_connect_not_now, null)
+            .setPositiveButton(R.string.health_connect_connect) { d, _ ->
+                d.dismiss()
+                val perms = HealthConnectPermissions.allPermissions
+                Log.i(TAG, "Health Connect launch (add write): full read+write sheet (${perms.size} permission(s))")
                 window.decorView.post {
                     if (!isFinishing && !isDestroyed) {
                         try {

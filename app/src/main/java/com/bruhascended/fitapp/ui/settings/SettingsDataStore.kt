@@ -9,12 +9,18 @@ class SettingsDataStore(context: Context) : PreferenceDataStore() {
     private val repo = PreferencesRepository(context)
 
     override fun getBoolean(key: String?, defValue: Boolean): Boolean {
-        return if (key != null) {
-            repo.getPreference(PreferencesKeys.BoolPreferences.valueOf(key).key)?.toString()
-                ?.toBooleanStrictOrNull()
-                ?: false
-        } else defValue
+        if (key == null) return defValue
+        val stored = repo.getPreference(PreferencesKeys.BoolPreferences.valueOf(key).key)?.toString()
+            ?.toBooleanStrictOrNull()
+        return stored ?: defaultBooleanForPreferenceKey(key, defValue)
     }
+
+    private fun defaultBooleanForPreferenceKey(key: String, defValue: Boolean): Boolean =
+        when (key) {
+            "REMINDER_LUNCH_ENABLED", "REMINDER_DINNER_ENABLED" -> true
+            "REMINDER_BREAKFAST_ENABLED", "REMINDER_SNACK_ENABLED" -> false
+            else -> defValue
+        }
 
     override fun putBoolean(key: String?, value: Boolean) {
         if (key != null) {

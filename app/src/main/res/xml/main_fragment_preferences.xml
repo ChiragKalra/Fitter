@@ -1,19 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="Service">
+    <PreferenceCategory app:title="@string/health_connect_settings_category">
 
         <Preference
-            app:icon="@drawable/googleg_standard_color_18"
-            app:key="SIGNED_IN"
-            app:title="Google fit"
-            app:useSimpleSummaryProvider="true" />
+            app:icon="@drawable/ic_energy_burn"
+            app:key="HEALTH_CONNECT_MANAGE"
+            app:title="@string/health_connect_manage_title" />
 
         <SwitchPreferenceCompat
             app:key="SYNC_ENABLED"
-            app:summaryOff="Sync off"
-            app:summaryOn="Sync on"
-            app:title="Sync fit data periodically" />
+            app:summaryOff="@string/health_connect_sync_summary_off"
+            app:summaryOn="@string/health_connect_sync_summary_on"
+            app:title="@string/health_connect_sync_title" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Daily Activity Goals">
@@ -53,6 +53,49 @@
             app:icon="@drawable/ic_consumed"
             app:key="GOAL_CALORIE_CONSUMPTION"
             app:title="Energy Consumed" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/meal_reminders_category_title">
+
+        <com.bruhascended.fitapp.ui.settings.MealReminderPreference
+            android:key="REMINDER_BREAKFAST_ENABLED"
+            android:title="@string/meal_reminder_breakfast_title_clean"
+            android:icon="@drawable/ic_consumed"
+            android:defaultValue="false"
+            app:defaultMinutesValue="480"
+            app:minutesPreferenceKey="REMINDER_BREAKFAST_MINUTES"
+            app:switchDefaultChecked="false"
+            app:timePickerTitle="@string/meal_reminder_pick_breakfast_time" />
+
+        <com.bruhascended.fitapp.ui.settings.MealReminderPreference
+            android:key="REMINDER_LUNCH_ENABLED"
+            android:title="@string/meal_reminder_lunch_title_clean"
+            android:icon="@drawable/ic_auto_awesome"
+            android:defaultValue="true"
+            app:defaultMinutesValue="900"
+            app:minutesPreferenceKey="REMINDER_LUNCH_MINUTES"
+            app:switchDefaultChecked="true"
+            app:timePickerTitle="@string/meal_reminder_pick_lunch_time" />
+
+        <com.bruhascended.fitapp.ui.settings.MealReminderPreference
+            android:key="REMINDER_SNACK_ENABLED"
+            android:title="@string/meal_reminder_snack_title_clean"
+            android:icon="@drawable/ic_energy_burn"
+            android:defaultValue="false"
+            app:defaultMinutesValue="1140"
+            app:minutesPreferenceKey="REMINDER_SNACK_MINUTES"
+            app:switchDefaultChecked="false"
+            app:timePickerTitle="@string/meal_reminder_pick_snack_time" />
+
+        <com.bruhascended.fitapp.ui.settings.MealReminderPreference
+            android:key="REMINDER_DINNER_ENABLED"
+            android:title="@string/meal_reminder_dinner_title_clean"
+            android:icon="@drawable/ic_duration"
+            android:defaultValue="true"
+            app:defaultMinutesValue="1320"
+            app:minutesPreferenceKey="REMINDER_DINNER_MINUTES"
+            app:switchDefaultChecked="true"
+            app:timePickerTitle="@string/meal_reminder_pick_dinner_time" />
     </PreferenceCategory>
 
 </PreferenceScreen>

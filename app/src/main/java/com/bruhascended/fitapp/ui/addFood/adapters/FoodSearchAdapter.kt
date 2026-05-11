@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.db.food.entities.Food
+import com.bruhascended.db.food.entities.effectiveDisplayName
 import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.databinding.ItemFoodsHistoryListBinding
 import com.bruhascended.fitapp.databinding.ItemFoodsListBinding
@@ -67,7 +68,7 @@ class FoodSearchAdapter(
 
         val binding = ItemFoodsHistoryListBinding.bind(itemView)
         fun bindItem(item: Food) {
-            binding.foodName.text = item.foodName
+            binding.foodName.text = item.effectiveDisplayName()
         }
     }
 

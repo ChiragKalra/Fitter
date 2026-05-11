@@ -8,6 +8,7 @@ import com.bruhascended.api.models.foodsv2.Hint
 import com.bruhascended.db.food.entities.Entry
 import com.bruhascended.db.food.entities.Food
 import com.bruhascended.db.food.entities.FoodEntry
+import com.bruhascended.db.food.entities.effectiveDisplayName
 import com.bruhascended.db.food.types.NutrientType
 import com.bruhascended.db.food.types.QuantityType
 import com.bruhascended.fitapp.repository.FoodEntryRepository
@@ -57,7 +58,7 @@ class SharedActivityViewModel(application: Application) : AndroidViewModel(appli
     }
 
     fun setDataFromDb(food: Food) {
-        foodName.postValue(food.foodName)
+        foodName.postValue(food.effectiveDisplayName())
         perEnergy = food.calories
         weightInfo_map.putAll(food.weightInfo) // Creating weight Info map for food Db
         nutrientInfo_map.putAll(food.nutrientInfo) // Creating nutrient Info map for food Db
@@ -90,6 +91,12 @@ class SharedActivityViewModel(application: Application) : AndroidViewModel(appli
                 nutrientDetailsUtil.AddedSugar = QuantityType.Gram.toString(context, it * it1)
             }
             NutrientDetails.postValue(nutrientDetailsUtil)
+        }
+    }
+
+    fun replaceJournalEntry(previous: FoodEntry?, food: Food, entry: Entry) {
+        CoroutineScope(IO).launch {
+            db.replaceJournalEntry(previous, food, entry)
         }
     }
 

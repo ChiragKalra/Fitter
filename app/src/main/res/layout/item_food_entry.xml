@@ -47,7 +47,7 @@
             tools:text="Sandwich"
             android:textSize="18sp"
             android:ellipsize="end"
-            android:maxLines="1"
+            android:maxLines="6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"

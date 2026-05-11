@@ -13,4 +13,11 @@
     <attr name="newFabStyle" format="reference"/>
     <attr name="closeFabStyle" format="reference"/>
     <attr name="miniFabStyle" format="reference"/>
+
+    <declare-styleable name="MealReminderPreference">
+        <attr name="minutesPreferenceKey" format="string" />
+        <attr name="defaultMinutesValue" format="integer" />
+        <attr name="switchDefaultChecked" format="boolean" />
+        <attr name="timePickerTitle" format="reference" />
+    </declare-styleable>
 </resources>

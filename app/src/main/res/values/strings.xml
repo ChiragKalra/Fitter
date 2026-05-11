@@ -5,6 +5,17 @@
     <string name="food">Food</string>
     <string name="activity">Activity</string>
     <string name="dashboard">Dashboard</string>
+    <string name="dashboard_edit_banner">Reorder home</string>
+    <string name="dashboard_edit_done">Done</string>
+    <string name="dashboard_drag_handle_a11y">Drag to reorder</string>
+    <string name="dashboard_hide_card_a11y">Remove from dashboard</string>
+    <string name="dashboard_show_card_a11y">Restore to dashboard</string>
+    <string name="dashboard_all_hidden_placeholder">All cards hidden — tap the checkmark beside a card to restore it.</string>
+    <string name="dashboard_section_summary_ring">Activity summary rings</string>
+    <string name="dashboard_section_today_stats">Today\'s totals</string>
+    <string name="dashboard_section_steps_week">Steps (last 7 days)</string>
+    <string name="dashboard_section_energy_week">Energy burned (last 7 days)</string>
+    <string name="dashboard_section_nutrients">Nutrient intake</string>
     <string name="friends">Friends</string>
     <string name="journal">Journal</string>
     <string name="add_new">Add New</string>
@@ -27,6 +38,7 @@
     <string name="continue_text">Continue</string>
     <string name="expand">expand</string>
     <string name="zero_gm">0 gm</string>
+    <string name="food_journal_hc_quantity_placeholder">\u2014</string>
     <string name="search_result_placeholder">Search:</string>
     <string name="ok">OK</string>
     <string name="google_auth">Sign In with Google</string>
@@ -99,8 +111,22 @@
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>
 
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync fit data periodically</string>
+    <!-- Health Connect (Settings) -->
+    <string name="health_connect_settings_category">Health Connect</string>
+    <string name="health_connect_manage_title">Data access &amp; permissions</string>
+    <string name="health_connect_summary_connected">Reading and exporting nutrition enabled — tap to sync</string>
+    <string name="health_connect_summary_read_only_import">Reading enabled — calories you log aren\'t written to Health Connect yet. Tap to enable export.</string>
+    <string name="health_connect_summary_not_connected">Not connected — tap to allow access</string>
+    <string name="health_connect_summary_sdk_unavailable">Not available on this device</string>
+    <string name="health_connect_summary_update_required">Update Health Connect to continue</string>
+    <string name="health_connect_sync_title">Keep data in sync</string>
+    <string name="health_connect_sync_summary_on">Import from Health Connect and refresh friend stats</string>
+    <string name="health_connect_sync_summary_off">Manual refresh only</string>
+    <string name="health_connect_already_connected">Already connected. Syncing latest data.</string>
+    <string name="health_connect_write_dialog_title">Export meals to Health Connect?</string>
+    <string name="health_connect_write_dialog_message">Fitter already reads activity and weight from Health Connect. Next, the system lists every data type Fitter uses (including steps, workouts, calories burned, nutrition, weight). Turn on writing Nutrition only if you want—your existing reads can stay enabled there.</string>
+
+    <!-- Sync Preferences (legacy template strings kept for unused preference XML samples) -->
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
@@ -141,7 +167,7 @@
     <!-- Health Connect -->
     <string name="health_connect_menu">Health Connect</string>
     <string name="health_connect_dialog_title">Connect Health Connect</string>
-    <string name="health_connect_dialog_message">Allow Fitter to read nutrition, activity (steps, distance, exercise, calories burned), and weight from Health Connect so intake, expenditure, and body weight stay in sync for net calorie tracking.</string>
+    <string name="health_connect_dialog_message">Allow Fitter to read nutrition, activity (steps, distance, exercise, calories burned), and weight from Health Connect—and to write meals you log here back to Nutrition (so Samsung Health and other apps can see them)—for full two-way calorie and weight alignment.</string>
     <string name="health_connect_connect">Connect</string>
     <string name="health_connect_not_now">Not now</string>
     <string name="health_connect_unavailable_message">Health Connect isn\'t available on this device or work profile.</string>
@@ -150,6 +176,54 @@
     <string name="health_connect_open_health_connect">Open Health Connect</string>
     <string name="health_connect_open_failed">Could not open Health Connect on this device.</string>
     <string name="health_connect_rationale_title">How Fitter uses Health Connect</string>
-    <string name="health_connect_rationale_body">Fitter reads nutrition; activity including steps, distance, exercise sessions, and total calories burned; and weight from Health Connect so your logs match other apps and you can track net calories and weight over time. It does not sell this data. You can revoke access anytime in Health Connect or Android settings.</string>
+    <string name="health_connect_rationale_body">Fitter reads nutrition; activity including steps, distance, exercise sessions, and total calories burned; and weight from Health Connect. With your consent it can also write meals you log here as nutrition records so they appear in Samsung Health and other connected apps. It does not sell this data. You can revoke access anytime in Health Connect or Android settings.</string>
     <string name="health_connect_rationale_done">Close</string>
+
+    <!-- Meal reminders -->
+    <string name="meal_reminders_category_title">Meal reminders</string>
+    <string name="settings_meal_time_label">Reminder time</string>
+    <string name="settings_meal_pick_time_generic">Pick a time</string>
+    <string name="meal_reminder_breakfast_title_clean">Breakfast</string>
+    <string name="meal_reminder_breakfast_summary_on">One daily nudge to log breakfast</string>
+    <string name="meal_reminder_breakfast_summary_off">Muted</string>
+    <string name="meal_reminder_lunch_title_clean">Lunch</string>
+    <string name="meal_reminder_dinner_title_clean">Dinner</string>
+    <string name="meal_reminder_snack_title_clean">Evening snacks</string>
+    <string name="settings_meal_subtitle_active">One notification each day at the time below.</string>
+    <string name="settings_meal_subtitle_muted">Turn on to choose when we should remind you.</string>
+    <string name="meal_reminder_lunch_title">Lunch reminder</string>
+    <string name="meal_reminder_lunch_summary_on">Remind daily to log lunch</string>
+    <string name="meal_reminder_lunch_summary_off">Off</string>
+    <string name="meal_reminder_lunch_time">Lunch reminder time</string>
+    <string name="meal_reminder_dinner_title">Dinner reminder</string>
+    <string name="meal_reminder_dinner_summary_on">Remind daily to log dinner</string>
+    <string name="meal_reminder_dinner_summary_off">Off</string>
+    <string name="meal_reminder_dinner_time">Dinner reminder time</string>
+    <string name="meal_reminder_breakfast_title">Breakfast reminder</string>
+    <string name="meal_reminder_snack_title">Evening snack reminder</string>
+    <string name="meal_reminder_optional_summary_on">On</string>
+    <string name="meal_reminder_optional_summary_off">Off</string>
+    <string name="meal_reminder_breakfast_time">Breakfast reminder time</string>
+    <string name="meal_reminder_snack_time">Evening snack reminder time</string>
+    <string name="meal_reminders_channel_name">Meal logging</string>
+    <string name="meal_reminders_channel_description">Daily reminders to log meals</string>
+    <string name="meal_reminder_pick_lunch_time">Pick lunch reminder time</string>
+    <string name="meal_reminder_pick_dinner_time">Pick dinner reminder time</string>
+    <string name="meal_reminder_pick_breakfast_time">Pick breakfast reminder time</string>
+    <string name="meal_reminder_pick_snack_time">Pick snack reminder time</string>
+    <string name="meal_reminder_notify_lunch_title">Log your lunch</string>
+    <string name="meal_reminder_notify_lunch_text">Tap to add what you had for lunch in Fitter.</string>
+    <string name="meal_reminder_notify_dinner_title">Log your dinner</string>
+    <string name="meal_reminder_notify_dinner_text">Tap to add what you had for dinner in Fitter.</string>
+    <string name="meal_reminder_notify_breakfast_title">Log your breakfast</string>
+    <string name="meal_reminder_notify_breakfast_text">Tap to record breakfast in your food journal.</string>
+    <string name="meal_reminder_notify_snack_title">Log your snacks</string>
+    <string name="meal_reminder_notify_snack_text">Tap to add evening snacks in Fitter.</string>
+    <string name="notifications_permission_title">Turn on notifications</string>
+    <string name="notifications_permission_message">Fitter sends your meal logging reminders through notifications so you get them on time.</string>
+    <string name="notifications_permission_allow">Allow notifications</string>
+    <string name="notifications_permission_not_now">Not now</string>
+    <string name="notifications_open_settings_title">Notifications still disabled</string>
+    <string name="notifications_open_settings_message">You can enable notifications for Fitter in system settings anytime.</string>
+    <string name="notifications_open_settings_button">Notification settings</string>
 </resources>

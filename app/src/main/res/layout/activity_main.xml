@@ -40,7 +40,7 @@
             <me.ibrahimsn.lib.SmoothBottomBar
                 android:id="@+id/bottom_nav"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="@dimen/main_bottom_nav_height"
                 app:backgroundColor="?colorSurface"
                 app:textColor="?colorOnSurface"
                 app:iconTintActive="?colorOnSurface"

@@ -14,6 +14,8 @@ data class Food (
     val calories: Double,
     val weightInfo: EnumMap<QuantityType, Double> = EnumMap(QuantityType::class.java),
     val nutrientInfo: EnumMap<NutrientType, Double> = EnumMap(NutrientType::class.java),
+    /** Shown in journal / details — used when [foodName] is an opaque Health Connect key (`hc:`…). */
+    val displayTitle: String? = null,
 ): Serializable {
 
     override fun equals(other: Any?): Boolean {
@@ -25,6 +27,7 @@ data class Food (
         if (calories != other.calories) return false
         if (weightInfo != other.weightInfo) return false
         if (nutrientInfo != other.nutrientInfo) return false
+        if (displayTitle != other.displayTitle) return false
         return true
     }
 
@@ -35,3 +38,6 @@ data class Food (
     val id
         get() = abs(hashCode())
 }
+
+fun Food.effectiveDisplayName(): String =
+    displayTitle?.takeIf { it.isNotBlank() } ?: foodName

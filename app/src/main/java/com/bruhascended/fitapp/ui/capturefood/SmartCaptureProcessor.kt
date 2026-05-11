@@ -23,6 +23,7 @@ class SmartCaptureProcessor {
             ?.removeSuffix("```")
             ?.trim()
             ?: return null
+        if (jsonText.isEmpty()) return null
         val obj = JSONObject(jsonText)
         val foodName = obj.optString("food_name").trim()
         if (foodName.isEmpty()) return null

@@ -65,6 +65,24 @@ android {
     namespace 'com.bruhascended.fitapp'
 }
 
+// Runs installDebug after a successful debug assemble locally. CI passes -PskipAutoInstall so installs
+// are suppressed only when the invoked task graph is assembleDebug (direct :app:installDebug still installs).
+afterEvaluate {
+    tasks.named("installDebug").configure {
+        def skipBecauseAssembleCi =
+                project.hasProperty("skipAutoInstall") &&
+                        gradle.startParameter.taskNames.any { name ->
+                            name == ":app:assembleDebug" ||
+                                    name.endsWith(":assembleDebug") ||
+                                    name == "assembleDebug"
+                        }
+        enabled = !skipBecauseAssembleCi
+    }
+    tasks.named("assembleDebug").configure {
+        finalizedBy(tasks.named("installDebug"))
+    }
+}
+
 dependencies {
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -84,6 +102,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.activity:activity-compose:1.6.0'
 
+    implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
+
 
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:29.0.2')
@@ -101,6 +121,8 @@ dependencies {
 
     // testing
     testImplementation 'junit:junit:4.13.2'
+    // Real JSONObject for JVM unit tests (android.jar stubs are not mocked)
+    testImplementation 'org.json:json:20250517'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
@@ -138,14 +160,4 @@ dependencies {
     implementation project(":analysis")
     implementation project(":api")
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-}
-
-// Local builds: install debug APK on a connected device right after packaging.
-// Skipped when CI=true (e.g. GitHub Actions) so jobs without a device don’t fail.
-afterEvaluate {
-    if (System.getenv("CI") != "true") {
-        tasks.named("assembleDebug").configure {
-            finalizedBy(tasks.named("installDebug"))
-        }
-    }
 }

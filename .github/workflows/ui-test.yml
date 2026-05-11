@@ -24,4 +24,4 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Assemble debug
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug -PskipAutoInstall
