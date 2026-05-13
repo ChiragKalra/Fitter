@@ -9,6 +9,7 @@ import com.bruhascended.fitapp.health.SamsungHealthLauncher
 import com.bruhascended.fitapp.ui.addFood.FoodSearchActivity
 import com.bruhascended.fitapp.ui.addfriends.AddFriendsActivity
 import com.bruhascended.fitapp.ui.capturefood.CaptureFoodActivity
+import com.bruhascended.fitapp.ui.logweight.LogWeightActivity
 import com.bruhascended.fitapp.util.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
@@ -33,6 +34,11 @@ class FabPresenter(
     init {
         binding.fabsLayout.apply {
             fabDetails = linkedSetOf(
+                FabInfo(
+                    destination = LogWeightActivity::class.java,
+                    buttonView = addWeightButton,
+                    descriptionView = textWeight,
+                ),
                 FabInfo(
                     destination = CaptureFoodActivity::class.java,
                     buttonView = smartCaptureButton,

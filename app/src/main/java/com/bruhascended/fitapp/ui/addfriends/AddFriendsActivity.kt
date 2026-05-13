@@ -62,7 +62,11 @@ class AddFriendsActivity : ComponentActivity() {
 	@Preview(showBackground = true)
 	@Composable
 	fun Screen() {
-		Column {
+		Column(
+			modifier = Modifier
+				.fillMaxSize()
+				.statusBarsPadding()
+		) {
 			TopAppBar(
 				title = {
 					Text(

@@ -16,6 +16,17 @@
             app:title="@string/health_connect_sync_title" />
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/dashboard_layout_settings_category">
+
+        <ListPreference
+            app:defaultValue="4x4"
+            app:entries="@array/dashboard_grid_size_entries"
+            app:entryValues="@array/dashboard_grid_size_values"
+            app:key="DASHBOARD_GRID_SIZE"
+            app:summary="%s"
+            app:title="@string/dashboard_grid_size_title" />
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="Daily Activity Goals">
         <EditTextPreference
             app:dialogIcon="@drawable/ic_steps"

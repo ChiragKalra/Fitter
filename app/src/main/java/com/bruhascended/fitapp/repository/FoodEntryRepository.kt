@@ -134,6 +134,19 @@ class FoodEntryRepository(
     fun loadLiveSeparator(date: Date): LiveData<DayEntry?> =
         db.getLiveDayEntry(date.time)
 
+    fun loadFoodDayEntriesRangeLive(startDate: Date, endDate: Date): LiveData<List<DayEntry>> =
+        db.getLiveDayEntriesInRange(startDate, endDate)
+
+    fun loadFoodDayEntriesRangeSync(startDate: Date, endDate: Date): List<DayEntry> =
+        db.getDayEntriesInRangeSync(startDate, endDate)
+
+    fun hasFoodLoggedAfter(timeInMillis: Long): Boolean =
+        db.entryManager().countAfter(timeInMillis) > 0
+
+    fun latestEntryLive(): LiveData<Entry?> = db.entryManager().latestLive()
+
+    fun latestEntrySync(): Entry? = db.entryManager().latestSync()
+
     fun loadLiveLastItem(): MutableLiveData<HashSet<Long>> {
         val liveLastIds = MutableLiveData<HashSet<Long>>()
         loadLiveFoodEntries().observeForever { all ->

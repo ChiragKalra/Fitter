@@ -28,15 +28,21 @@ class SettingsDataStore(context: Context) : PreferenceDataStore() {
         }
     }
 
-//    override fun getString(key: String?, defValue: String?): String? {
-//        return if (key != null) {
-//            repo.getPreference(PreferencesKeys.IntPreferences.valueOf(key).key).toString()
-//        } else defValue
-//    }
+    override fun getString(key: String?, defValue: String?): String? {
+        if (key == null) return defValue
+        if (key == "DASHBOARD_GRID_SIZE") {
+            return repo.getPreference(PreferencesKeys.DASHBOARD_GRID_SIZE) as? String ?: defValue
+        }
+        return defValue
+    }
 
     override fun putString(key: String?, value: String?) {
         if (key != null && !value.isNullOrEmpty()) {
-            repo.updatePreference(PreferencesKeys.LongPreferences.valueOf(key).key, value.toLong())
+            if (key == "DASHBOARD_GRID_SIZE") {
+                repo.updatePreference(PreferencesKeys.DASHBOARD_GRID_SIZE, value)
+            } else {
+                repo.updatePreference(PreferencesKeys.LongPreferences.valueOf(key).key, value.toLong())
+            }
         }
     }
 }

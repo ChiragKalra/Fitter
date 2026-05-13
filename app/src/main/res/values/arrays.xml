@@ -9,4 +9,18 @@
         <item>reply</item>
         <item>reply_all</item>
     </string-array>
+
+    <string-array name="dashboard_grid_size_entries">
+        <item>4 x 4</item>
+        <item>4 x 5</item>
+        <item>4 x 6</item>
+        <item>5 x 5</item>
+    </string-array>
+
+    <string-array name="dashboard_grid_size_values">
+        <item>4x4</item>
+        <item>4x5</item>
+        <item>4x6</item>
+        <item>5x5</item>
+    </string-array>
 </resources>

@@ -9,6 +9,10 @@
             android:taskAffinity=""
             android:theme="@style/AppTheme"
             android:noHistory="true" />
+        <!-- Required by createComposeRule() in instrumented tests -->
+        <activity
+            android:name="androidx.activity.ComponentActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package com.bruhascended.fitapp.ui.activityjournal
 
 import android.content.Context
 import android.graphics.drawable.TransitionDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -98,12 +99,19 @@ class ActivityJournalRecyclerAdapter (
         holder: ActivityEntryItemHolder,
         liveDayEntry: LiveData<DayEntry?>,
     ) {
+        Log.i(TAG, "bind separator date=$separator")
         holder.separatorInfoObserver?.apply {
             holder.liveSeparatorInfo?.removeObserver(this)
         }
 
         holder.separatorInfoObserver = Observer<DayEntry?> {
             val separatorInfo = it ?: return@Observer
+            Log.i(
+                TAG,
+                "separator info date=$separator calories=${separatorInfo.totalCalories} " +
+                    "duration=${separatorInfo.totalDuration} distance=${separatorInfo.totalDistance} " +
+                    "steps=${separatorInfo.totalSteps}"
+            )
 
             textviewDate.text = DateTimePresenter(mContext, separator.time).fullDate
 
@@ -173,6 +181,7 @@ class ActivityJournalRecyclerAdapter (
         entry: ActivityEntry,
         holder: ActivityEntryItemHolder,
     ) {
+        Log.i(TAG, "bind activity item id=${entry.id} start=${entry.startTime} hcId=${entry.hcId}")
         textviewTime.text = mContext.getString(
             R.string.to_join,
             DateTimePresenter(mContext, entry.startTime).condensedTime,
@@ -261,6 +270,7 @@ class ActivityJournalRecyclerAdapter (
 
     override fun onBindViewHolder (holder: ActivityEntryItemHolder, position: Int) {
         val item = getItem(position) ?: return
+        Log.i(TAG, "onBind position=$position type=${item.type}")
         when (item.type) {
             DateSeparatedItem.ItemType.Separator ->
                 holder.separatorBinding?.presentSeparator(
@@ -270,5 +280,9 @@ class ActivityJournalRecyclerAdapter (
                 holder.itemBinding?.presentItem(item.item!!, holder)
             DateSeparatedItem.ItemType.Footer -> return
         }
+    }
+
+    private companion object {
+        private const val TAG = "ActivityJournal"
     }
 }

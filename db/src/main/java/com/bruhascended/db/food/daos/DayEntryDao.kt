@@ -24,8 +24,17 @@ interface DayEntryDao {
         SELECT * 
         FROM dayEntry
         WHERE day >= :startDay AND day < :endDay
+        ORDER BY day ASC
     """)
     fun getTimeRangeLive (startDay: Long, endDay: Long): LiveData<List<DayEntry>>
+
+    @Query("""
+        SELECT *
+        FROM dayEntry
+        WHERE day >= :startDay AND day < :endDay
+        ORDER BY day ASC
+    """)
+    fun getTimeRangeSync(startDay: Long, endDay: Long): List<DayEntry>
 
     @Query("SELECT * FROM dayEntry ORDER BY day DESC")
     fun loadAllPaged(): PagingSource<Int,DayEntry>

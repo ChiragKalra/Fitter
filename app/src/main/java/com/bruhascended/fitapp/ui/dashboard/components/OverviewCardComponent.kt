@@ -22,12 +22,14 @@ fun OverViewCard(
     s: String,
     unit: String?,
     repo: Long,
-    color: Color
+    color: Color,
+    modifier: Modifier = Modifier,
 ) {
     Card(
         elevation = 6.dp,
         backgroundColor = MaterialTheme.colors.surface,
-        shape = RoundedCornerShape(10.dp)
+        shape = RoundedCornerShape(10.dp),
+        modifier = modifier,
     ) {
         Column(
             modifier = Modifier

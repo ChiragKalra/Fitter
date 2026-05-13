@@ -8,6 +8,9 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.bruhascended.fitapp.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 internal class MealReminderReceiver : BroadcastReceiver() {
 
@@ -15,9 +18,31 @@ internal class MealReminderReceiver : BroadcastReceiver() {
         if (intent?.action != MealReminderScheduler.ACTION_MEAL_ALARM) return
         val ordinal = intent.getIntExtra(MealReminderScheduler.EXTRA_TYPE_ORDINAL, -1)
         val type = MealReminderType.fromOrdinal(ordinal) ?: return
-        MealReminderChannels.ensureChannel(context)
-        showNotification(context, type)
-        MealReminderScheduler.rescheduleAfterTrigger(context.applicationContext)
+        val followUpAfter = intent.getLongExtra(MealReminderScheduler.EXTRA_FOLLOW_UP_AFTER_MILLIS, 0L)
+        val pendingResult = goAsync()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                if (followUpAfter > 0L &&
+                    MealReminderScheduler.hasFoodLoggedAfter(context.applicationContext, followUpAfter)
+                ) {
+                    MealReminderScheduler.cancelFollowUp(context.applicationContext, type)
+                    MealReminderScheduler.rescheduleAfterTrigger(context.applicationContext)
+                    return@launch
+                }
+                if (followUpAfter == 0L) {
+                    MealReminderScheduler.cancelFollowUp(context.applicationContext, type)
+                }
+                MealReminderChannels.ensureChannel(context)
+                showNotification(context, type)
+                val anchor = followUpAfter.takeIf { it > 0L } ?: System.currentTimeMillis()
+                MealReminderScheduler.scheduleFollowUp(context.applicationContext, type, anchor)
+                if (followUpAfter == 0L) {
+                    MealReminderScheduler.rescheduleAfterTrigger(context.applicationContext)
+                }
+            } finally {
+                pendingResult.finish()
+            }
+        }
     }
 
     private fun showNotification(context: Context, type: MealReminderType) {

@@ -31,15 +31,13 @@ abstract class CameraActivity: AppCompatActivity() {
     protected abstract fun onCameraStarted()
 
     protected fun requestCameraPermissionsAndStart() {
-        // Request camera permissions
+        cameraExecutor = Executors.newSingleThreadExecutor()
         if (allPermissionsGranted()) {
             startCamera()
         } else {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
-
-        cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
     private var torchState = false
@@ -115,6 +113,7 @@ abstract class CameraActivity: AppCompatActivity() {
             if (allPermissionsGranted()) {
                 startCamera()
             } else {
+                Log.w(TAG, "Camera permission denied; finishing smart capture")
                 Toast.makeText(this,
                     "Permissions not granted by the user.",
                     Toast.LENGTH_SHORT).show()
@@ -124,11 +123,13 @@ abstract class CameraActivity: AppCompatActivity() {
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        cameraExecutor.shutdown()
+        if (::cameraExecutor.isInitialized) {
+            cameraExecutor.shutdown()
+        }
     }
 }

@@ -34,6 +34,22 @@ interface ActivityEntryDao {
     @Query("SELECT * FROM activity_entry ORDER BY startTime DESC")
     fun loadAllLive(): LiveData<List<ActivityEntry>>
 
+    @Query("""
+        SELECT *
+        FROM activity_entry
+        WHERE startTime >= :startTime AND startTime < :endTime
+        ORDER BY startTime ASC
+    """)
+    fun getTimeRangeSync(startTime: Long, endTime: Long): List<ActivityEntry>
+
+    @Query("""
+        SELECT *
+        FROM activity_entry
+        WHERE startTime >= :startTime AND startTime < :endTime
+        ORDER BY startTime ASC
+    """)
+    fun getTimeRangeLive(startTime: Long, endTime: Long): LiveData<List<ActivityEntry>>
+
     @Query("DELETE FROM activity_entry")
     fun deleteAll()
 

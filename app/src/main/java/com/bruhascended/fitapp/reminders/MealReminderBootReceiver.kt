@@ -11,5 +11,6 @@ internal class MealReminderBootReceiver : BroadcastReceiver() {
             intent?.action != Intent.ACTION_LOCKED_BOOT_COMPLETED
         ) return
         MealReminderScheduler.rescheduleAll(context.applicationContext)
+        WeightReminderScheduler.rescheduleAll(context.applicationContext)
     }
 }

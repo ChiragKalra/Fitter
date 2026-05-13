@@ -7,6 +7,8 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
@@ -105,6 +107,10 @@
                 android:value="com.bruhascended.fitapp.ui.main.MainActivity" />
         </activity>
         <activity
+            android:name=".ui.dashboard.DashboardTrendActivity"
+            android:label="@string/dashboard"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.addworkout.AddWorkoutActivity"
             android:label="@string/add_new_workout"
             android:screenOrientation="portrait">
@@ -128,6 +134,9 @@
         </activity>
         <receiver
             android:name=".reminders.MealReminderReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".reminders.WeightReminderReceiver"
             android:exported="false" />
         <receiver
             android:name=".reminders.MealReminderBootReceiver"

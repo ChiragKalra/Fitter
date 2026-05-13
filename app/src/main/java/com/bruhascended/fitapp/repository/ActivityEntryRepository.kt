@@ -118,8 +118,17 @@ class ActivityEntryRepository(
     fun loadRangeDayEntries(startDate: Date, endDate: Date) =
         db.getLiveDayRange(startDate, endDate)
 
+    fun loadRangeDayEntriesSync(startDate: Date, endDate: Date): List<DayEntry> =
+        db.dayEntryManager().getTimeRangeSync(startDate.time, endDate.time)
+
     fun loadRangeTotalEntry(startDate: Date, endDate: Date) =
         db.getLiveTotal(startDate, endDate)
+
+    fun loadActivityEntriesRangeLive(startDate: Date, endDate: Date): LiveData<List<ActivityEntry>> =
+        db.entryManager().getTimeRangeLive(startDate.time, endDate.time)
+
+    fun loadActivityEntriesRangeSync(startDate: Date, endDate: Date): List<ActivityEntry> =
+        db.entryManager().getTimeRangeSync(startDate.time, endDate.time)
 
     /**
      * Replaces local activity aggregates and workout rows with Health Connect data.
@@ -151,4 +160,5 @@ class ActivityEntryRepository(
     fun clearAllActivityData() {
         db.clearAllActivityData()
     }
+
 }

@@ -59,7 +59,9 @@ fun GoogleAuth(onClick: () -> Unit) {
 @Composable
 fun AuthorisingWithGoogle() {
 	Column(
-		modifier = Modifier.padding(16.dp),
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(16.dp),
 		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
 		CircularProgressIndicator()
@@ -126,7 +128,9 @@ fun SetUsername(authHelper: AuthHelper) {
 @Composable
 fun SettingUpProfile() {
 	Column(
-		modifier = Modifier.padding(16.dp),
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(16.dp),
 		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
 		CircularProgressIndicator()
@@ -138,4 +142,3 @@ fun SettingUpProfile() {
 		)
 	}
 }
-

@@ -34,6 +34,28 @@ interface WeightEntryDao {
     @Query("SELECT * FROM weight_entry ORDER BY timeInMillis DESC")
     fun loadAllLive(): LiveData<List<WeightEntry>>
 
+    @Query("""
+        SELECT *
+        FROM weight_entry
+        WHERE timeInMillis >= :startTime AND timeInMillis < :endTime
+        ORDER BY timeInMillis ASC
+    """)
+    fun getTimeRangeSync(startTime: Long, endTime: Long): List<WeightEntry>
+
+    @Query("""
+        SELECT *
+        FROM weight_entry
+        WHERE timeInMillis >= :startTime AND timeInMillis < :endTime
+        ORDER BY timeInMillis ASC
+    """)
+    fun getTimeRangeLive(startTime: Long, endTime: Long): LiveData<List<WeightEntry>>
+
+    @Query("SELECT * FROM weight_entry ORDER BY timeInMillis DESC LIMIT 1")
+    fun latestSync(): WeightEntry?
+
+    @Query("SELECT * FROM weight_entry ORDER BY timeInMillis DESC LIMIT 1")
+    fun latestLive(): LiveData<WeightEntry?>
+
     @Query("SELECT COUNT(id) FROM weight_entry")
     fun getLiveCount(): LiveData<Int>
 

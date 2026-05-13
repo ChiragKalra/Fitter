@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.records.DistanceRecord
 import androidx.health.connect.client.records.ExerciseSessionRecord
+import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
+import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.request.ReadRecordsRequest
 import androidx.health.connect.client.time.TimeRangeFilter
 import com.bruhascended.db.activity.entities.ActivityEntry
@@ -16,6 +18,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import kotlin.math.roundToInt
+import kotlin.reflect.KClass
 
 object HealthConnectActivitySync {
 
@@ -26,24 +29,55 @@ object HealthConnectActivitySync {
         val activityEntries: List<ActivityEntry>,
     )
 
+    private data class DayAggregate(
+        val calories: Float,
+        val steps: Int,
+        val distanceKm: Double,
+    )
+
     suspend fun importActivity(client: HealthConnectClient): ImportResult {
         val end = Instant.now()
         val start = end.minus(HealthConnectNutritionSync.DAYS_BACK, ChronoUnit.DAYS)
         val range = TimeRangeFilter.between(start, end)
         val zone = ZoneId.systemDefault()
 
-        val calorieRecords = client.readRecords(
-            ReadRecordsRequest(TotalCaloriesBurnedRecord::class, timeRangeFilter = range)
-        ).records
-        val stepRecords = client.readRecords(
-            ReadRecordsRequest(StepsRecord::class, timeRangeFilter = range)
-        ).records
-        val distanceRecords = client.readRecords(
-            ReadRecordsRequest(DistanceRecord::class, timeRangeFilter = range)
-        ).records
-        val sessions = client.readRecords(
-            ReadRecordsRequest(ExerciseSessionRecord::class, timeRangeFilter = range)
-        ).records
+        val calorieRecords = client.readAllPaged(TotalCaloriesBurnedRecord::class, range)
+        val stepRecords = client.readAllPaged(StepsRecord::class, range)
+        val distanceRecords = client.readAllPaged(DistanceRecord::class, range)
+        val sessions = client.readAllPaged(ExerciseSessionRecord::class, range)
+
+        Log.i(
+            TAG,
+            "read ${calorieRecords.size} calorie, ${stepRecords.size} step, " +
+                "${distanceRecords.size} distance, ${sessions.size} session record(s)"
+        )
+        Log.i(
+            TAG,
+            "origins calories=${originCounts(calorieRecords)} steps=${originCounts(stepRecords)} " +
+                "distance=${originCounts(distanceRecords)} sessions=${originCounts(sessions)}"
+        )
+        Log.i(
+            TAG,
+            "recording methods steps=${recordingMethodCounts(stepRecords)} " +
+                "distance=${recordingMethodCounts(distanceRecords)} sessions=${recordingMethodCounts(sessions)}"
+        )
+        if (sessions.isEmpty()) {
+            Log.w(
+                TAG,
+                "No ExerciseSessionRecord rows found. Activity Journal imports only real " +
+                    "exercise/workout sessions; raw daily steps, distance, and calories are not " +
+                    "converted into activity rows."
+            )
+        } else {
+            sessions.take(10).forEach { s ->
+                Log.i(
+                    TAG,
+                    "session sample id=${s.metadata.id} origin=${s.metadata.dataOrigin.packageName} " +
+                        "type=${s.exerciseType} start=${s.startTime} end=${s.endTime} " +
+                        "recordingMethod=${s.metadata.recordingMethod} title=${s.title}"
+                )
+            }
+        }
 
         val calByDay = mutableMapOf<Long, Float>()
         val stepsByDay = mutableMapOf<Long, Int>()
@@ -72,12 +106,29 @@ object HealthConnectActivitySync {
 
         val dayKeys = calByDay.keys + stepsByDay.keys + distByDay.keys + durationByDay.keys
         val dayEntries = dayKeys.map { k ->
+            val aggregate = client.aggregateDay(k, zone)
+            val rawSteps = stepsByDay[k] ?: 0
+            val rawDistance = distByDay[k] ?: 0.0
+            val rawCalories = calByDay[k] ?: 0f
+            if (
+                rawSteps != aggregate.steps ||
+                rawDistance != aggregate.distanceKm ||
+                rawCalories != aggregate.calories
+            ) {
+                Log.i(
+                    TAG,
+                    "day aggregate ${Instant.ofEpochMilli(k).atZone(zone).toLocalDate()} " +
+                        "raw steps=$rawSteps distanceKm=$rawDistance calories=$rawCalories -> " +
+                        "deduped steps=${aggregate.steps} distanceKm=${aggregate.distanceKm} " +
+                        "calories=${aggregate.calories}"
+                )
+            }
             DayEntry(
                 startTime = k,
-                totalCalories = calByDay[k] ?: 0f,
+                totalCalories = aggregate.calories,
                 totalDuration = durationByDay[k] ?: 0L,
-                totalDistance = distByDay[k] ?: 0.0,
-                totalSteps = stepsByDay[k] ?: 0,
+                totalDistance = aggregate.distanceKm,
+                totalSteps = aggregate.steps,
             )
         }.sortedBy { it.startTime }
 
@@ -112,9 +163,7 @@ object HealthConnectActivitySync {
         val type = mapExerciseType(s.exerciseType)
         if (type == ActivityType.Unknown || type == ActivityType.Still) return null
         val range = TimeRangeFilter.between(s.startTime, s.endTime)
-        val calorieRecords = client.readRecords(
-            ReadRecordsRequest(TotalCaloriesBurnedRecord::class, timeRangeFilter = range)
-        ).records
+        val calorieRecords = client.readAllPaged(TotalCaloriesBurnedRecord::class, range)
         val cal = caloriesOverlapping(calorieRecords, s.startTime, s.endTime)
         val dur = Duration.between(s.startTime, s.endTime).toMillis().coerceAtLeast(0)
         return ActivityEntry(
@@ -150,6 +199,63 @@ object HealthConnectActivitySync {
 
     private fun startOfDayMillis(instant: Instant, zone: ZoneId): Long =
         instant.atZone(zone).toLocalDate().atStartOfDay(zone).toInstant().toEpochMilli()
+
+    private suspend fun HealthConnectClient.aggregateDay(
+        startOfDayMillis: Long,
+        zone: ZoneId,
+    ): DayAggregate {
+        val start = Instant.ofEpochMilli(startOfDayMillis)
+        val end = start.atZone(zone).plusDays(1).toInstant()
+        val result = aggregate(
+            AggregateRequest(
+                metrics = setOf(
+                    TotalCaloriesBurnedRecord.ENERGY_TOTAL,
+                    StepsRecord.COUNT_TOTAL,
+                    DistanceRecord.DISTANCE_TOTAL,
+                ),
+                timeRangeFilter = TimeRangeFilter.between(start, end),
+            )
+        )
+        return DayAggregate(
+            calories = result[TotalCaloriesBurnedRecord.ENERGY_TOTAL]
+                ?.inKilocalories
+                ?.toFloat()
+                ?: 0f,
+            steps = (result[StepsRecord.COUNT_TOTAL] ?: 0L).toInt().coerceAtLeast(0),
+            distanceKm = ((result[DistanceRecord.DISTANCE_TOTAL]?.inMeters ?: 0.0) / 1000.0)
+                .coerceAtLeast(0.0),
+        )
+    }
+
+    private fun <T : Record> originCounts(records: List<T>): Map<String, Int> =
+        records.groupingBy { it.metadata.dataOrigin.packageName }.eachCount()
+
+    private fun <T : Record> recordingMethodCounts(records: List<T>): Map<Int, Int> =
+        records.groupingBy { it.metadata.recordingMethod }.eachCount()
+
+    private suspend fun <T : Record> HealthConnectClient.readAllPaged(
+        type: KClass<T>,
+        filter: TimeRangeFilter,
+    ): List<T> {
+        val out = mutableListOf<T>()
+        var pageToken: String? = null
+        do {
+            val response = readRecords(
+                ReadRecordsRequest(
+                    recordType = type,
+                    timeRangeFilter = filter,
+                    dataOriginFilter = emptySet(),
+                    ascendingOrder = true,
+                    pageSize = PAGE_SIZE,
+                    pageToken = pageToken,
+                )
+            )
+            @Suppress("UNCHECKED_CAST")
+            out.addAll(response.records as List<T>)
+            pageToken = response.pageToken.takeUnless { it.isNullOrBlank() }
+        } while (pageToken != null)
+        return out
+    }
 
     private fun mapExerciseType(type: Int): ActivityType = when (type) {
         ExerciseSessionRecord.EXERCISE_TYPE_OTHER_WORKOUT -> ActivityType.Other
@@ -218,4 +324,6 @@ object HealthConnectActivitySync {
         ExerciseSessionRecord.EXERCISE_TYPE_YOGA -> ActivityType.Yoga
         else -> ActivityType.Other
     }
+
+    private const val PAGE_SIZE = 1_000
 }

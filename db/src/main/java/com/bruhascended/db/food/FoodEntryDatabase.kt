@@ -39,6 +39,12 @@ abstract class FoodEntryDatabase : RoomDatabase() {
     fun getLiveDayEntry(day: Long): LiveData<DayEntry?> =
         dayEntryManager().getLive(day)
 
+    fun getLiveDayEntriesInRange(startDate: Date, endDate: Date): LiveData<List<DayEntry>> =
+        dayEntryManager().getTimeRangeLive(startDate.time, endDate.time)
+
+    fun getDayEntriesInRangeSync(startDate: Date, endDate: Date): List<DayEntry> =
+        dayEntryManager().getTimeRangeSync(startDate.time, endDate.time)
+
     fun insertEntry (foodEntry: FoodEntry): Long {
         return insertEntry (foodEntry.food, foodEntry.entry)
     }

@@ -36,8 +36,8 @@ api/src/main/java/com/bruhascended/api/Private.kt
 .kotlin/
 
 # Local ad-hoc screenshots
-/exhibit_a.png
-/exibhit_b.png
+.kiro/screenshots/
+.kiro/cache/
 
 # OS / editor junk and merge backups
 *~

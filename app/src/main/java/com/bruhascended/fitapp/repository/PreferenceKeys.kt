@@ -50,6 +50,7 @@ object PreferencesKeys {
      * incremental changes token so the next sync re-reads NutritionRecord history.
      */
     val HC_NUTRITION_IMPORT_SCHEMA = intPreferencesKey("HC_NUTRITION_IMPORT_SCHEMA")
+    val HC_ACTIVITY_IMPORT_SCHEMA = intPreferencesKey("HC_ACTIVITY_IMPORT_SCHEMA")
 
     /** One-time UUID so Health Connect nutrition client-record ids remain unique across app reinstalls. */
     val HC_NUTRITION_EXPORT_CLIENT_SALT = stringPreferencesKey("HC_NUTRITION_EXPORT_CLIENT_SALT")
@@ -75,4 +76,7 @@ object PreferencesKeys {
     /** Comma-separated [DashboardSection.persistenceId] lists; see PreferencesRepository.dashboardUiConfigFlow. */
     val DASHBOARD_SECTION_ORDER = stringPreferencesKey("DASHBOARD_SECTION_ORDER")
     val DASHBOARD_SECTION_HIDDEN = stringPreferencesKey("DASHBOARD_SECTION_HIDDEN")
+    val DASHBOARD_SECTION_WIDTHS = stringPreferencesKey("DASHBOARD_SECTION_WIDTHS")
+    val DASHBOARD_SECTION_HEIGHTS = stringPreferencesKey("DASHBOARD_SECTION_HEIGHTS")
+    val DASHBOARD_GRID_SIZE = stringPreferencesKey("DASHBOARD_GRID_SIZE")
 }

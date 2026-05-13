@@ -16,6 +16,7 @@ class ActivityEntryDatabaseFactory (
     fun build() = Room.databaseBuilder(
         mContext, ActivityEntryDatabase::class.java, "ActivityEntries"
     ).apply {
+        enableMultiInstanceInvalidation()
         addMigrations(
             ActivityEntryDatabase.MIGRATION_1_2,
             ActivityEntryDatabase.MIGRATION_2_3,

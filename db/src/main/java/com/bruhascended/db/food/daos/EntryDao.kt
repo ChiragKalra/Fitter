@@ -25,8 +25,17 @@ interface EntryDao {
     @Query("SELECT * FROM entry")
     fun loadAllSync(): List<Entry>
 
+    @Query("SELECT * FROM entry ORDER BY timeInMillis DESC LIMIT 1")
+    fun latestLive(): LiveData<Entry?>
+
+    @Query("SELECT * FROM entry ORDER BY timeInMillis DESC LIMIT 1")
+    fun latestSync(): Entry?
+
     @Query("SELECT COUNT(entryId) FROM entry")
     fun getLiveCount(): LiveData<Int>
+
+    @Query("SELECT COUNT(entryId) FROM entry WHERE timeInMillis > :timeInMillis")
+    fun countAfter(timeInMillis: Long): Int
 
     @Query("SELECT * FROM entry WHERE LOWER(entryId) LIKE :key OR LOWER(entryId) LIKE :altKey ORDER BY entryId ASC")
     fun searchPaged (key: String, altKey: String = "% $key"): PagingSource<Int, Entry>

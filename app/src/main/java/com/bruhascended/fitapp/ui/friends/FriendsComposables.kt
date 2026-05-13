@@ -21,6 +21,9 @@ import com.bruhascended.fitapp.R
 import com.bruhascended.fitapp.ui.friends.types.FriendStatistics
 import com.bruhascended.fitapp.ui.friends.types.Statistic
 import com.bruhascended.fitapp.ui.friends.types.TimePeriod
+import com.bruhascended.fitapp.ui.theme.Black500
+import com.bruhascended.fitapp.ui.theme.White1000
+import com.bruhascended.fitapp.ui.theme.White700
 
 
 @Composable
@@ -73,15 +76,15 @@ fun StatisticTypeRow(
 		}
 		Statistic.values().forEach {
 			item {
+				val selected = statistic == it
 				Button(
 					onClick = { onUpdate(it) },
 					modifier = Modifier
 						.padding(4.dp),
 					shape = RoundedCornerShape(100),
 					colors = ButtonDefaults.buttonColors(
-						backgroundColor = if (statistic == it) MaterialTheme.colors.secondaryVariant
-						else MaterialTheme.colors.secondary,
-						contentColor = MaterialTheme.colors.primaryVariant
+						backgroundColor = if (selected) MaterialTheme.colors.secondary else Black500,
+						contentColor = if (selected) White1000 else White700
 					)
 				) {
 					Text(

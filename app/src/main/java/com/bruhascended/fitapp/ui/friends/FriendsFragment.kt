@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -52,19 +53,25 @@ class FriendsFragment : Fragment() {
         authHelper.onAuthStateChange {
             authState = it
         }
-        when (authState) {
-            AuthState.Unauthorised ->
-                GoogleAuth {
-                    authHelper.launchAuth()
-                }
-            AuthState.Authorising ->
-                AuthorisingWithGoogle()
-            AuthState.UsernameNotSet ->
-                SetUsername(authHelper)
-            AuthState.SettingUsername ->
-                SettingUpProfile()
-            AuthState.Authorised ->
-                Friends()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+        ) {
+            when (authState) {
+                AuthState.Unauthorised ->
+                    GoogleAuth {
+                        authHelper.launchAuth()
+                    }
+                AuthState.Authorising ->
+                    AuthorisingWithGoogle()
+                AuthState.UsernameNotSet ->
+                    SetUsername(authHelper)
+                AuthState.SettingUsername ->
+                    SettingUpProfile()
+                AuthState.Authorised ->
+                    Friends()
+            }
         }
     }
 
@@ -81,7 +88,7 @@ class FriendsFragment : Fragment() {
             }
         }
 
-        Column(modifier = Modifier.statusBarsPadding()) {
+        Column {
             TimePeriodTabRow(
                 timePeriod = timePeriod,
                 onUpdate = {

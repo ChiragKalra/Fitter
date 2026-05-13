@@ -6,8 +6,11 @@ import android.util.Log
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.changes.DeletionChange
 import androidx.health.connect.client.changes.UpsertionChange
+import androidx.health.connect.client.records.DistanceRecord
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.NutritionRecord
+import androidx.health.connect.client.records.StepsRecord
+import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.request.ChangesTokenRequest
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
@@ -28,10 +31,21 @@ class HealthConnectSyncManager(
     private val weightRepo = WeightEntryRepository(context)
 
     suspend fun sync(client: HealthConnectClient) = withContext(Dispatchers.IO) {
+        logPermissions(client)
         syncActivity(client)
         syncNutrition(client)
         syncWeight(client)
         pushLocalNutritionExports(client)
+    }
+
+    private suspend fun logPermissions(client: HealthConnectClient) {
+        val granted = client.permissionController.getGrantedPermissions()
+        val missingRead = HealthConnectPermissions.readPermissions - granted
+        Log.i(
+            TAG,
+            "HC permissions readGranted=${missingRead.isEmpty()} missingRead=$missingRead " +
+                "writeNutritionGranted=${HealthConnectPermissions.writePermissions.all { it in granted }}"
+        )
     }
 
     private suspend fun pushLocalNutritionExports(client: HealthConnectClient) {
@@ -42,11 +56,12 @@ class HealthConnectSyncManager(
     }
 
     private suspend fun syncActivity(client: HealthConnectClient) {
+        ensureActivityImporterSchemaBump()
         val savedToken = preferencesRepository.getPreference(PreferencesKeys.HC_CHANGES_TOKEN_ACTIVITY)
         if (savedToken == null) {
             Log.i(TAG, "No activity token found, performing full sync")
             activityRepo.replaceFromHealthConnect(client)
-            val newToken = client.getChangesToken(ChangesTokenRequest(setOf(ExerciseSessionRecord::class)))
+            val newToken = client.getChangesToken(ChangesTokenRequest(ACTIVITY_RECORD_TYPES))
             preferencesRepository.updatePreference(PreferencesKeys.HC_CHANGES_TOKEN_ACTIVITY, newToken)
         } else {
             try {
@@ -54,29 +69,43 @@ class HealthConnectSyncManager(
                 var hasMore = true
                 while (hasMore) {
                     val response = client.getChanges(nextToken)
+                    var needsFullActivityResync = false
                     for (change in response.changes) {
                         when (change) {
                             is UpsertionChange -> {
-                                if (change.record is ExerciseSessionRecord && change.record.metadata.dataOrigin.packageName != context.packageName) {
-                                    val entry = HealthConnectActivitySync.mapSingleSession(client, change.record as ExerciseSessionRecord)
-                                    if (entry != null) {
-                                        activityRepo.upsertFromHcRecord(entry)
+                                if (change.record.metadata.dataOrigin.packageName != context.packageName) {
+                                    when (val record = change.record) {
+                                        is ExerciseSessionRecord -> {
+                                            val entry = HealthConnectActivitySync.mapSingleSession(client, record)
+                                            if (entry != null) {
+                                                activityRepo.upsertFromHcRecord(entry)
+                                            }
+                                        }
+                                        is TotalCaloriesBurnedRecord,
+                                        is StepsRecord,
+                                        is DistanceRecord,
+                                        -> needsFullActivityResync = true
                                     }
                                 }
                             }
-                            is DeletionChange -> {
-                                activityRepo.deleteByHcId(change.recordId)
-                            }
+                            is DeletionChange -> needsFullActivityResync = true
                         }
                     }
                     nextToken = response.nextChangesToken
                     hasMore = response.hasMore
+                    if (needsFullActivityResync) {
+                        Log.i(TAG, "Activity aggregate record changed, performing full activity resync")
+                        activityRepo.replaceFromHealthConnect(client)
+                        val newToken = client.getChangesToken(ChangesTokenRequest(ACTIVITY_RECORD_TYPES))
+                        preferencesRepository.updatePreference(PreferencesKeys.HC_CHANGES_TOKEN_ACTIVITY, newToken)
+                        return
+                    }
                 }
                 preferencesRepository.updatePreference(PreferencesKeys.HC_CHANGES_TOKEN_ACTIVITY, nextToken)
             } catch (e: Exception) {
                 Log.w(TAG, "Activity token expired or invalid, performing full sync: ${e.message}")
                 activityRepo.replaceFromHealthConnect(client)
-                val newToken = client.getChangesToken(ChangesTokenRequest(setOf(ExerciseSessionRecord::class)))
+                val newToken = client.getChangesToken(ChangesTokenRequest(ACTIVITY_RECORD_TYPES))
                 preferencesRepository.updatePreference(PreferencesKeys.HC_CHANGES_TOKEN_ACTIVITY, newToken)
             }
         }
@@ -138,6 +167,22 @@ class HealthConnectSyncManager(
         )
     }
 
+    /**
+     * The activity importer stores Health Connect's deduped daily aggregates. Older builds summed
+     * raw step/distance/calorie records from every origin, which double-counted overlapping sources.
+     */
+    private fun ensureActivityImporterSchemaBump() {
+        val raw = preferencesRepository.getPreference(PreferencesKeys.HC_ACTIVITY_IMPORT_SCHEMA)
+        val current = raw as? Int ?: 0
+        if (current >= ACTIVITY_IMPORT_SCHEMA_CURRENT) return
+        Log.i(TAG, "HC activity import schema ${current}->$ACTIVITY_IMPORT_SCHEMA_CURRENT - full activity resync")
+        preferencesRepository.removePreference(PreferencesKeys.HC_CHANGES_TOKEN_ACTIVITY)
+        preferencesRepository.updatePreference(
+            PreferencesKeys.HC_ACTIVITY_IMPORT_SCHEMA,
+            ACTIVITY_IMPORT_SCHEMA_CURRENT,
+        )
+    }
+
     private suspend fun syncWeight(client: HealthConnectClient) {
         val savedToken = preferencesRepository.getPreference(PreferencesKeys.HC_CHANGES_TOKEN_WEIGHT)
         if (savedToken == null) {
@@ -178,6 +223,16 @@ class HealthConnectSyncManager(
     }
 
     private companion object {
+        private val ACTIVITY_RECORD_TYPES = setOf(
+            TotalCaloriesBurnedRecord::class,
+            StepsRecord::class,
+            DistanceRecord::class,
+            ExerciseSessionRecord::class,
+        )
+
+        /** Bumped when importer must wipe [PreferencesKeys.HC_CHANGES_TOKEN_ACTIVITY]. */
+        private const val ACTIVITY_IMPORT_SCHEMA_CURRENT = 4
+
         /** Bumped when importer must wipe [PreferencesKeys.HC_CHANGES_TOKEN_NUTRITION]. */
         private const val NUTRITION_IMPORT_SCHEMA_CURRENT = 3
     }

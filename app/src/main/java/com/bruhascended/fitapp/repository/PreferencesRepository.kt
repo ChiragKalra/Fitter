@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.bruhascended.fitapp.ui.dashboard.DashboardSection
+import com.bruhascended.fitapp.ui.dashboard.DashboardGridSize
 import com.bruhascended.fitapp.ui.dashboard.DashboardUiConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -75,16 +76,35 @@ class PreferencesRepository(
                 throw exception
             }
         }
-        .map { preferences ->
-            DashboardUiConfig(
-                order = DashboardSection.parseOrder(
-                    preferences[PreferencesKeys.DASHBOARD_SECTION_ORDER],
-                ),
-                hiddenIds = DashboardSection.parseHidden(
-                    preferences[PreferencesKeys.DASHBOARD_SECTION_HIDDEN],
-                ),
-            )
+        .map { preferences -> preferences.toDashboardUiConfig() }
+
+    fun readDashboardUiConfig(): DashboardUiConfig {
+        return runBlocking {
+            dataStore.data
+                .catch { exception ->
+                    if (exception is IOException) {
+                        Log.e(TAG, "Error reading dashboard UI preferences.", exception)
+                        emit(emptyPreferences())
+                    } else {
+                        throw exception
+                    }
+                }
+                .first()
+                .toDashboardUiConfig()
         }
+    }
+
+    private fun Preferences.toDashboardUiConfig(): DashboardUiConfig {
+        return DashboardUiConfig(
+            order = DashboardSection.parseOrder(this[PreferencesKeys.DASHBOARD_SECTION_ORDER]),
+            hiddenIds = DashboardSection.parseHidden(this[PreferencesKeys.DASHBOARD_SECTION_HIDDEN]),
+            widthFractions =
+                DashboardSection.parseWidthFractions(this[PreferencesKeys.DASHBOARD_SECTION_WIDTHS]),
+            heightScales =
+                DashboardSection.parseHeightScales(this[PreferencesKeys.DASHBOARD_SECTION_HEIGHTS]),
+            gridSize = DashboardGridSize.parse(this[PreferencesKeys.DASHBOARD_GRID_SIZE]),
+        )
+    }
 
     fun updateDashboardUiConfig(order: List<DashboardSection>, hiddenIds: Set<DashboardSection>) {
         runBlocking {
@@ -93,6 +113,85 @@ class PreferencesRepository(
                     order.joinToString(",") { it.persistenceId }
                 prefs[PreferencesKeys.DASHBOARD_SECTION_HIDDEN] =
                     hiddenIds.joinToString(",") { it.persistenceId }
+            }
+        }
+    }
+
+    fun updateDashboardCardWidth(section: DashboardSection, widthFraction: Float) {
+        runBlocking {
+            dataStore.edit { prefs ->
+                val widths =
+                    DashboardSection.parseWidthFractions(
+                        prefs[PreferencesKeys.DASHBOARD_SECTION_WIDTHS],
+                    ).toMutableMap()
+                val clampedWidth = DashboardUiConfig.clampWidthFraction(widthFraction)
+                if (clampedWidth >= DashboardUiConfig.MAX_CARD_WIDTH_FRACTION) {
+                    widths.remove(section)
+                } else {
+                    widths[section] = clampedWidth
+                }
+                val serialized = DashboardSection.serializeWidthFractions(widths)
+                if (serialized.isBlank()) {
+                    prefs.remove(PreferencesKeys.DASHBOARD_SECTION_WIDTHS)
+                } else {
+                    prefs[PreferencesKeys.DASHBOARD_SECTION_WIDTHS] = serialized
+                }
+            }
+        }
+    }
+
+    fun updateDashboardCardShape(
+        section: DashboardSection,
+        widthFraction: Float,
+        heightScale: Float,
+    ) {
+        runBlocking {
+            dataStore.edit { prefs ->
+                val widths =
+                    DashboardSection.parseWidthFractions(
+                        prefs[PreferencesKeys.DASHBOARD_SECTION_WIDTHS],
+                    ).toMutableMap()
+                val heights =
+                    DashboardSection.parseHeightScales(
+                        prefs[PreferencesKeys.DASHBOARD_SECTION_HEIGHTS],
+                    ).toMutableMap()
+
+                val clampedWidth = DashboardUiConfig.clampWidthFraction(widthFraction)
+                val clampedHeight = DashboardUiConfig.clampHeightScale(heightScale)
+
+                if (clampedWidth >= DashboardUiConfig.MAX_CARD_WIDTH_FRACTION) {
+                    widths.remove(section)
+                } else {
+                    widths[section] = clampedWidth
+                }
+
+                if (clampedHeight == DashboardUiConfig.DEFAULT_CARD_HEIGHT_SCALE) {
+                    heights.remove(section)
+                } else {
+                    heights[section] = clampedHeight
+                }
+
+                val serializedWidths = DashboardSection.serializeWidthFractions(widths)
+                if (serializedWidths.isBlank()) {
+                    prefs.remove(PreferencesKeys.DASHBOARD_SECTION_WIDTHS)
+                } else {
+                    prefs[PreferencesKeys.DASHBOARD_SECTION_WIDTHS] = serializedWidths
+                }
+
+                val serializedHeights = DashboardSection.serializeHeightScales(heights)
+                if (serializedHeights.isBlank()) {
+                    prefs.remove(PreferencesKeys.DASHBOARD_SECTION_HEIGHTS)
+                } else {
+                    prefs[PreferencesKeys.DASHBOARD_SECTION_HEIGHTS] = serializedHeights
+                }
+            }
+        }
+    }
+
+    fun updateDashboardGridSize(gridSize: DashboardGridSize) {
+        runBlocking {
+            dataStore.edit { prefs ->
+                prefs[PreferencesKeys.DASHBOARD_GRID_SIZE] = gridSize.persistenceId
             }
         }
     }

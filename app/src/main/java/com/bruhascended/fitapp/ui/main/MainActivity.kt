@@ -33,6 +33,7 @@ import com.bruhascended.fitapp.ui.settings.SettingsActivity
 import com.bruhascended.fitapp.util.enqueueSyncJob
 import com.bruhascended.fitapp.health.HealthConnectSyncManager
 import com.bruhascended.fitapp.reminders.MealReminderScheduler
+import com.bruhascended.fitapp.reminders.WeightReminderScheduler
 import com.bruhascended.fitapp.workers.UpdateUserWorker
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
                 MealReminderScheduler.rescheduleAll(this)
+                WeightReminderScheduler.rescheduleAll(this)
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                 !shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)
             ) {
@@ -102,6 +104,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         MealReminderScheduler.rescheduleAll(this)
+        WeightReminderScheduler.rescheduleAll(this)
         // Never launch the permission sheet from onResume — each return from the flow
         // would fire again and the system stacks GrantPermissionsActivity until MainActivity
         // is force-finished (see logcat: ActivityTaskManager force remove).
@@ -124,6 +127,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun mealRemindersKickoff() {
         MealReminderScheduler.rescheduleAll(this)
+        WeightReminderScheduler.rescheduleAll(this)
         promptNotificationPermissionIfNeeded()
     }
 
@@ -131,6 +135,7 @@ class MainActivity : AppCompatActivity() {
         if (!canShowHealthConnectUi()) return
         if (NotificationManagerCompat.from(this).areNotificationsEnabled()) {
             MealReminderScheduler.rescheduleAll(this)
+            WeightReminderScheduler.rescheduleAll(this)
             return
         }
         AlertDialog.Builder(this)
