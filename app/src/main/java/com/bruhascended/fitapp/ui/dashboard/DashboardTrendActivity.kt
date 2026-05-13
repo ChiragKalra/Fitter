@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bruhascended.db.activity.entities.ActivityEntry
 import com.bruhascended.db.activity.entities.DayEntry as ActivityDayEntry
+import com.bruhascended.db.food.types.NutrientType
 import com.bruhascended.db.weight.entities.WeightEntry
 import com.bruhascended.fitapp.repository.ActivityEntryRepository
 import com.bruhascended.fitapp.repository.FoodEntryRepository
@@ -440,6 +441,12 @@ private class DashboardTrendLoader(
             DashboardTrendMetric.CALORIE_BALANCE -> calorieBalance(days, foodDays, activityDays)
             DashboardTrendMetric.NET_WEIGHT -> realWeightDelta(days, weights)
             DashboardTrendMetric.WEIGHT_PROJECTION -> projectedWeightDelta(days, foodDays, activityDays)
+            DashboardTrendMetric.STEPS -> steps(days, activityDays)
+            DashboardTrendMetric.ENERGY_BURNED -> energyBurned(days, activityDays)
+            DashboardTrendMetric.PROTEIN -> nutrient(days, foodDays, NutrientType.Protein)
+            DashboardTrendMetric.CARBS -> nutrient(days, foodDays, NutrientType.Carbs)
+            DashboardTrendMetric.FAT -> nutrient(days, foodDays, NutrientType.Fat)
+            DashboardTrendMetric.ADDED_SUGAR -> nutrient(days, foodDays, NutrientType.AddedSugar)
         }
         val secondary = if (metric == DashboardTrendMetric.WEIGHT_PROJECTION) {
             realWeightDelta(days, weights).filter { it.value != 0f || weights.isNotEmpty() }
@@ -501,6 +508,27 @@ private class DashboardTrendLoader(
         }
     }
 
+    private fun steps(days: List<Long>, activityDays: List<ActivityDayEntry>): List<TrendPoint> {
+        val byDay = activityDays.associateBy { it.startTime }
+        return days.map { day ->
+            TrendPoint(day, byDay[day]?.totalSteps?.toFloat() ?: 0f)
+        }
+    }
+
+    private fun energyBurned(days: List<Long>, activityDays: List<ActivityDayEntry>): List<TrendPoint> {
+        val byDay = activityDays.associateBy { it.startTime }
+        return days.map { day ->
+            TrendPoint(day, byDay[day]?.totalCalories ?: 0f)
+        }
+    }
+
+    private fun nutrient(days: List<Long>, foodDays: List<com.bruhascended.db.food.entities.DayEntry>, type: NutrientType): List<TrendPoint> {
+        val byDay = foodDays.associateBy { it.day }
+        return days.map { day ->
+            TrendPoint(day, byDay[day]?.nutrientInfo?.get(type)?.toFloat() ?: 0f)
+        }
+    }
+
     private fun smooth(points: List<TrendPoint>): List<TrendPoint> {
         if (points.size < 3) return points
         val window = when {
@@ -554,6 +582,9 @@ private class DashboardTrendLoader(
             DashboardTrendMetric.CALORIE_BALANCE -> "food calories minus daily expenditure"
             DashboardTrendMetric.NET_WEIGHT -> "logged weight readings"
             DashboardTrendMetric.WEIGHT_PROJECTION -> "cumulative calorie balance at 7700 kcal/kg"
+            DashboardTrendMetric.STEPS -> "device step counter"
+            DashboardTrendMetric.ENERGY_BURNED -> "basal metabolism + activity"
+            DashboardTrendMetric.PROTEIN, DashboardTrendMetric.CARBS, DashboardTrendMetric.FAT, DashboardTrendMetric.ADDED_SUGAR -> "logged food items"
         }
         return "$source • ${fmt.format(start)} - ${fmt.format(end)}"
     }

@@ -323,6 +323,8 @@ class DashboardFragment : Fragment() {
                                         selected = selectedSection == section,
                                         committedWidthFraction = committedWidth,
                                         committedHeightScale = committedHeight,
+                                        gridColumns = gridColumns,
+                                        heightUnits = dashConfig.gridSize.heightUnits,
                                         cardBounds = cardBounds,
                                         onClick = {
                                             if (selectedSection == section) {
@@ -352,9 +354,7 @@ class DashboardFragment : Fragment() {
                                             dragOffset = Offset.Zero
                                             viewModel.saveDashboardLayout(draftOrder.toList(), dashConfig.hiddenIds)
                                         },
-                                        onShapeChangeFinished = { width, height ->
-                                            val snappedWidth = widthForGridSpan(gridSpanForWidth(width, gridColumns), gridColumns)
-                                            val snappedHeight = heightForGridUnits(height, dashConfig.gridSize.heightUnits)
+                                        onShapeChangeFinished = { snappedWidth, snappedHeight ->
                                             if (snappedWidth >= DashboardUiConfig.MAX_CARD_WIDTH_FRACTION) {
                                                 draftWidths.remove(section)
                                             } else {

@@ -117,8 +117,14 @@ data class DashboardUiConfig(
     fun widthFor(section: DashboardSection): Float =
         clampWidthFraction(widthFractions[section] ?: DEFAULT_CARD_WIDTH_FRACTION)
 
-    fun heightScaleFor(section: DashboardSection): Float =
-        clampHeightScale(heightScales[section] ?: DEFAULT_CARD_HEIGHT_SCALE)
+    fun heightScaleFor(section: DashboardSection): Float {
+        val defaultScale = when (section) {
+            DashboardSection.SUMMARY_RING -> 1.25f
+            DashboardSection.TODAY_STATS, DashboardSection.NUTRIENTS -> 0.75f
+            else -> DEFAULT_CARD_HEIGHT_SCALE
+        }
+        return clampHeightScale(heightScales[section] ?: defaultScale)
+    }
 
     companion object {
         const val MIN_CARD_WIDTH_FRACTION = 0.2f

@@ -65,6 +65,8 @@ internal fun DashboardWidgetCard(
     selected: Boolean,
     committedWidthFraction: Float,
     committedHeightScale: Float,
+    gridColumns: Int,
+    heightUnits: Int,
     cardBounds: MutableMap<DashboardSection, Rect>,
     onClick: () -> Unit,
     onLongPress: () -> Unit,
@@ -78,7 +80,7 @@ internal fun DashboardWidgetCard(
     var draftHeightScale by remember(committedHeightScale) { mutableStateOf(committedHeightScale) }
 
     val shape = RoundedCornerShape(12.dp)
-    val baseHeight = baseCardHeight(section)
+    val baseHeight = 180.dp
 
     BoxWithConstraints(
         modifier = modifier.onGloballyPositioned { coords ->
@@ -95,6 +97,14 @@ internal fun DashboardWidgetCard(
         val onShapeChange: (Float, Float) -> Unit = { w, h ->
             draftWidth = w
             draftHeightScale = h
+        }
+
+        val onShapeChangeFinishedWrapped: (Float, Float) -> Unit = { w, h ->
+            val snappedWidth = widthForGridSpan(gridSpanForWidth(w, gridColumns), gridColumns)
+            val snappedHeight = heightForGridUnits(h, heightUnits)
+            draftWidth = snappedWidth
+            draftHeightScale = snappedHeight
+            onShapeChangeFinished(snappedWidth, snappedHeight)
         }
 
         Box(modifier = Modifier.fillMaxWidth().height(targetHeight)) {
@@ -164,8 +174,8 @@ internal fun DashboardWidgetCard(
                     containerWidthPx = fullRowWidthPx, baseHeightPx = baseHeightPx,
                     widthFraction = DashboardUiConfig.clampWidthFraction(draftWidth),
                     heightScale = DashboardUiConfig.clampHeightScale(draftHeightScale),
-                    onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinished,
-                    modifier = Modifier.align(Alignment.CenterStart).offset(x = 20.dp),
+                    onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinishedWrapped,
+                    modifier = Modifier.align(Alignment.CenterStart).offset(x = 36.dp),
                 )
                 DashboardResizeHandle(
                     contentDescription = stringResource(R.string.dashboard_resize_right_a11y),
@@ -173,8 +183,8 @@ internal fun DashboardWidgetCard(
                     containerWidthPx = fullRowWidthPx, baseHeightPx = baseHeightPx,
                     widthFraction = DashboardUiConfig.clampWidthFraction(draftWidth),
                     heightScale = DashboardUiConfig.clampHeightScale(draftHeightScale),
-                    onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinished,
-                    modifier = Modifier.align(Alignment.CenterEnd).offset(x = (-30).dp),
+                    onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinishedWrapped,
+                    modifier = Modifier.align(Alignment.CenterEnd).offset(x = (-36).dp),
                 )
                 DashboardResizeHandle(
                     contentDescription = stringResource(R.string.dashboard_resize_top_a11y),
@@ -182,7 +192,7 @@ internal fun DashboardWidgetCard(
                     containerWidthPx = fullRowWidthPx, baseHeightPx = baseHeightPx,
                     widthFraction = DashboardUiConfig.clampWidthFraction(draftWidth),
                     heightScale = DashboardUiConfig.clampHeightScale(draftHeightScale),
-                    onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinished,
+                    onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinishedWrapped,
                     modifier = Modifier.align(Alignment.TopCenter).offset(y = (-9).dp),
                 )
                 DashboardResizeHandle(
@@ -191,7 +201,7 @@ internal fun DashboardWidgetCard(
                     containerWidthPx = fullRowWidthPx, baseHeightPx = baseHeightPx,
                     widthFraction = DashboardUiConfig.clampWidthFraction(draftWidth),
                     heightScale = DashboardUiConfig.clampHeightScale(draftHeightScale),
-                    onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinished,
+                    onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinishedWrapped,
                     modifier = Modifier.align(Alignment.BottomCenter).offset(y = 9.dp),
                 )
             }
