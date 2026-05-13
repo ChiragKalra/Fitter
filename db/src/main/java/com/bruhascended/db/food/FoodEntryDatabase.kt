@@ -8,6 +8,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.bruhascended.db.food.daos.*
 import com.bruhascended.db.food.entities.*
+import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
 
@@ -41,6 +42,9 @@ abstract class FoodEntryDatabase : RoomDatabase() {
 
     fun getLiveDayEntriesInRange(startDate: Date, endDate: Date): LiveData<List<DayEntry>> =
         dayEntryManager().getTimeRangeLive(startDate.time, endDate.time)
+
+    fun getFlowDayEntriesInRange(startDate: Date, endDate: Date): Flow<List<DayEntry>> =
+        dayEntryManager().getTimeRangeFlow(startDate.time, endDate.time)
 
     fun getDayEntriesInRangeSync(startDate: Date, endDate: Date): List<DayEntry> =
         dayEntryManager().getTimeRangeSync(startDate.time, endDate.time)

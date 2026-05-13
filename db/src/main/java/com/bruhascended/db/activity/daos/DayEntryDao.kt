@@ -3,6 +3,7 @@ package com.bruhascended.db.activity.daos
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import com.bruhascended.db.activity.entities.DayEntry
 
 @Dao
@@ -51,6 +52,13 @@ interface DayEntryDao {
         WHERE startTime >= :startTime AND startTime < :endTime
     """)
     fun getTimeRangeLive (startTime: Long, endTime: Long): LiveData<List<DayEntry>>
+
+    @Query("""
+        SELECT * 
+        FROM activity_day_entries 
+        WHERE startTime >= :startTime AND startTime < :endTime
+    """)
+    fun getTimeRangeFlow (startTime: Long, endTime: Long): Flow<List<DayEntry>>
 
 
     @Query("""

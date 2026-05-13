@@ -51,34 +51,8 @@ class ActivityJournalFragment: Fragment() {
             adapter = mAdaptor
         }
 
-        val dateSeparated = viewModel.activityEntries
-            .map { pagingData ->
-                pagingData.map {
-                    DateSeparatedItem(DateSeparatedItem.ItemType.Item, item = it)
-                }
-            }
-            .map { pagingData ->
-                pagingData.insertSeparators{ after, before ->
-                    val afterDate = after?.item?.date
-                    val beforeDate = before?.item?.date
-                    if (after == null && before == null) {
-                        null
-                    } else if (before == null) {
-                        DateSeparatedItem(DateSeparatedItem.ItemType.Footer)
-                    } else if (afterDate != null && afterDate <= beforeDate) {
-                        null
-                    } else {
-                        DateSeparatedItem(
-                            DateSeparatedItem.ItemType.Separator,
-                            separator = beforeDate,
-                            liveDayEntry = viewModel.separatorInfoOf(beforeDate!!)
-                        )
-                    }
-                }
-            }
-
         lifecycleScope.launch {
-            dateSeparated.cachedIn(lifecycleScope).collectLatest {
+            viewModel.activityEntries.collectLatest {
                 Log.i(TAG, "submitting activity-entry paging data")
                 mAdaptor.submitData(it)
             }

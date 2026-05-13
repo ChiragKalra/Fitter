@@ -25,7 +25,7 @@ class JournalFragment : Fragment() {
                 adapter = ViewPagerAdaptor(
                     childFragmentManager, lifecycle
                 )
-                offscreenPageLimit = 2
+                offscreenPageLimit = 1
             }
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = requireContext().getString(

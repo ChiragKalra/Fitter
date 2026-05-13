@@ -16,6 +16,8 @@ import com.bruhascended.fitapp.repository.WeightEntryRepository
 import com.bruhascended.fitapp.util.BarGraphData
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.util.*
 
@@ -62,14 +64,63 @@ class DashboardViewModel(mApp: Application) : AndroidViewModel(mApp) {
         )
 
     init {
-        activityData = getLastWeekDayEntry()
-        activityEntries = activityEntryRepository.loadActivityEntriesRangeLive(startDate, endDate)
-        nutrientData = getTodayLiveNutrition()
+        // Initial setup for LiveDatas (legacy, still used for today's summary)
+        activityData = activityEntryRepository.loadRangeDayEntries(startDate, endDate)
+        nutrientData = foodEntryRepository.loadLiveSeparator(
+            Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+            }.time
+        )
         foodWeekDayEntries = foodEntryRepository.loadFoodDayEntriesRangeLive(startDate, endDate)
         weightEntries = weightEntryRepository.loadEntriesRangeLive(startDate, endDate)
         latestFoodEntry = foodEntryRepository.latestEntryLive()
         latestWeightEntry = weightEntryRepository.latestLive()
+        activityEntries = activityEntryRepository.loadActivityEntriesRangeLive(startDate, endDate)
     }
+
+    // New Flow-based pipeline for stable, pre-computed UI data
+    val stepsListData = activityEntryRepository.loadRangeDayEntriesFlow(startDate, endDate)
+        .map { list -> computeStepsList(list) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val energyExpListData = activityEntryRepository.loadRangeDayEntriesFlow(startDate, endDate)
+        .map { list -> computeEnergyExpList(list) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val activeEnergyListData = activityEntryRepository.loadActivityEntriesRangeFlow(startDate, endDate)
+        .map { entries -> computeActiveEnergyList(entries) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val calorieBalanceListData = foodEntryRepository.loadFoodDayEntriesRangeFlow(startDate, endDate)
+        .combine(activityEntryRepository.loadRangeDayEntriesFlow(startDate, endDate)) { foodDays, activityDays ->
+            computeCalorieBalance(foodDays, activityDays)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val weightDeltaListData = weightEntryRepository.loadEntriesRangeFlow(startDate, endDate)
+        .map { entries -> computeWeightDelta(entries) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val projectedWeightListData = foodEntryRepository.loadFoodDayEntriesRangeFlow(startDate, endDate)
+        .combine(activityEntryRepository.loadRangeDayEntriesFlow(startDate, endDate)) { foodDays, activityDays ->
+            computeProjectedWeightDelta(foodDays, activityDays)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val proteinListData = foodEntryRepository.loadFoodDayEntriesRangeFlow(startDate, endDate)
+        .map { foodDays -> computeNutrientGrams(foodDays, NutrientType.Protein) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val carbsListData = foodEntryRepository.loadFoodDayEntriesRangeFlow(startDate, endDate)
+        .map { foodDays -> computeNutrientGrams(foodDays, NutrientType.Carbs) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val fatListData = foodEntryRepository.loadFoodDayEntriesRangeFlow(startDate, endDate)
+        .map { foodDays -> computeNutrientGrams(foodDays, NutrientType.Fat) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val sugarListData = foodEntryRepository.loadFoodDayEntriesRangeFlow(startDate, endDate)
+        .map { foodDays -> computeNutrientGrams(foodDays, NutrientType.AddedSugar) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
 
     fun saveDashboardLayout(order: List<DashboardSection>, hidden: Set<DashboardSection>) {
         prefsRepository.updateDashboardUiConfig(order, hidden)
@@ -87,38 +138,36 @@ class DashboardViewModel(mApp: Application) : AndroidViewModel(mApp) {
         prefsRepository.updateDashboardCardShape(section, widthFraction, heightScale)
     }
 
-    fun getLastWeekEnergyExp(
-        list: List<DayEntry>,
-        energyExpLIst: MutableList<BarGraphData>
-    ): MutableList<BarGraphData> {
-        energyExpLIst.asReversed()
-        val steps = mutableListOf<BarGraphData>()
-        for (index in list.indices) {
-            val entry =
-                BarGraphData(list[index].totalCalories, energyExpLIst[index].x, list[index].date)
-            steps.add(entry)
+    private fun computeStepsList(list: List<DayEntry>): List<BarGraphData> {
+        val weekTemplate = getWeekTemplate()
+        val byDay = list.associateBy { dayStartMillis(it.date) }
+        return weekTemplate.map { slot ->
+            val key = dayStartMillis(slot.startTime)
+            BarGraphData(
+                height = byDay[key]?.totalSteps?.toFloat() ?: 0f,
+                x = slot.x,
+                startTime = slot.startTime,
+            )
         }
-        val addList = dataChecker(steps)
-        if (addList != null) {
-            for (index in addList.indices) {
-                val entry =
-                    BarGraphData(
-                        addList[index].height,
-                        energyExpLIst[steps.size].x,
-                        addList[index].startTime
-                    )
-                steps.add(entry)
-            }
-        }
-        return steps
     }
 
-    fun getLastWeekActiveEnergy(
-        entries: List<ActivityEntry>,
-        weekTemplate: List<BarGraphData>,
-    ): MutableList<BarGraphData> {
+    private fun computeEnergyExpList(list: List<DayEntry>): List<BarGraphData> {
+        val weekTemplate = getWeekTemplate()
+        val byDay = list.associateBy { dayStartMillis(it.date) }
+        return weekTemplate.map { slot ->
+            val key = dayStartMillis(slot.startTime)
+            BarGraphData(
+                height = byDay[key]?.totalCalories ?: 0f,
+                x = slot.x,
+                startTime = slot.startTime,
+            )
+        }
+    }
+
+    private fun computeActiveEnergyList(entries: List<ActivityEntry>): List<BarGraphData> {
+        val weekTemplate = getWeekTemplate()
         val byDay = entries.groupBy { dayStartMillis(Date(it.startTime)) }
-        return weekTemplate.mapTo(mutableListOf()) { slot ->
+        return weekTemplate.map { slot ->
             val key = dayStartMillis(slot.startTime)
             BarGraphData(
                 height = byDay[key]?.sumOf { it.calories }?.toFloat() ?: 0f,
@@ -128,14 +177,14 @@ class DashboardViewModel(mApp: Application) : AndroidViewModel(mApp) {
         }
     }
 
-    fun getCalorieBalance(
+    private fun computeCalorieBalance(
         foodDays: List<com.bruhascended.db.food.entities.DayEntry>,
-        activityDays: List<DayEntry>,
-        weekTemplate: List<BarGraphData>,
-    ): MutableList<BarGraphData> {
+        activityDays: List<DayEntry>
+    ): List<BarGraphData> {
+        val weekTemplate = getWeekTemplate()
         val foodByDay = foodDays.associateBy { it.day }
         val burnByDay = activityDays.associateBy { it.startTime }
-        return weekTemplate.mapTo(mutableListOf()) { slot ->
+        return weekTemplate.map { slot ->
             val key = dayStartMillis(slot.startTime)
             val expenditure = burnByDay[key]?.totalCalories ?: 0f
             val consumed = foodByDay[key]?.calories?.toFloat() ?: expenditure
@@ -143,89 +192,70 @@ class DashboardViewModel(mApp: Application) : AndroidViewModel(mApp) {
         }
     }
 
-    fun getWeightDelta(
-        entries: List<WeightEntry>,
-        weekTemplate: List<BarGraphData>,
-    ): MutableList<BarGraphData> {
+    private fun computeWeightDelta(entries: List<WeightEntry>): List<BarGraphData> {
+        val weekTemplate = getWeekTemplate()
         if (entries.isEmpty()) {
-            return weekTemplate.mapTo(mutableListOf()) { BarGraphData(0f, it.x, it.startTime) }
+            return weekTemplate.map { BarGraphData(0f, it.x, it.startTime) }
         }
         val sorted = entries.sortedBy { it.timeInMillis }
         val baseline = sorted.first().weightKg()
-        return weekTemplate.mapTo(mutableListOf()) { slot ->
+        return weekTemplate.map { slot ->
             val dayEnd = dayStartMillis(slot.startTime) + ONE_DAY_MILLIS
             val latest = sorted.lastOrNull { it.timeInMillis < dayEnd }?.weightKg() ?: baseline
             BarGraphData((latest - baseline).toFloat(), slot.x, slot.startTime)
         }
     }
 
-    fun getProjectedWeightDelta(
+    private fun computeProjectedWeightDelta(
         foodDays: List<com.bruhascended.db.food.entities.DayEntry>,
-        activityDays: List<DayEntry>,
-        weekTemplate: List<BarGraphData>,
-    ): MutableList<BarGraphData> {
-        val balance = getCalorieBalance(foodDays, activityDays, weekTemplate)
+        activityDays: List<DayEntry>
+    ): List<BarGraphData> {
+        val balance = computeCalorieBalance(foodDays, activityDays)
         var cumulative = 0f
-        return balance.mapTo(mutableListOf()) { point ->
+        return balance.map { point ->
             cumulative += point.height
             BarGraphData(cumulative / KCAL_PER_KG, point.x, point.startTime)
         }
     }
 
-    fun getLastWeekSteps(
-        list: List<DayEntry>,
-        stepsLIst: MutableList<BarGraphData>
-    ): MutableList<BarGraphData> {
-        stepsLIst.asReversed()
-        val steps = mutableListOf<BarGraphData>()
-        for (index in list.indices) {
-            val entry =
-                BarGraphData(list[index].totalSteps.toFloat(), stepsLIst[index].x, list[index].date)
-            steps.add(entry)
-        }
-        val addList = dataChecker(steps)
-        if (addList != null) {
-            for (index in addList.indices) {
-                val entry =
-                    BarGraphData(
-                        addList[index].height,
-                        stepsLIst[steps.size].x,
-                        addList[index].startTime
-                    )
-                steps.add(entry)
-            }
-        }
-        return steps
-    }
-
-    /**
-     * Maps each slot in [weekTemplate] (same order/labels as steps/energy charts) to total grams
-     * for [type] on that calendar day from food journal aggregates.
-     */
-    fun getLastWeekNutrientGrams(
+    private fun computeNutrientGrams(
         foodDays: List<com.bruhascended.db.food.entities.DayEntry>,
-        weekTemplate: List<BarGraphData>,
         type: NutrientType,
-    ): MutableList<BarGraphData> {
+    ): List<BarGraphData> {
+        val weekTemplate = getWeekTemplate()
         val byDay = foodDays.associateBy { it.day }
-        val out = ArrayList<BarGraphData>(weekTemplate.size)
-        for (slot in weekTemplate) {
+        return weekTemplate.map { slot ->
             val key = dayStartMillis(slot.startTime)
             val grams = byDay[key]?.nutrientInfo?.get(type)?.toFloat() ?: 0f
-            out.add(BarGraphData(grams, slot.x, slot.startTime))
+            BarGraphData(grams, slot.x, slot.startTime)
         }
-        return out
     }
 
-    fun dayStartMillis(d: Date): Long =
-        Calendar.getInstance(TimeZone.getDefault()).run {
+    private fun getWeekTemplate(): List<BarGraphData> {
+        val list = mutableListOf<BarGraphData>()
+        val calendar = Calendar.getInstance(TimeZone.getDefault()).apply {
+            time = endDate
+            set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+        }
+        for (i in 0 until 7) {
+            val date = calendar.time
+            list.add(BarGraphData(0f, "", date))
+            calendar.add(Calendar.DAY_OF_YEAR, -1)
+        }
+        return list.asReversed()
+    }
+
+    private val calendarInstance = Calendar.getInstance(TimeZone.getDefault())
+
+    fun dayStartMillis(d: Date): Long = synchronized(calendarInstance) {
+        calendarInstance.apply {
             time = d
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
-            timeInMillis
-        }
+        }.timeInMillis
+    }
 
     private fun WeightEntry.weightKg(): Double = weight * type.conversionRatio
 

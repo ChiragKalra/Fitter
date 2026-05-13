@@ -39,12 +39,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
@@ -85,10 +85,13 @@ import com.bruhascended.db.food.entities.Entry
 import com.bruhascended.db.food.types.NutrientType
 import com.bruhascended.db.weight.entities.WeightEntry
 import com.bruhascended.fitapp.R
+import com.bruhascended.fitapp.databinding.FragmentDashboardBinding
 import com.bruhascended.fitapp.repository.PreferencesRepository
 import com.bruhascended.fitapp.ui.dashboard.components.ConcentricCircles
 import com.bruhascended.fitapp.ui.dashboard.components.NutrientCard
 import com.bruhascended.fitapp.ui.dashboard.components.OverViewCard
+import com.bruhascended.fitapp.ui.main.FabPresenter
+import com.bruhascended.fitapp.ui.main.MainActivity
 import com.bruhascended.fitapp.ui.settings.SettingsActivity
 import com.bruhascended.fitapp.ui.theme.Blue100
 import com.bruhascended.fitapp.ui.theme.Blue500
@@ -99,6 +102,7 @@ import com.bruhascended.fitapp.ui.theme.Red200
 import com.bruhascended.fitapp.ui.theme.Yellow500
 import com.bruhascended.fitapp.util.getWeekList
 import java.util.Calendar
+import java.util.Date
 import java.util.TimeZone
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -122,21 +126,17 @@ class DashboardFragment : Fragment() {
             setContent {
                 FitAppTheme {
                     // ── data state ──────────────────────────────────────────
-                    val defaultList = getWeekList(context)
-                    var energyExpList by remember { mutableStateOf(defaultList) }
-                    var stepsList by remember { mutableStateOf(defaultList) }
-                    var activeEnergyWeekList by remember { mutableStateOf(defaultList) }
-                    var calorieBalanceWeekList by remember { mutableStateOf(defaultList) }
-                    var weightDeltaWeekList by remember { mutableStateOf(defaultList) }
-                    var projectedWeightWeekList by remember { mutableStateOf(defaultList) }
-                    var proteinWeekList by remember { mutableStateOf(getWeekList(context)) }
-                    var carbsWeekList by remember { mutableStateOf(getWeekList(context)) }
-                    var fatWeekList by remember { mutableStateOf(getWeekList(context)) }
-                    var sugarWeekList by remember { mutableStateOf(getWeekList(context)) }
-                    var activityWeekDays by remember { mutableStateOf<List<DayEntry>>(emptyList()) }
-                    var foodWeekDays by remember {
-                        mutableStateOf<List<com.bruhascended.db.food.entities.DayEntry>>(emptyList())
-                    }
+                    val stepsList by viewModel.stepsListData.collectAsState()
+                    val energyExpList by viewModel.energyExpListData.collectAsState()
+                    val activeEnergyWeekList by viewModel.activeEnergyListData.collectAsState()
+                    val calorieBalanceWeekList by viewModel.calorieBalanceListData.collectAsState()
+                    val weightDeltaWeekList by viewModel.weightDeltaListData.collectAsState()
+                    val projectedWeightWeekList by viewModel.projectedWeightListData.collectAsState()
+                    val proteinWeekList by viewModel.proteinListData.collectAsState()
+                    val carbsWeekList by viewModel.carbsListData.collectAsState()
+                    val fatWeekList by viewModel.fatListData.collectAsState()
+                    val sugarWeekList by viewModel.sugarListData.collectAsState()
+
                     var latestFoodLoggedAt by remember { mutableStateOf<Long?>(null) }
                     var latestWeightLoggedAt by remember { mutableStateOf<Long?>(null) }
                     var todayActivityData by remember { mutableStateOf(DayEntry(0L)) }
@@ -144,68 +144,44 @@ class DashboardFragment : Fragment() {
                         mutableStateOf(com.bruhascended.db.food.entities.DayEntry(0L))
                     }
 
+
                     val lifecycleOwner = LocalLifecycleOwner.current
                     val actLd = viewModel.activityData
-                    val activeLd = viewModel.activityEntries
                     val nutLd = viewModel.nutrientData
-                    val foodWeekLd = viewModel.foodWeekDayEntries
-                    val weightLd = viewModel.weightEntries
                     val latestFoodLd = viewModel.latestFoodEntry
                     val latestWeightLd = viewModel.latestWeightEntry
 
-                    DisposableEffect(actLd, activeLd, nutLd, foodWeekLd, weightLd, latestFoodLd, latestWeightLd, lifecycleOwner) {
+                    DisposableEffect(actLd, nutLd, latestFoodLd, latestWeightLd, lifecycleOwner) {
                         val activityObserver = Observer<List<DayEntry>> { list ->
-                            activityWeekDays = list
-                            energyExpList = viewModel.getLastWeekEnergyExp(list, energyExpList)
-                            stepsList = viewModel.getLastWeekSteps(list, stepsList)
-                            val tmpl = getWeekList(context)
-                            calorieBalanceWeekList = viewModel.getCalorieBalance(foodWeekDays, activityWeekDays, tmpl)
-                            projectedWeightWeekList = viewModel.getProjectedWeightDelta(foodWeekDays, activityWeekDays, tmpl)
-                            todayActivityData = if (list.isNotEmpty()) list.last() else DayEntry(0L)
-                        }
-                        val activeObserver = Observer<List<com.bruhascended.db.activity.entities.ActivityEntry>> { list ->
-                            activeEnergyWeekList = viewModel.getLastWeekActiveEnergy(list, getWeekList(context))
+                            todayActivityData = list.lastOrNull { 
+                                viewModel.dayStartMillis(it.date) == viewModel.dayStartMillis(Date()) 
+                            } ?: DayEntry(0L)
                         }
                         val nutrientObserver = Observer<com.bruhascended.db.food.entities.DayEntry?> { entry ->
                             todayNutrientData = entry ?: viewModel.defaultNutrientData
                         }
-                        val foodWeekObserver = Observer<List<com.bruhascended.db.food.entities.DayEntry>> { list ->
-                            foodWeekDays = list
-                            val tmpl = getWeekList(context)
-                            proteinWeekList = viewModel.getLastWeekNutrientGrams(list, tmpl, NutrientType.Protein)
-                            carbsWeekList = viewModel.getLastWeekNutrientGrams(list, tmpl, NutrientType.Carbs)
-                            fatWeekList = viewModel.getLastWeekNutrientGrams(list, tmpl, NutrientType.Fat)
-                            sugarWeekList = viewModel.getLastWeekNutrientGrams(list, tmpl, NutrientType.AddedSugar)
-                            calorieBalanceWeekList = viewModel.getCalorieBalance(foodWeekDays, activityWeekDays, tmpl)
-                            projectedWeightWeekList = viewModel.getProjectedWeightDelta(foodWeekDays, activityWeekDays, tmpl)
+                        val latestFoodObserver = Observer<Entry?> { entry -> 
+                            latestFoodLoggedAt = entry?.date?.time 
                         }
-                        val weightObserver = Observer<List<com.bruhascended.db.weight.entities.WeightEntry>> { list ->
-                            weightDeltaWeekList = viewModel.getWeightDelta(list, getWeekList(context))
+                        val latestWeightObserver = Observer<WeightEntry?> { entry -> 
+                            latestWeightLoggedAt = entry?.timeInMillis 
                         }
-                        val latestFoodObserver = Observer<Entry?> { entry -> latestFoodLoggedAt = entry?.timeInMillis }
-                        val latestWeightObserver = Observer<WeightEntry?> { entry -> latestWeightLoggedAt = entry?.timeInMillis }
+
                         actLd?.observe(lifecycleOwner, activityObserver)
-                        activeLd?.observe(lifecycleOwner, activeObserver)
                         nutLd?.observe(lifecycleOwner, nutrientObserver)
-                        foodWeekLd?.observe(lifecycleOwner, foodWeekObserver)
-                        weightLd?.observe(lifecycleOwner, weightObserver)
                         latestFoodLd?.observe(lifecycleOwner, latestFoodObserver)
                         latestWeightLd?.observe(lifecycleOwner, latestWeightObserver)
+
                         onDispose {
                             actLd?.removeObserver(activityObserver)
-                            activeLd?.removeObserver(activeObserver)
                             nutLd?.removeObserver(nutrientObserver)
-                            foodWeekLd?.removeObserver(foodWeekObserver)
-                            weightLd?.removeObserver(weightObserver)
                             latestFoodLd?.removeObserver(latestFoodObserver)
                             latestWeightLd?.removeObserver(latestWeightObserver)
                         }
                     }
 
                     // ── layout state ─────────────────────────────────────────
-                    val dashConfig by produceState(viewModel.dashboardUiConfig.value, viewModel) {
-                        viewModel.dashboardUiConfig.collect { value = it }
-                    }
+                    val dashConfig by viewModel.dashboardUiConfig.collectAsState()
 
                     var selectedSection by remember { mutableStateOf<DashboardSection?>(null) }
                     val isEditMode by remember { derivedStateOf { selectedSection != null } }

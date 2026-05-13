@@ -43,37 +43,8 @@ class FoodJournalFragment: Fragment() {
             adapter = mAdaptor
         }
 
-        val dateSeparated = viewModel.foodEntries
-            .map { pagingData ->
-                pagingData.map {
-                    DateSeparatedItem(
-                        DateSeparatedItem.ItemType.Item,
-                        item = it
-                    )
-                }
-            }
-            .map { pagingData ->
-                pagingData.insertSeparators { after, before ->
-                    val afterDate = after?.item?.entry?.date
-                    val beforeDate = before?.item?.entry?.date
-                    if (before == null) {
-                        DateSeparatedItem(DateSeparatedItem.ItemType.Footer)
-                    } else if (
-                        beforeDate == null || (afterDate != null && afterDate <= beforeDate)
-                    ) {
-                        null
-                    } else {
-                        DateSeparatedItem(
-                            DateSeparatedItem.ItemType.Separator,
-                            separator = beforeDate,
-                            liveDayEntry = viewModel.getSeparatorInfo(beforeDate)
-                        )
-                    }
-                }
-            }
-
         lifecycleScope.launch {
-            dateSeparated.cachedIn(lifecycleScope).collectLatest {
+            viewModel.foodEntries.collectLatest {
                 mAdaptor.submitData(it)
             }
         }

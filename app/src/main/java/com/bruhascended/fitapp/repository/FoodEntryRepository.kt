@@ -137,6 +137,9 @@ class FoodEntryRepository(
     fun loadFoodDayEntriesRangeLive(startDate: Date, endDate: Date): LiveData<List<DayEntry>> =
         db.getLiveDayEntriesInRange(startDate, endDate)
 
+    fun loadFoodDayEntriesRangeFlow(startDate: Date, endDate: Date): Flow<List<DayEntry>> =
+        db.getFlowDayEntriesInRange(startDate, endDate)
+
     fun loadFoodDayEntriesRangeSync(startDate: Date, endDate: Date): List<DayEntry> =
         db.getDayEntriesInRangeSync(startDate, endDate)
 

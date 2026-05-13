@@ -3,6 +3,7 @@ package com.bruhascended.db.food.daos
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import com.bruhascended.db.food.entities.DayEntry
 
 @Dao
@@ -27,6 +28,14 @@ interface DayEntryDao {
         ORDER BY day ASC
     """)
     fun getTimeRangeLive (startDay: Long, endDay: Long): LiveData<List<DayEntry>>
+
+    @Query("""
+        SELECT * 
+        FROM dayEntry
+        WHERE day >= :startDay AND day < :endDay
+        ORDER BY day ASC
+    """)
+    fun getTimeRangeFlow (startDay: Long, endDay: Long): Flow<List<DayEntry>>
 
     @Query("""
         SELECT *

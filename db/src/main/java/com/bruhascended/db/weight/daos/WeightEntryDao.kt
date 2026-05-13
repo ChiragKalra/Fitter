@@ -3,6 +3,7 @@ package com.bruhascended.db.weight.daos
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import com.bruhascended.db.weight.entities.WeightEntry
 
 @Dao
@@ -49,6 +50,14 @@ interface WeightEntryDao {
         ORDER BY timeInMillis ASC
     """)
     fun getTimeRangeLive(startTime: Long, endTime: Long): LiveData<List<WeightEntry>>
+
+    @Query("""
+        SELECT *
+        FROM weight_entry
+        WHERE timeInMillis >= :startTime AND timeInMillis < :endTime
+        ORDER BY timeInMillis ASC
+    """)
+    fun getTimeRangeFlow(startTime: Long, endTime: Long): Flow<List<WeightEntry>>
 
     @Query("SELECT * FROM weight_entry ORDER BY timeInMillis DESC LIMIT 1")
     fun latestSync(): WeightEntry?

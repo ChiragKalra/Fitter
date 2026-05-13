@@ -3,6 +3,7 @@ package com.bruhascended.db.activity.daos
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import com.bruhascended.db.activity.entities.ActivityEntry
 
 @Dao
@@ -49,6 +50,14 @@ interface ActivityEntryDao {
         ORDER BY startTime ASC
     """)
     fun getTimeRangeLive(startTime: Long, endTime: Long): LiveData<List<ActivityEntry>>
+
+    @Query("""
+        SELECT *
+        FROM activity_entry
+        WHERE startTime >= :startTime AND startTime < :endTime
+        ORDER BY startTime ASC
+    """)
+    fun getTimeRangeFlow(startTime: Long, endTime: Long): Flow<List<ActivityEntry>>
 
     @Query("DELETE FROM activity_entry")
     fun deleteAll()

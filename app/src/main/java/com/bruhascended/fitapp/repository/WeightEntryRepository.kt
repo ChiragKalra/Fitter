@@ -8,6 +8,7 @@ import com.bruhascended.db.weight.WeightEntryDatabaseFactory
 import com.bruhascended.db.weight.entities.WeightEntry
 import com.bruhascended.fitapp.health.HealthConnectWeightSync
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.util.Date
 import kotlin.reflect.KProperty
@@ -40,6 +41,9 @@ class WeightEntryRepository(
 
     fun loadEntriesRangeLive(startDate: Date, endDate: Date): LiveData<List<WeightEntry>> =
         db.entryManager().getTimeRangeLive(startDate.time, endDate.time)
+
+    fun loadEntriesRangeFlow(startDate: Date, endDate: Date): Flow<List<WeightEntry>> =
+        db.entryManager().getTimeRangeFlow(startDate.time, endDate.time)
 
     fun loadEntriesRangeSync(startDate: Date, endDate: Date): List<WeightEntry> =
         db.entryManager().getTimeRangeSync(startDate.time, endDate.time)

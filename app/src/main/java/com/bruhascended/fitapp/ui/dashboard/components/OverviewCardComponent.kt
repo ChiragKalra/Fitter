@@ -93,7 +93,7 @@ fun FirstOfThirdRow(data: List<BarGraphData>, unit: String?) {
                 modifier = Modifier
                     .padding(end = 2.dp)
                     .alignByBaseline(),
-                text = data.last().height.toInt().toString(),
+                text = data.lastOrNull()?.height?.toInt()?.toString() ?: "0",
                 style = MaterialTheme.typography.h6,
                 fontWeight = FontWeight.Medium
             )

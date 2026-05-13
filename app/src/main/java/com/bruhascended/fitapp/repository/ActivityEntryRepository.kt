@@ -130,6 +130,12 @@ class ActivityEntryRepository(
     fun loadActivityEntriesRangeSync(startDate: Date, endDate: Date): List<ActivityEntry> =
         db.entryManager().getTimeRangeSync(startDate.time, endDate.time)
 
+    fun loadRangeDayEntriesFlow(startDate: Date, endDate: Date): Flow<List<DayEntry>> =
+        db.dayEntryManager().getTimeRangeFlow(startDate.time, endDate.time)
+
+    fun loadActivityEntriesRangeFlow(startDate: Date, endDate: Date): Flow<List<ActivityEntry>> =
+        db.entryManager().getTimeRangeFlow(startDate.time, endDate.time)
+
     /**
      * Replaces local activity aggregates and workout rows with Health Connect data.
      */
