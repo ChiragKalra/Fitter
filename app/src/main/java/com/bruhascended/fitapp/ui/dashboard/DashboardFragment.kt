@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -51,7 +53,10 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.ComposeView
@@ -68,8 +73,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -226,6 +233,10 @@ class DashboardFragment : Fragment() {
                     // Shared map of card bounds in window coordinates — used for drag-to-reorder hit testing
                     val cardBounds = remember { mutableMapOf<DashboardSection, Rect>() }
 
+                    // Drag state — tracks which card is being dragged and its current finger offset
+                    var dragSection by remember { mutableStateOf<DashboardSection?>(null) }
+                    var dragOffset by remember { mutableStateOf(Offset.Zero) }
+
                     val gridColumns = dashConfig.gridSize.columns
                     val visibleSections by remember(draftOrder, dashConfig.hiddenIds) {
                         derivedStateOf { draftOrder.filter { it !in dashConfig.hiddenIds } }
@@ -295,7 +306,9 @@ class DashboardFragment : Fragment() {
                         ) { rowIndex ->
                             val rowSections = rows[rowIndex]
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateItem(spring(dampingRatio = 0.7f, stiffness = 400f)),
                                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                             ) {
                                 rowSections.forEachIndexed { colIndex, section ->
@@ -304,10 +317,13 @@ class DashboardFragment : Fragment() {
                                         gridColumns,
                                     )
                                     val committedHeight = draftHeightScales[section] ?: dashConfig.heightScaleFor(section)
+                                    val isBeingDragged = dragSection == section
 
                                     DashboardWidgetCard(
                                         section = section,
                                         selected = selectedSection == section,
+                                        isBeingDragged = isBeingDragged,
+                                        dragOffset = if (isBeingDragged) dragOffset else Offset.Zero,
                                         committedWidthFraction = committedWidth,
                                         committedHeightScale = committedHeight,
                                         cardBounds = cardBounds,
@@ -322,6 +338,8 @@ class DashboardFragment : Fragment() {
                                         },
                                         onLongPress = {
                                             selectedSection = section
+                                            dragSection = section
+                                            dragOffset = Offset.Zero
                                             draftWidths.clear(); draftWidths.putAll(dashConfig.widthFractions)
                                             draftHeightScales.clear(); draftHeightScales.putAll(dashConfig.heightScales)
                                         },
@@ -332,7 +350,10 @@ class DashboardFragment : Fragment() {
                                                 draftOrder.add(ti, draftOrder.removeAt(fi))
                                             }
                                         },
+                                        onDragMove = { offset -> dragOffset = offset },
                                         onReorderEnd = {
+                                            dragSection = null
+                                            dragOffset = Offset.Zero
                                             viewModel.saveDashboardLayout(draftOrder.toList(), dashConfig.hiddenIds)
                                         },
                                         onShapeChangeFinished = { width, height ->
