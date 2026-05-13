@@ -307,8 +307,7 @@ class DashboardFragment : Fragment() {
                             val rowSections = rows[rowIndex]
                             Row(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .animateItem(spring(dampingRatio = 0.7f, stiffness = 400f)),
+                                    .fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                             ) {
                                 rowSections.forEachIndexed { colIndex, section ->
@@ -322,8 +321,6 @@ class DashboardFragment : Fragment() {
                                     DashboardWidgetCard(
                                         section = section,
                                         selected = selectedSection == section,
-                                        isBeingDragged = isBeingDragged,
-                                        dragOffset = if (isBeingDragged) dragOffset else Offset.Zero,
                                         committedWidthFraction = committedWidth,
                                         committedHeightScale = committedHeight,
                                         cardBounds = cardBounds,
@@ -350,7 +347,6 @@ class DashboardFragment : Fragment() {
                                                 draftOrder.add(ti, draftOrder.removeAt(fi))
                                             }
                                         },
-                                        onDragMove = { offset -> dragOffset = offset },
                                         onReorderEnd = {
                                             dragSection = null
                                             dragOffset = Offset.Zero
