@@ -259,6 +259,11 @@ class DashboardFragment : Fragment() {
                         }
                     }
 
+                    // Pre-compute stable keys so we don't allocate strings on every LazyColumn pass
+                    val rowKeys = remember(rows) {
+                        rows.map { row -> row.joinToString(",") { it.persistenceId } }
+                    }
+
                     val listBottomPadding = dimensionResource(R.dimen.main_bottom_nav_height) + 160.dp
                     val listState = rememberLazyListState()
 
@@ -302,7 +307,7 @@ class DashboardFragment : Fragment() {
                         // Widget rows — each row packs cards side-by-side
                         items(
                             count = rows.size,
-                            key = { rowIndex -> rows[rowIndex].joinToString(",") { it.persistenceId } },
+                            key = { rowIndex -> rowKeys[rowIndex] },
                         ) { rowIndex ->
                             val rowSections = rows[rowIndex]
                             Row(
@@ -316,7 +321,6 @@ class DashboardFragment : Fragment() {
                                         gridColumns,
                                     )
                                     val committedHeight = draftHeightScales[section] ?: dashConfig.heightScaleFor(section)
-                                    val isBeingDragged = dragSection == section
 
                                     DashboardWidgetCard(
                                         section = section,

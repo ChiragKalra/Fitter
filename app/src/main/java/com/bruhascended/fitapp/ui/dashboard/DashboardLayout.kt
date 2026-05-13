@@ -7,7 +7,6 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -28,6 +28,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -76,37 +77,49 @@ internal fun DashboardWidgetCard(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    var draftWidth by remember(committedWidthFraction) { mutableStateOf(committedWidthFraction) }
-    var draftHeightScale by remember(committedHeightScale) { mutableStateOf(committedHeightScale) }
+    var draftWidth by remember(committedWidthFraction) { mutableFloatStateOf(committedWidthFraction) }
+    var draftHeightScale by remember(committedHeightScale) { mutableFloatStateOf(committedHeightScale) }
 
-    val shape = RoundedCornerShape(12.dp)
+    val shape = remember { RoundedCornerShape(12.dp) }
     val baseHeight = 180.dp
 
-    BoxWithConstraints(
-        modifier = modifier.onGloballyPositioned { coords ->
-            cardBounds[section] = coords.boundsInWindow()
-        },
-        contentAlignment = Alignment.TopStart,
-    ) {
-        val density = LocalDensity.current
-        val containerWidthPx = with(density) { maxWidth.toPx() }.coerceAtLeast(1f)
-        val fullRowWidthPx = (containerWidthPx / committedWidthFraction.coerceAtLeast(0.01f))
-        val baseHeightPx = with(density) { baseHeight.toPx() }.coerceAtLeast(1f)
-        val targetHeight = baseHeight * DashboardUiConfig.clampHeightScale(draftHeightScale)
+    // Track container width in px via onSizeChanged instead of BoxWithConstraints
+    var containerWidthPx by remember { mutableFloatStateOf(1f) }
 
-        val onShapeChange: (Float, Float) -> Unit = { w, h ->
+    val density = LocalDensity.current
+    val baseHeightPx = remember(density) { with(density) { baseHeight.toPx() }.coerceAtLeast(1f) }
+    val targetHeight = baseHeight * DashboardUiConfig.clampHeightScale(draftHeightScale)
+    val fullRowWidthPx = (containerWidthPx / committedWidthFraction.coerceAtLeast(0.01f))
+
+    val onShapeChange: (Float, Float) -> Unit = remember {
+        { w: Float, h: Float ->
             draftWidth = w
             draftHeightScale = h
         }
+    }
 
-        val onShapeChangeFinishedWrapped: (Float, Float) -> Unit = { w, h ->
-            val snappedWidth = widthForGridSpan(gridSpanForWidth(w, gridColumns), gridColumns)
-            val snappedHeight = heightForGridUnits(h, heightUnits)
+    val currentOnShapeChangeFinished by rememberUpdatedState(onShapeChangeFinished)
+    val currentGridColumns by rememberUpdatedState(gridColumns)
+    val currentHeightUnits by rememberUpdatedState(heightUnits)
+
+    val onShapeChangeFinishedWrapped: (Float, Float) -> Unit = remember {
+        { w: Float, h: Float ->
+            val snappedWidth = widthForGridSpan(gridSpanForWidth(w, currentGridColumns), currentGridColumns)
+            val snappedHeight = heightForGridUnits(h, currentHeightUnits)
             draftWidth = snappedWidth
             draftHeightScale = snappedHeight
-            onShapeChangeFinished(snappedWidth, snappedHeight)
+            currentOnShapeChangeFinished(snappedWidth, snappedHeight)
         }
+    }
 
+    Box(
+        modifier = modifier
+            .onSizeChanged { size -> containerWidthPx = size.width.toFloat().coerceAtLeast(1f) }
+            .onGloballyPositioned { coords ->
+                cardBounds[section] = coords.boundsInWindow()
+            },
+        contentAlignment = Alignment.TopStart,
+    ) {
         Box(modifier = Modifier.fillMaxWidth().height(targetHeight)) {
             Box(
                 modifier = Modifier
@@ -152,11 +165,7 @@ internal fun DashboardWidgetCard(
                         }
                     }
                     .pointerInput(section, selected) {
-                        if (!selected) {
-                            detectTapGestures(onTap = { onClick() })
-                        } else {
-                            detectTapGestures(onTap = { onClick() })
-                        }
+                        detectTapGestures(onTap = { onClick() })
                     },
             ) {
                 content()
@@ -224,12 +233,12 @@ internal fun DashboardResizeHandle(
 ) {
     val latestWidth by rememberUpdatedState(widthFraction)
     val latestHeightScale by rememberUpdatedState(heightScale)
-    var dragStartWidth by remember { mutableStateOf(widthFraction) }
-    var dragStartHeightScale by remember { mutableStateOf(heightScale) }
-    var dragDistanceXPx by remember { mutableStateOf(0f) }
-    var dragDistanceYPx by remember { mutableStateOf(0f) }
-    var lastWidth by remember { mutableStateOf(widthFraction) }
-    var lastHeightScale by remember { mutableStateOf(heightScale) }
+    var dragStartWidth by remember { mutableFloatStateOf(widthFraction) }
+    var dragStartHeightScale by remember { mutableFloatStateOf(heightScale) }
+    var dragDistanceXPx by remember { mutableFloatStateOf(0f) }
+    var dragDistanceYPx by remember { mutableFloatStateOf(0f) }
+    var lastWidth by remember { mutableFloatStateOf(widthFraction) }
+    var lastHeightScale by remember { mutableFloatStateOf(heightScale) }
     val isHorizontalHandle = horizontalDirection != 0f
     val handleColor = MaterialTheme.colors.primary.copy(alpha = 0.2f)
     val gripColor = MaterialTheme.colors.primary.copy(alpha = 0.82f)

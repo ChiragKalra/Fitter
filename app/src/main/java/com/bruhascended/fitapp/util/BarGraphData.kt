@@ -1,9 +1,11 @@
 package com.bruhascended.fitapp.util
 
+import androidx.compose.runtime.Immutable
 import java.util.*
 
+@Immutable
 data class BarGraphData(
-    var height: Float = 0f,
-    var x: String = "",
-    var startTime: Date
+    val height: Float = 0f,
+    val x: String = "",
+    val startTime: Date
 )
