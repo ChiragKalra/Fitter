@@ -1,23 +1,22 @@
 package com.bruhascended.fitapp.ui.dashboard
 
+import android.view.HapticFeedbackConstants
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
@@ -25,20 +24,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 import com.bruhascended.fitapp.R
 
+/**
+ * Row-packing helper: given an ordered list of sections and a width function (0..1 fraction),
+ * pack them into rows where each row's total width ≤ 1.
+ */
 internal fun packIntoRows(
     sections: List<DashboardSection>,
     widthOf: (DashboardSection) -> Float,
@@ -60,47 +66,60 @@ internal fun packIntoRows(
     return rows
 }
 
+/**
+ * A single dashboard widget card.
+ *
+ * - Normal mode: tappable → navigates to trend detail.
+ * - Drag-to-reorder: long-press lifts the card. Drag tracking is handled by a parent-level
+ *   pointer handler (not here — avoids gesture death on recomposition).
+ * - Resize mode (selected): shows resize handles on the card edges.
+ */
 @Composable
 internal fun DashboardWidgetCard(
     section: DashboardSection,
+    isBeingDragged: Boolean,
     selected: Boolean,
     committedWidthFraction: Float,
     committedHeightScale: Float,
     gridColumns: Int,
     heightUnits: Int,
+    heightDp: Dp,
     cardBounds: MutableMap<DashboardSection, Rect>,
     onClick: () -> Unit,
     onLongPress: () -> Unit,
-    onReorder: (from: DashboardSection, to: DashboardSection) -> Unit,
-    onReorderEnd: () -> Unit,
+    onLiveResize: (snappedWidth: Float, snappedHeight: Float) -> Unit,
     onShapeChangeFinished: (Float, Float) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
+    val shape = RoundedCornerShape(12.dp)
+    val view = LocalView.current
+
     var draftWidth by remember(committedWidthFraction) { mutableFloatStateOf(committedWidthFraction) }
     var draftHeightScale by remember(committedHeightScale) { mutableFloatStateOf(committedHeightScale) }
 
-    val shape = remember { RoundedCornerShape(12.dp) }
     val baseHeight = 180.dp
-
-    // Track container width in px via onSizeChanged instead of BoxWithConstraints
     var containerWidthPx by remember { mutableFloatStateOf(1f) }
-
     val density = LocalDensity.current
     val baseHeightPx = remember(density) { with(density) { baseHeight.toPx() }.coerceAtLeast(1f) }
-    val targetHeight = baseHeight * DashboardUiConfig.clampHeightScale(draftHeightScale)
     val fullRowWidthPx = (containerWidthPx / committedWidthFraction.coerceAtLeast(0.01f))
 
-    val onShapeChange: (Float, Float) -> Unit = remember {
-        { w: Float, h: Float ->
-            draftWidth = w
-            draftHeightScale = h
-        }
-    }
-
     val currentOnShapeChangeFinished by rememberUpdatedState(onShapeChangeFinished)
+    val currentOnLiveResize by rememberUpdatedState(onLiveResize)
     val currentGridColumns by rememberUpdatedState(gridColumns)
     val currentHeightUnits by rememberUpdatedState(heightUnits)
+
+    // Continuous resize during drag — no grid snap, follows finger smoothly.
+    // Grid snap only happens on release (in onShapeChangeFinishedWrapped).
+    val onShapeChange: (Float, Float) -> Unit = remember {
+        { w: Float, h: Float ->
+            val clampedW = DashboardUiConfig.clampWidthFraction(w)
+            val clampedH = DashboardUiConfig.clampHeightScale(h)
+            draftWidth = clampedW
+            draftHeightScale = clampedH
+            currentOnLiveResize(clampedW, clampedH)
+        }
+    }
 
     val onShapeChangeFinishedWrapped: (Float, Float) -> Unit = remember {
         { w: Float, h: Float ->
@@ -112,108 +131,83 @@ internal fun DashboardWidgetCard(
         }
     }
 
+    // Ghost: when this card is being dragged, fade it to ~30% opacity
+    val ghostAlpha by animateFloatAsState(
+        targetValue = if (isBeingDragged) 0.30f else 1f,
+        animationSpec = spring(stiffness = 600f),
+        label = "ghost_alpha",
+    )
+
     Box(
         modifier = modifier
+            .height(heightDp)
             .onSizeChanged { size -> containerWidthPx = size.width.toFloat().coerceAtLeast(1f) }
             .onGloballyPositioned { coords ->
                 cardBounds[section] = coords.boundsInWindow()
+            }
+            .pointerInput(section) {
+                detectTapGestures(
+                    onTap = { onClick() },
+                    onLongPress = {
+                        view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                        onLongPress()
+                    },
+                )
             },
         contentAlignment = Alignment.TopStart,
     ) {
-        Box(modifier = Modifier.fillMaxWidth().height(targetHeight)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer { alpha = ghostAlpha }
+                .clip(shape),
+        ) {
+            content()
+        }
+
+        // Resize handles — shown when card is in selected/resize mode (not during drag)
+        if (selected && !isBeingDragged) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(targetHeight)
-                    .clip(shape)
-                    .pointerInput(section, selected) {
-                        if (selected) {
-                            detectDragGestures(
-                                onDragEnd = { onReorderEnd() },
-                                onDragCancel = { onReorderEnd() },
-                                onDrag = { change, _ ->
-                                    change.consume()
-                                    val bounds = cardBounds[section] ?: return@detectDragGestures
-                                    val windowPos = androidx.compose.ui.geometry.Offset(
-                                        bounds.left + change.position.x,
-                                        bounds.top + change.position.y,
-                                    )
-                                    val target = cardBounds.entries
-                                        .firstOrNull { (s, r) -> s != section && r.contains(windowPos) }
-                                        ?.key
-                                    if (target != null) onReorder(section, target)
-                                },
-                            )
-                        } else {
-                            detectDragGesturesAfterLongPress(
-                                onDragStart = { onLongPress() },
-                                onDragEnd = { onReorderEnd() },
-                                onDragCancel = { onReorderEnd() },
-                                onDrag = { change, _ ->
-                                    change.consume()
-                                    val bounds = cardBounds[section] ?: return@detectDragGesturesAfterLongPress
-                                    val windowPos = androidx.compose.ui.geometry.Offset(
-                                        bounds.left + change.position.x,
-                                        bounds.top + change.position.y,
-                                    )
-                                    val target = cardBounds.entries
-                                        .firstOrNull { (s, r) -> s != section && r.contains(windowPos) }
-                                        ?.key
-                                    if (target != null) onReorder(section, target)
-                                },
-                            )
-                        }
-                    }
-                    .pointerInput(section, selected) {
-                        detectTapGestures(onTap = { onClick() })
-                    },
-            ) {
-                content()
-            }
-
-            if (selected) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .border(BorderStroke(2.dp, MaterialTheme.colors.primary), shape),
-                )
-                DashboardResizeHandle(
-                    contentDescription = stringResource(R.string.dashboard_resize_left_a11y),
-                    horizontalDirection = -1f, verticalDirection = 0f,
-                    containerWidthPx = fullRowWidthPx, baseHeightPx = baseHeightPx,
-                    widthFraction = DashboardUiConfig.clampWidthFraction(draftWidth),
-                    heightScale = DashboardUiConfig.clampHeightScale(draftHeightScale),
-                    onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinishedWrapped,
-                    modifier = Modifier.align(Alignment.CenterStart).offset(x = 36.dp),
-                )
-                DashboardResizeHandle(
-                    contentDescription = stringResource(R.string.dashboard_resize_right_a11y),
-                    horizontalDirection = 1f, verticalDirection = 0f,
-                    containerWidthPx = fullRowWidthPx, baseHeightPx = baseHeightPx,
-                    widthFraction = DashboardUiConfig.clampWidthFraction(draftWidth),
-                    heightScale = DashboardUiConfig.clampHeightScale(draftHeightScale),
-                    onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinishedWrapped,
-                    modifier = Modifier.align(Alignment.CenterEnd).offset(x = (-36).dp),
-                )
-                DashboardResizeHandle(
-                    contentDescription = stringResource(R.string.dashboard_resize_top_a11y),
-                    horizontalDirection = 0f, verticalDirection = -1f,
-                    containerWidthPx = fullRowWidthPx, baseHeightPx = baseHeightPx,
-                    widthFraction = DashboardUiConfig.clampWidthFraction(draftWidth),
-                    heightScale = DashboardUiConfig.clampHeightScale(draftHeightScale),
-                    onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinishedWrapped,
-                    modifier = Modifier.align(Alignment.TopCenter).offset(y = (-9).dp),
-                )
-                DashboardResizeHandle(
-                    contentDescription = stringResource(R.string.dashboard_resize_bottom_a11y),
-                    horizontalDirection = 0f, verticalDirection = 1f,
-                    containerWidthPx = fullRowWidthPx, baseHeightPx = baseHeightPx,
-                    widthFraction = DashboardUiConfig.clampWidthFraction(draftWidth),
-                    heightScale = DashboardUiConfig.clampHeightScale(draftHeightScale),
-                    onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinishedWrapped,
-                    modifier = Modifier.align(Alignment.BottomCenter).offset(y = 9.dp),
-                )
-            }
+                    .fillMaxSize()
+                    .border(BorderStroke(2.dp, MaterialTheme.colors.primary), shape),
+            )
+            DashboardResizeHandle(
+                contentDescription = stringResource(R.string.dashboard_resize_left_a11y),
+                horizontalDirection = -1f, verticalDirection = 0f,
+                containerWidthPx = fullRowWidthPx, baseHeightPx = baseHeightPx,
+                widthFraction = DashboardUiConfig.clampWidthFraction(draftWidth),
+                heightScale = DashboardUiConfig.clampHeightScale(draftHeightScale),
+                onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinishedWrapped,
+                modifier = Modifier.align(Alignment.CenterStart),
+            )
+            DashboardResizeHandle(
+                contentDescription = stringResource(R.string.dashboard_resize_right_a11y),
+                horizontalDirection = 1f, verticalDirection = 0f,
+                containerWidthPx = fullRowWidthPx, baseHeightPx = baseHeightPx,
+                widthFraction = DashboardUiConfig.clampWidthFraction(draftWidth),
+                heightScale = DashboardUiConfig.clampHeightScale(draftHeightScale),
+                onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinishedWrapped,
+                modifier = Modifier.align(Alignment.CenterEnd),
+            )
+            DashboardResizeHandle(
+                contentDescription = stringResource(R.string.dashboard_resize_top_a11y),
+                horizontalDirection = 0f, verticalDirection = -1f,
+                containerWidthPx = fullRowWidthPx, baseHeightPx = baseHeightPx,
+                widthFraction = DashboardUiConfig.clampWidthFraction(draftWidth),
+                heightScale = DashboardUiConfig.clampHeightScale(draftHeightScale),
+                onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinishedWrapped,
+                modifier = Modifier.align(Alignment.TopCenter),
+            )
+            DashboardResizeHandle(
+                contentDescription = stringResource(R.string.dashboard_resize_bottom_a11y),
+                horizontalDirection = 0f, verticalDirection = 1f,
+                containerWidthPx = fullRowWidthPx, baseHeightPx = baseHeightPx,
+                widthFraction = DashboardUiConfig.clampWidthFraction(draftWidth),
+                heightScale = DashboardUiConfig.clampHeightScale(draftHeightScale),
+                onShapeChange = onShapeChange, onShapeChangeFinished = onShapeChangeFinishedWrapped,
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
         }
     }
 }
